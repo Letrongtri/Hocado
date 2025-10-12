@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1017976905493",
+    "project_id": "nienluanchuyennganh-32bd0",
+    "storage_bucket": "nienluanchuyennganh-32bd0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017976905493:android:724b9c239042ec7ccf931c",
+        "android_client_info": {
+          "package_name": "com.letrongtri.hocado"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjJOUTFHmR2i4vucau3B2_K2VLkDZ1nVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
