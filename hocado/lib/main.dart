@@ -1,10 +1,22 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:hocado/presentation/screens/common/splash_screen.dart';
-import 'package:hocado/presentation/views/home/home_screen.dart';
 import 'package:hocado/core/theme/app_theme.dart';
+import 'package:hocado/firebase_options.dart';
+import 'package:hocado/presentation/views/wrapper.dart';
 
 void main() async {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       // themeMode: ThemeMode.system,
-      home: HomeScreen(),
+      home: Wrapper(),
     );
   }
 }
