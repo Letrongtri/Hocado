@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 // import 'package:hocado/presentation/screens/common/splash_screen.dart';
-import 'package:hocado/presentation/screens/home/home_screen.dart';
-import 'package:hocado/presentation/theme/app_theme.dart';
+import 'package:hocado/presentation/views/home/home_screen.dart';
+import 'package:hocado/core/theme/app_theme.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
