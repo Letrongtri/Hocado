@@ -6,8 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class User {
   final String uid;
   final String email;
-  final String username;
-  final String avatarUrl;
+  final String? avatarUrl;
   final String fullName;
   final String phone;
   final DateTime createdAt;
@@ -20,8 +19,7 @@ class User {
   User({
     required this.uid,
     required this.email,
-    required this.username,
-    required this.avatarUrl,
+    this.avatarUrl,
     required this.fullName,
     required this.phone,
     required this.createdAt,
@@ -33,7 +31,6 @@ class User {
   User copyWith({
     String? uid,
     String? email,
-    String? username,
     String? avatarUrl,
     String? fullName,
     String? phone,
@@ -45,7 +42,6 @@ class User {
     return User(
       uid: uid ?? this.uid,
       email: email ?? this.email,
-      username: username ?? this.username,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       fullName: fullName ?? this.fullName,
       phone: phone ?? this.phone,
@@ -60,7 +56,6 @@ class User {
     return <String, dynamic>{
       'uid': uid,
       'email': email,
-      'username': username,
       'avatarUrl': avatarUrl,
       'fullName': fullName,
       'phone': phone,
@@ -75,8 +70,7 @@ class User {
     return User(
       uid: map['uid'] as String,
       email: map['email'] as String,
-      username: map['username'] as String,
-      avatarUrl: map['avatarUrl'] as String,
+      avatarUrl: map['avatarUrl'] != null ? map['avatarUrl'] as String : null,
       fullName: map['fullName'] as String,
       phone: map['phone'] as String,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
@@ -95,7 +89,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(uid: $uid, email: $email, username: $username, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, totalPoints: $totalPoints)';
+    return 'User(uid: $uid, email: $email, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, totalPoints: $totalPoints)';
   }
 
   @override
@@ -104,7 +98,6 @@ class User {
 
     return other.uid == uid &&
         other.email == email &&
-        other.username == username &&
         other.avatarUrl == avatarUrl &&
         other.fullName == fullName &&
         other.phone == phone &&
@@ -118,7 +111,6 @@ class User {
   int get hashCode {
     return uid.hashCode ^
         email.hashCode ^
-        username.hashCode ^
         avatarUrl.hashCode ^
         fullName.hashCode ^
         phone.hashCode ^
@@ -133,7 +125,6 @@ class User {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return User(
       uid: doc.id,
-      username: data['username'],
       email: data['email'],
       avatarUrl: data['avatarUrl'],
       fullName: data['fullName'],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hocado/core/utils/csv_reader.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+// import 'package:hocado/core/utils/csv_reader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -11,14 +10,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final CsvReader csvReader = CsvReader();
-  List<List<String>> fcData = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  // final CsvReader csvReader = CsvReader();
+  // List<List<String>> fcData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +19,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(title: Text("Flash card app")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Card(
-          child: Center(
-            child: LoadingAnimationWidget.fourRotatingDots(
-              color: Theme.of(context).primaryColor,
-              size: 200,
-            ),
-          ),
-        ),
+        child: Card(child: Text("Home page")),
       ),
     );
   }

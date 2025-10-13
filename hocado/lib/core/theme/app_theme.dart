@@ -24,19 +24,20 @@ class AppTheme {
         color: colorScheme.onPrimary,
       ),
       headlineMedium: headingFont.headlineMedium?.copyWith(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: colorScheme.onSurface,
+        fontSize: 26,
+        fontWeight: FontWeight.w700,
+        color: colorScheme.onPrimary,
       ),
       headlineSmall: headingFont.headlineSmall?.copyWith(
         fontSize: 20,
         fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
+        color: colorScheme.onPrimary,
       ),
+
       titleMedium: headingFont.titleMedium?.copyWith(
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: colorScheme.onSurface,
+        color: colorScheme.onPrimary,
       ),
 
       bodyLarge: TextStyle(
@@ -48,10 +49,12 @@ class AppTheme {
         fontSize: 14,
         color: colorScheme.onPrimary.withAlpha(122),
       ),
+
       labelLarge: TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: colorScheme.onSecondary,
+        color: colorScheme.secondary,
+        letterSpacing: 0.8,
       ),
     );
   }
