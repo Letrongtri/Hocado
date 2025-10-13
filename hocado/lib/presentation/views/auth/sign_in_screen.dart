@@ -38,6 +38,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final viewModel = ref.read(signInViewModelProvider.notifier);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: EdgeInsets.only(

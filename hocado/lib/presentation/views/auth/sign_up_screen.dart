@@ -43,6 +43,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final viewModel = ref.read(signUpViewModelProvider.notifier);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: EdgeInsets.only(
