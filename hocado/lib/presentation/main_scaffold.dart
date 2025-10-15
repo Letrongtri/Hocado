@@ -1,0 +1,91 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hocado/core/constants/sizes.dart';
+
+class MainScaffold extends ConsumerWidget {
+  final Widget child;
+  const MainScaffold({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final location = GoRouterState.of(context).uri.toString();
+
+    final currentIndex = _locationToIndex(location);
+
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return IconThemeData(
+                color: theme.colorScheme.onSurface,
+                size: Sizes.iconLg,
+              );
+            }
+            return IconThemeData(
+              color: theme.colorScheme.onPrimary,
+              size: Sizes.iconMd,
+            );
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: currentIndex,
+          onDestinationSelected: (index) {
+            final destination = _indexToRoute(index);
+            if (destination != location) {
+              // TODO: thay go thành goNamed
+              context.go(destination);
+            }
+          },
+
+          height: Sizes.appBarHeight,
+          elevation: Sizes.btnElevation,
+          indicatorColor: Colors.transparent,
+          indicatorShape: CircleBorder(),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+          animationDuration: Durations.short3,
+
+          destinations: [
+            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+            NavigationDestination(
+              icon: Icon(Icons.folder_copy_outlined),
+              label: 'Decks',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add_circle_outline),
+              label: 'Add',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline),
+              label: 'Profile',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  int _locationToIndex(String location) {
+    if (location.startsWith('/decks')) return 1;
+    if (location.startsWith('/add')) return 2;
+    if (location.startsWith('/profile')) return 3;
+    return 0; // default: home
+  }
+
+  // TODO: Sửa lại hàm này chuyển path thành path_name
+  String _indexToRoute(int index) {
+    switch (index) {
+      case 1:
+        return '/decks';
+      case 2:
+        return '/add';
+      case 3:
+        return '/add';
+      default:
+        return '/home';
+    }
+  }
+}

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/auth_provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
+import 'package:hocado/presentation/main_scaffold.dart';
 import 'package:hocado/presentation/views/auth/sign_in_screen.dart';
 import 'package:hocado/presentation/views/auth/sign_up_screen.dart';
 import 'package:hocado/presentation/views/home/home_screen.dart';
@@ -58,11 +59,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
     routes: [
       GoRoute(
-        path: '/home',
-        name: AppRoutes.home.name,
-        builder: (context, state) => HomeScreen(),
-      ),
-      GoRoute(
         path: '/sign-in',
         name: AppRoutes.signIn.name,
         builder: (context, state) => SignInScreen(),
@@ -71,6 +67,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/sign-up',
         name: AppRoutes.signUp.name,
         builder: (context, state) => SignUpScreen(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => MainScaffold(child: child),
+        routes: [
+          GoRoute(
+            path: '/home',
+            name: AppRoutes.home.name,
+            builder: (context, state) => HomeScreen(),
+          ),
+          ),
+        ],
       ),
     ],
 

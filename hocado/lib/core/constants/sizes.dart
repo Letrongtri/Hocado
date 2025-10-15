@@ -24,7 +24,7 @@ class Sizes {
   static const double btnElevation = 4.0;
 
   // Appbar height
-  static const double appBarHeight = 56.0;
+  static const double appBarHeight = 48.0;
 
   // Image sizes
   static const double imageThumbSize = 80.0;

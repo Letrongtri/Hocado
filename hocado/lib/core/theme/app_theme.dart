@@ -10,7 +10,7 @@ class AppTheme {
     onSecondary: Color(0xFFC2C3C5),
     error: Color(0xffE03616),
     onError: Colors.white,
-    surface: Color(0xffF9F9Fa),
+    surface: Color.fromARGB(255, 243, 243, 243),
     onSurface: Color(0xFF17242A),
   );
 
@@ -47,7 +47,7 @@ class AppTheme {
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: colorScheme.onPrimary.withAlpha(122),
+        color: colorScheme.onPrimary,
       ),
 
       labelLarge: TextStyle(
