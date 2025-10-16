@@ -4,9 +4,9 @@ import 'package:hocado/data/models/user.dart' as hocado_user;
 
 class AuthRepository {
   final AuthService authService;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore;
 
-  AuthRepository({required this.authService});
+  AuthRepository({required this.authService, required this.firestore});
 
   // Sign in
   Future<hocado_user.User?> signIn(String email, String pwd) async {
@@ -41,7 +41,7 @@ class AuthRepository {
       totalPoints: 0,
     );
 
-    await firestore.collection('users').doc(user.uid).set(user.toMap());
+    await authService.addNewUser(user);
     return user;
   }
 
