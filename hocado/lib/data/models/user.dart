@@ -2,6 +2,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:hocado/data/models/saved_deck.dart';
 
 class User {
   final String uid;
@@ -13,6 +16,7 @@ class User {
   final DateTime updatedAt;
   final DateTime? lastLogin;
   final int totalPoints;
+  final List<SavedDeck>? saveDecks;
 
   // mật khẩu không lưu trực tiếp trong model này
 
@@ -26,6 +30,7 @@ class User {
     required this.updatedAt,
     required this.lastLogin,
     required this.totalPoints,
+    this.saveDecks,
   });
 
   User copyWith({
@@ -38,6 +43,7 @@ class User {
     DateTime? updatedAt,
     DateTime? lastLogin,
     int? totalPoints,
+    List<SavedDeck>? saveDecks,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -49,6 +55,7 @@ class User {
       updatedAt: updatedAt ?? this.updatedAt,
       lastLogin: lastLogin ?? this.lastLogin,
       totalPoints: totalPoints ?? this.totalPoints,
+      saveDecks: saveDecks ?? this.saveDecks,
     );
   }
 
@@ -63,6 +70,7 @@ class User {
       'updatedAt': updatedAt.millisecondsSinceEpoch,
       'lastLogin': lastLogin?.millisecondsSinceEpoch,
       'totalPoints': totalPoints,
+      'saveDecks': saveDecks?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -79,6 +87,13 @@ class User {
           ? DateTime.fromMillisecondsSinceEpoch(map['lastLogin'] as int)
           : null,
       totalPoints: map['totalPoints'] as int,
+      saveDecks: map['saveDecks'] != null
+          ? List<SavedDeck>.from(
+              (map['saveDecks'] as List<int>).map<SavedDeck?>(
+                (x) => SavedDeck.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
     );
   }
 
@@ -89,7 +104,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(uid: $uid, email: $email, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, totalPoints: $totalPoints)';
+    return 'User(uid: $uid, email: $email, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, totalPoints: $totalPoints, saveDecks: $saveDecks)';
   }
 
   @override
@@ -104,7 +119,8 @@ class User {
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
         other.lastLogin == lastLogin &&
-        other.totalPoints == totalPoints;
+        other.totalPoints == totalPoints &&
+        listEquals(other.saveDecks, saveDecks);
   }
 
   @override
@@ -117,7 +133,8 @@ class User {
         createdAt.hashCode ^
         updatedAt.hashCode ^
         lastLogin.hashCode ^
-        totalPoints.hashCode;
+        totalPoints.hashCode ^
+        saveDecks.hashCode;
   }
 
   // Phương thức để chuyển đổi từ Firestore DocumentSnapshot sang UserModel
@@ -134,6 +151,13 @@ class User {
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
       lastLogin: data['lastLogin'] != null
           ? (data['lastLogin'] as Timestamp).toDate()
+          : null,
+      saveDecks: data['saveDecks'] != null
+          ? List<SavedDeck>.from(
+              (data['saveDecks'] as List<int>).map<SavedDeck?>(
+                (x) => SavedDeck.fromMap(x as Map<String, dynamic>),
+              ),
+            )
           : null,
     );
   }
