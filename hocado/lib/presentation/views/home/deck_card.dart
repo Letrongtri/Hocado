@@ -16,6 +16,8 @@ class DeckCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
+      color: theme.colorScheme.secondary,
+      elevation: 0.2,
       child: Padding(
         padding: const EdgeInsets.all(Sizes.md),
         child: Column(
