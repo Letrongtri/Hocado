@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class Flashcard {
   final String fid;
@@ -11,7 +12,6 @@ class Flashcard {
   final String? frontImageUrl;
   final String? backImageUrl;
   final String? note;
-  final int difficulty;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -23,7 +23,6 @@ class Flashcard {
     this.frontImageUrl,
     this.backImageUrl,
     required this.note,
-    required this.difficulty,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -36,7 +35,6 @@ class Flashcard {
     String? frontImageUrl,
     String? backImageUrl,
     String? note,
-    int? difficulty,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -48,7 +46,6 @@ class Flashcard {
       frontImageUrl: frontImageUrl ?? this.frontImageUrl,
       backImageUrl: backImageUrl ?? this.backImageUrl,
       note: note ?? this.note,
-      difficulty: difficulty ?? this.difficulty,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -63,7 +60,6 @@ class Flashcard {
       'frontImageUrl': frontImageUrl,
       'backImageUrl': backImageUrl,
       'note': note,
-      'difficulty': difficulty,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
@@ -82,7 +78,6 @@ class Flashcard {
           ? map['backImageUrl'] as String
           : null,
       note: map['note'] != null ? map['note'] as String : null,
-      difficulty: map['difficulty'] as int,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
       updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
     );
@@ -95,7 +90,7 @@ class Flashcard {
 
   @override
   String toString() {
-    return 'Flashcard(fid: $fid, did: $did, front: $front, back: $back, frontImageUrl: $frontImageUrl, backImageUrl: $backImageUrl, note: $note, difficulty: $difficulty, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Flashcard(fid: $fid, did: $did, front: $front, back: $back, frontImageUrl: $frontImageUrl, backImageUrl: $backImageUrl, note: $note, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -109,7 +104,6 @@ class Flashcard {
         other.frontImageUrl == frontImageUrl &&
         other.backImageUrl == backImageUrl &&
         other.note == note &&
-        other.difficulty == difficulty &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
   }
@@ -123,7 +117,6 @@ class Flashcard {
         frontImageUrl.hashCode ^
         backImageUrl.hashCode ^
         note.hashCode ^
-        difficulty.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }
@@ -138,9 +131,20 @@ class Flashcard {
       frontImageUrl: data['frontImageUrl'],
       backImageUrl: data['backImageUrl'],
       note: data['note'],
-      difficulty: data['difficulty'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+    );
+  }
+
+  factory Flashcard.empty() {
+    return Flashcard(
+      fid: Uuid().v4(),
+      did: '',
+      front: '',
+      back: '',
+      note: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 }
