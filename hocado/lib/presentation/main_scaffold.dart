@@ -37,7 +37,11 @@ class MainScaffold extends ConsumerWidget {
             final destination = _indexToRoute(index);
             if (destination != location) {
               // TODO: thay go thành goNamed
-              context.go(destination);
+              if (destination == '/create') {
+                context.push(destination);
+              } else {
+                context.go(destination);
+              }
             }
           },
 
@@ -70,7 +74,7 @@ class MainScaffold extends ConsumerWidget {
 
   int _locationToIndex(String location) {
     if (location.startsWith('/decks')) return 1;
-    if (location.startsWith('/add')) return 2;
+    if (location.startsWith('/create')) return 2;
     if (location.startsWith('/profile')) return 3;
     return 0; // default: home
   }
@@ -81,7 +85,7 @@ class MainScaffold extends ConsumerWidget {
       case 1:
         return '/decks';
       case 2:
-        return '/add';
+        return '/create';
       case 3:
         return '/add';
       default:

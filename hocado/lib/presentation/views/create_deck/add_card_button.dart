@@ -1,0 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hocado/app/provider/flashcard_provider.dart';
+import 'package:hocado/core/constants/sizes.dart';
+
+class AddCardButton extends ConsumerWidget {
+  final String fid;
+  const AddCardButton({super.key, required this.fid});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: IconButton(
+        icon: const Icon(Icons.add_circle_outline, size: Sizes.iconLg),
+        color: Theme.of(context).colorScheme.onPrimary.withAlpha(100),
+        onPressed: () {
+          // Gọi hàm addCard từ provider
+          ref.read(flashcardViewModelProvider.notifier).addFlashcardBelow(fid);
+        },
+      ),
+    );
+  }
+}
