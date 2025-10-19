@@ -9,14 +9,12 @@ import 'package:hocado/data/repositories/deck/deck_repository.dart';
 import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
 
 class FlashcardAsyncViewModel extends AsyncNotifier<void> {
-  late final DeckRepository _deckRepository;
-  late final FlashcardRepository _flashcardRepository;
+  DeckRepository get _deckRepository => ref.read(deckRepositoryProvider);
+  FlashcardRepository get _flashcardRepository =>
+      ref.read(flashcardRepositoryProvider);
 
   @override
-  FutureOr<void> build() {
-    _deckRepository = ref.read(deckRepositoryProvider);
-    _flashcardRepository = ref.read(flashcardRepositoryProvider);
-  }
+  FutureOr<void> build() {}
 
   Future<void> saveDeckAndFlashcards(
     Deck deck,
@@ -26,12 +24,13 @@ class FlashcardAsyncViewModel extends AsyncNotifier<void> {
       state = const AsyncValue.loading();
 
       final totalCards = flashcards.length;
+      final now = DateTime.now();
 
       // Save deck using the repository
       final updatedDeck = deck.copyWith(
         totalCards: totalCards,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: now,
+        updatedAt: now,
       );
       await _deckRepository.create(updatedDeck);
 
@@ -41,8 +40,8 @@ class FlashcardAsyncViewModel extends AsyncNotifier<void> {
           flashcards
               .map(
                 (card) => card.copyWith(
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
+                  createdAt: now,
+                  updatedAt: now,
                 ),
               )
               .toList(),

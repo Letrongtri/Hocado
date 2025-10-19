@@ -6,12 +6,10 @@ import 'package:hocado/data/models/flashcard.dart';
 import 'package:hocado/presentation/viewmodels/flashcard_list/flashcard_list_state.dart';
 
 class FlashcardViewModel extends Notifier<FlashcardListState> {
-  late final User _currentUser;
+  User get _currentUser => ref.read(currentUserProvider)!;
 
   @override
   FlashcardListState build() {
-    _currentUser = ref.read(currentUserProvider)!;
-
     final deck = Deck.empty().copyWith(uid: _currentUser.uid);
 
     return FlashcardListState(
@@ -98,7 +96,6 @@ class FlashcardViewModel extends Notifier<FlashcardListState> {
     if (state.deck?.did != did) return;
 
     final updatedDeck = state.deck!.copyWith(isPublic: isPublic);
-    print('Updated deck isPublic: ${updatedDeck.isPublic}');
     state = state.copyWith(deck: updatedDeck);
   }
 
