@@ -66,9 +66,9 @@ class User {
       'avatarUrl': avatarUrl,
       'fullName': fullName,
       'phone': phone,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
-      'lastLogin': lastLogin?.millisecondsSinceEpoch,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'lastLogin': lastLogin,
       'totalPoints': totalPoints,
       'saveDecks': saveDecks?.map((x) => x.toMap()).toList(),
     };
@@ -81,10 +81,10 @@ class User {
       avatarUrl: map['avatarUrl'] != null ? map['avatarUrl'] as String : null,
       fullName: map['fullName'] as String,
       phone: map['phone'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      updatedAt: (map['updatedAt'] as Timestamp).toDate(),
       lastLogin: map['lastLogin'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['lastLogin'] as int)
+          ? (map['lastLogin'] as Timestamp).toDate()
           : null,
       totalPoints: map['totalPoints'] as int,
       saveDecks: map['saveDecks'] != null

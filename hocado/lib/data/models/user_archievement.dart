@@ -30,7 +30,7 @@ class UserArchievement {
     return <String, dynamic>{
       'uid': uid,
       'aid': aid,
-      'unlockedAt': unlockedAt.millisecondsSinceEpoch,
+      'unlockedAt': unlockedAt,
     };
   }
 
@@ -38,7 +38,7 @@ class UserArchievement {
     return UserArchievement(
       uid: map['uid'] as String,
       aid: map['aid'] as String,
-      unlockedAt: DateTime.fromMillisecondsSinceEpoch(map['unlockedAt'] as int),
+      unlockedAt: (map['unlockedAt'] as Timestamp).toDate(),
     );
   }
 

@@ -63,8 +63,8 @@ class StudySession {
       'sid': sid,
       'uid': uid,
       'did': did,
-      'start': start.millisecondsSinceEpoch,
-      'end': end?.millisecondsSinceEpoch,
+      'start': start,
+      'end': end,
       'totalCards': totalCards,
       'correctCards': correctCards,
       'incorrectCards': incorrectCards,
@@ -79,10 +79,8 @@ class StudySession {
       sid: map['sid'] as String,
       uid: map['uid'] as String,
       did: map['did'] as String,
-      start: DateTime.fromMillisecondsSinceEpoch(map['start'] as int),
-      end: map['end'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['end'] as int)
-          : null,
+      start: (map['start'] as Timestamp).toDate(),
+      end: map['end'] != null ? (map['end'] as Timestamp).toDate() : null,
       totalCards: map['totalCards'] as int,
       correctCards: map['correctCards'] as int,
       incorrectCards: map['incorrectCards'] as int,

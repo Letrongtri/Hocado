@@ -30,7 +30,7 @@ class SavedDeck {
     return <String, dynamic>{
       'deckId': deckId,
       'deckRef': deckRef,
-      'savedAt': savedAt.millisecondsSinceEpoch,
+      'savedAt': savedAt,
     };
   }
 
@@ -38,7 +38,7 @@ class SavedDeck {
     return SavedDeck(
       deckId: map['deckId'] as String,
       deckRef: map['deckRef'],
-      savedAt: DateTime.fromMillisecondsSinceEpoch(map['savedAt'] as int),
+      savedAt: (map['savedAt'] as Timestamp).toDate(),
     );
   }
 

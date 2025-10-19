@@ -55,7 +55,7 @@ class Notification {
       'message': message,
       'type': type,
       'isRead': isRead,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'createdAt': createdAt,
       'metadata': metadata,
     };
   }
@@ -68,7 +68,7 @@ class Notification {
       message: map['message'] as String,
       type: map['type'] as String,
       isRead: map['isRead'] as bool,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       metadata: map['metadata'] != null
           ? Map<String, dynamic>.from(map['metadata'] as Map<String, dynamic>)
           : null,

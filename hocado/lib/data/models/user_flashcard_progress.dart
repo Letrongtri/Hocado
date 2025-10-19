@@ -52,8 +52,8 @@ class UserFlashcardProgress {
     return <String, dynamic>{
       'uid': uid,
       'fid': fid,
-      'lastReviewd': lastReviewed?.millisecondsSinceEpoch,
-      'nextReview': nextReview?.millisecondsSinceEpoch,
+      'lastReviewd': lastReviewed,
+      'nextReview': nextReview,
       'reviewCount': reviewCount,
       'correctCount': correctCount,
       'easeFactor': easeFactor,
@@ -66,10 +66,10 @@ class UserFlashcardProgress {
       uid: map['uid'] as String,
       fid: map['fid'] as String,
       lastReviewed: map['lastReviewed'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['lastReviewd'] as int)
+          ? (map['lastReviewed'] as Timestamp).toDate()
           : null,
       nextReview: map['nextReview'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['nextReview'] as int)
+          ? (map['nextReview'] as Timestamp).toDate()
           : null,
       reviewCount: map['reviewCount'] as int,
       correctCount: map['correctCount'] as int,

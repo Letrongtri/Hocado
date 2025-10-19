@@ -60,8 +60,8 @@ class Flashcard {
       'frontImageUrl': frontImageUrl,
       'backImageUrl': backImageUrl,
       'note': note,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
@@ -78,8 +78,8 @@ class Flashcard {
           ? map['backImageUrl'] as String
           : null,
       note: map['note'] != null ? map['note'] as String : null,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      updatedAt: (map['updatedAt'] as Timestamp).toDate(),
     );
   }
 

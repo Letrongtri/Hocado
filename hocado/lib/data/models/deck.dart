@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class Deck {
@@ -15,7 +14,6 @@ class Deck {
   final int totalCards;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final List<String>? tagIds;
 
   Deck({
     required this.did,
@@ -27,7 +25,6 @@ class Deck {
     required this.totalCards,
     required this.createdAt,
     required this.updatedAt,
-    this.tagIds,
   });
 
   Deck copyWith({
@@ -52,7 +49,6 @@ class Deck {
       totalCards: totalCards ?? this.totalCards,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      tagIds: tagIds ?? this.tagIds,
     );
   }
 
@@ -65,9 +61,8 @@ class Deck {
       'thumbnailUrl': thumbnailUrl,
       'isPublic': isPublic,
       'totalCards': totalCards,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
-      'tagIds': tagIds,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
@@ -82,11 +77,8 @@ class Deck {
           : null,
       isPublic: map['isPublic'] as bool,
       totalCards: map['totalCards'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      tagIds: map['tagIds'] != null
-          ? List<String>.from(map['tagIds'] as List<String>)
-          : null,
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      updatedAt: (map['updatedAt'] as Timestamp).toDate(),
     );
   }
 
@@ -97,7 +89,7 @@ class Deck {
 
   @override
   String toString() {
-    return 'Deck(did: $did, uid: $uid, name: $name, description: $description, thumbnailUrl: $thumbnailUrl, isPublic: $isPublic, totalCards: $totalCards, createdAt: $createdAt, updatedAt: $updatedAt, tagIds: $tagIds)';
+    return 'Deck(did: $did, uid: $uid, name: $name, description: $description, thumbnailUrl: $thumbnailUrl, isPublic: $isPublic, totalCards: $totalCards, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -112,8 +104,7 @@ class Deck {
         other.isPublic == isPublic &&
         other.totalCards == totalCards &&
         other.createdAt == createdAt &&
-        other.updatedAt == updatedAt &&
-        listEquals(other.tagIds, tagIds);
+        other.updatedAt == updatedAt;
   }
 
   @override
@@ -126,8 +117,7 @@ class Deck {
         isPublic.hashCode ^
         totalCards.hashCode ^
         createdAt.hashCode ^
-        updatedAt.hashCode ^
-        tagIds.hashCode;
+        updatedAt.hashCode;
   }
 
   factory Deck.fromFirestore(DocumentSnapshot doc) {
@@ -142,7 +132,6 @@ class Deck {
       totalCards: data['totalCards'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
-      tagIds: List<String>.from(data['tagIds'] as List<String>),
     );
   }
 
