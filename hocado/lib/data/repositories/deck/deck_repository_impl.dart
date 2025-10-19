@@ -21,6 +21,11 @@ class DeckRepositoryImpl implements DeckRepository {
   Future<List<Deck>> getDecksByUserId(String id) async {
     try {
       final docs = await _deckService.getUserDecks(id);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
       return docs.map((doc) => Deck.fromFirestore(doc)).toList();
     } catch (e) {
       throw Exception("Could not convert documents to decks");

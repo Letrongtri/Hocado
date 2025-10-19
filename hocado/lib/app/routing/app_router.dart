@@ -8,6 +8,8 @@ import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/presentation/main_scaffold.dart';
 import 'package:hocado/presentation/views/auth/sign_in_screen.dart';
 import 'package:hocado/presentation/views/auth/sign_up_screen.dart';
+import 'package:hocado/presentation/views/create_deck/create_deck_screen.dart';
+import 'package:hocado/presentation/views/decks/decks_screen.dart';
 import 'package:hocado/presentation/views/home/home_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -30,7 +32,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final authService = ref.watch(authServiceProvider);
 
   return GoRouter(
-    initialLocation: '/sign-in',
+    initialLocation: '/home',
     // lắng nghe sự thay đổi trạng thái auth để re-route
     refreshListenable: GoRouterRefreshStream(
       authService.authStateChanges(),
@@ -56,7 +58,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       // nếu không thuộc các trường hợp trên thì không cần chuyển hướng
       return null;
     },
-
     routes: [
       GoRoute(
         path: '/sign-in',
@@ -76,8 +77,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: AppRoutes.home.name,
             builder: (context, state) => HomeScreen(),
           ),
+          GoRoute(
+            path: '/decks',
+            name: AppRoutes.decks.name,
+            builder: (context, state) => DecksScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/create',
+        name: AppRoutes.createDecks.name,
+        builder: (context, state) => CreateDeckScreen(),
       ),
     ],
 

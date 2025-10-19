@@ -51,19 +51,31 @@ class MainScaffold extends ConsumerWidget {
           indicatorShape: CircleBorder(),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           animationDuration: Durations.short3,
+          backgroundColor: theme.colorScheme.secondary,
 
           destinations: [
-            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
             NavigationDestination(
-              icon: Icon(Icons.folder_copy_outlined),
+              icon: currentIndex == 0
+                  ? Icon(Icons.home)
+                  : Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: currentIndex == 1
+                  ? Icon(Icons.folder_copy)
+                  : Icon(Icons.folder_copy_outlined),
               label: 'Decks',
             ),
             NavigationDestination(
-              icon: Icon(Icons.add_circle_outline),
+              icon: currentIndex == 2
+                  ? Icon(Icons.add_circle)
+                  : Icon(Icons.add_circle_outline),
               label: 'Add',
             ),
             NavigationDestination(
-              icon: Icon(Icons.person_outline),
+              icon: currentIndex == 3
+                  ? Icon(Icons.person)
+                  : Icon(Icons.person_outline),
               label: 'Profile',
             ),
           ],

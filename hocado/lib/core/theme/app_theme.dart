@@ -10,7 +10,7 @@ class AppTheme {
     onSecondary: Color(0xFFC2C3C5),
     error: Color(0xffE03616),
     onError: Colors.white,
-    surface: Color.fromARGB(255, 243, 243, 243),
+    surface: Color(0xffF8F7FC),
     onSurface: Color(0xFF17242A),
   );
 

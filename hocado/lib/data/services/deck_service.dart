@@ -13,9 +13,9 @@ class DeckService {
       final snapshot = await _firestore
           .collection('decks')
           .where('uid', isEqualTo: userId)
-          .orderBy('updatedAt', descending: true)
+          // .orderBy('updatedAt', descending: true)
           .get();
-      return snapshot.docs;
+      return snapshot.docs.isEmpty ? [] : snapshot.docs;
     } catch (e) {
       throw Exception("Could not fetch decks from database");
     }

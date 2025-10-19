@@ -1,5 +1,1 @@
-enum AppRoutes {
-  home,
-  signUp,
-  signIn,
-}
+enum AppRoutes { home, signUp, signIn, decks, createDecks }

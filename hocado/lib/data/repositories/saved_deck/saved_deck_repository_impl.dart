@@ -18,6 +18,11 @@ class SavedDeckRepositoryImpl implements SavedDeckRepository {
   Future<List<Deck>> getSavedDecksByUserId(String id) async {
     try {
       final docs = await _savedDeckService.getUserSavedDecks(id);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
       return docs.map((doc) => Deck.fromFirestore(doc)).toList();
     } catch (e) {
       throw Exception("Could not convert documents to decks");

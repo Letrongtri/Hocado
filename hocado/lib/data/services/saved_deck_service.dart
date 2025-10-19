@@ -15,9 +15,9 @@ class SavedDeckService {
           .collection('users')
           .doc(userId)
           .collection('saved_decks')
-          .orderBy('savedAt', descending: true)
+          // .orderBy('savedAt', descending: true)
           .get();
-      return snapshot.docs;
+      return snapshot.docs.isEmpty ? [] : snapshot.docs;
     } catch (e) {
       throw Exception("Could not fetch saved decks from database");
     }
