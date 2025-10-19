@@ -38,4 +38,35 @@ class DeckService {
       throw Exception("Could not fetch decks from database");
     }
   }
+
+  // Create decks
+  Future<void> createDeck(Map<String, dynamic> deckData) async {
+    try {
+      // Tạo mới deck
+      final docRef = _firestore.collection('decks').doc(deckData['did']);
+      await docRef.set(deckData);
+    } catch (e) {
+      throw Exception("Could not save deck to database");
+    }
+  }
+
+  // Delete deck
+  Future<void> deleteDeck(String deckId) async {
+    try {
+      final docRef = _firestore.collection('decks').doc(deckId);
+      await docRef.delete();
+    } catch (e) {
+      throw Exception("Could not delete deck from database");
+    }
+  }
+
+  // Update deck
+  Future<void> updateDeck(Map<String, dynamic> deckData) async {
+    try {
+      final docRef = _firestore.collection('decks').doc(deckData['did']);
+      await docRef.update(deckData);
+    } catch (e) {
+      throw Exception("Could not update deck in database");
+    }
+  }
 }

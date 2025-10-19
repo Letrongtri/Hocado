@@ -10,8 +10,11 @@ class DeckRepositoryImpl implements DeckRepository {
 
   @override
   Future<void> delete(String id) async {
-    // TODO: implement delete
-    throw UnimplementedError();
+    try {
+      await _deckService.deleteDeck(id);
+    } catch (e) {
+      throw Exception("Could not delete deck");
+    }
   }
 
   @override
@@ -25,8 +28,20 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   @override
-  Future<void> updateDeck(String id, Map<String, dynamic> data) async {
-    // TODO: implement updateDeck
-    throw UnimplementedError();
+  Future<void> updateDeck(String id, Deck data) async {
+    try {
+      await _deckService.updateDeck(data.toMap());
+    } catch (e) {
+      throw Exception("Could not update deck");
+    }
+  }
+
+  @override
+  Future<void> create(Deck deck) {
+    try {
+      return _deckService.createDeck(deck.toMap());
+    } catch (e) {
+      throw Exception("Could not create deck");
+    }
   }
 }
