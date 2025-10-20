@@ -36,13 +36,18 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   }
 
   @override
-  Future<List<Flashcard>> getFlashcardsByDeckId(String deckId) {
-    // try {
-    //   return _flashcardService.getFlashcardsByDeckId(deckId);
-    // } catch (e) {
-    //   throw Exception("Could not retrieve flashcards");
-    // }
-    throw UnimplementedError();
+  Future<List<Flashcard>> getFlashcardsByDeckId(String deckId) async {
+    try {
+      final docs = await _flashcardService.getFlashcardsByDeckId(deckId);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
+      return docs.map((doc) => Flashcard.fromFirestore(doc)).toList();
+    } catch (e) {
+      throw Exception("Could not retrieve flashcards");
+    }
   }
 
   @override

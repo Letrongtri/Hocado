@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/utils/format_date_time.dart';
 
 class DeckListItem extends StatelessWidget {
   final String title;
   final DateTime lastUpdated;
+  final String did;
 
   const DeckListItem({
     super.key,
     required this.title,
     required this.lastUpdated,
+    required this.did,
   });
 
   @override
@@ -44,6 +48,13 @@ class DeckListItem extends StatelessWidget {
         icon: const Icon(Icons.more_horiz),
         onPressed: () {},
       ),
+
+      onTap: () {
+        context.pushNamed(
+          AppRoutes.detailDeck.name,
+          pathParameters: {'did': did},
+        );
+      },
     );
   }
 }

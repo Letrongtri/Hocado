@@ -97,6 +97,7 @@ class DecksScreen extends ConsumerWidget {
                   return DeckListItem(
                     title: deck.name,
                     lastUpdated: deck.updatedAt,
+                    did: deck.did,
                   );
                 },
               ),

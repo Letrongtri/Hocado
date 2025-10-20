@@ -49,4 +49,15 @@ class DeckRepositoryImpl implements DeckRepository {
       throw Exception("Could not create deck");
     }
   }
+
+  @override
+  Future<Deck> getDeckById(String id) async {
+    try {
+      return await _deckService.getDeckById(id).then((docSnapshot) {
+        return Deck.fromFirestore(docSnapshot);
+      });
+    } catch (e) {
+      throw Exception("Could not get deck by id");
+    }
+  }
 }

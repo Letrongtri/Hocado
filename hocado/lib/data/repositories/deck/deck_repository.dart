@@ -8,4 +8,6 @@ abstract class DeckRepository {
   Future<void> delete(String id);
 
   Future<void> create(Deck deck);
+
+  Future<Deck> getDeckById(String id);
 }

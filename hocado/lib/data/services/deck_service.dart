@@ -69,4 +69,22 @@ class DeckService {
       throw Exception("Could not update deck in database");
     }
   }
+
+  // Get deck by Id
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDeckById(
+    String id,
+  ) async {
+    try {
+      final docRef = _firestore.collection('decks').doc(id);
+      final docSnapshot = await docRef.get();
+
+      if (!docSnapshot.exists) {
+        throw Exception("Deck not found");
+      }
+
+      return docSnapshot;
+    } catch (e) {
+      throw Exception("Could not fetch deck from database");
+    }
+  }
 }

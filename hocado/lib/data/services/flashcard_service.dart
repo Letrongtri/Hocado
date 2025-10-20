@@ -94,4 +94,19 @@ class FlashcardService {
       throw Exception("Could not delete flashcards by deck id from database");
     }
   }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+  getFlashcardsByDeckId(String deckId) async {
+    try {
+      final collectionRef = _firestore
+          .collection('decks')
+          .doc(deckId)
+          .collection(collectionPath);
+
+      final snapshot = await collectionRef.get();
+      return snapshot.docs;
+    } catch (e) {
+      throw Exception("Could not retrieve flashcards from database");
+    }
+  }
 }
