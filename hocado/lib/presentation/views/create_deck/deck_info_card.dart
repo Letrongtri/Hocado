@@ -24,10 +24,12 @@ class _DeckInfoCardState extends ConsumerState<DeckInfoCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     titleController = TextEditingController();
     descriptionController = TextEditingController();
+
+    titleController.text = widget.deck.name;
+    descriptionController.text = widget.deck.description;
 
     titleFocusNode = FocusNode();
     descriptionFocusNode = FocusNode();

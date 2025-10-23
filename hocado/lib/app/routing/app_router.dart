@@ -91,11 +91,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => CreateDeckScreen(),
       ),
       GoRoute(
-        path: '/detail-deck/:did',
+        path: '/decks/:did',
         name: AppRoutes.detailDeck.name,
         builder: (context, state) {
           final did = state.pathParameters['did']!;
           return DetailDeckScreen(deckId: did);
+        },
+      ),
+      GoRoute(
+        path: '/decks/:did/edit',
+        name: AppRoutes.editDeck.name,
+        builder: (context, state) {
+          final did = state.pathParameters['did'];
+          return CreateDeckScreen(did: did);
         },
       ),
     ],

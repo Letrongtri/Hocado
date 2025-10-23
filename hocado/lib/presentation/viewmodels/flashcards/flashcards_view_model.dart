@@ -66,9 +66,8 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
 
       if (!ref.mounted) return;
 
-      final previous = state.value?.flashcards ?? [];
       state = AsyncData(
-        FlashcardsState(flashcards: [...previous, ...createdCards]),
+        FlashcardsState(flashcards: createdCards),
       );
     } catch (e, st) {
       if (!ref.mounted) return;

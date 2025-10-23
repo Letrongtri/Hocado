@@ -33,6 +33,10 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
     definitionController = TextEditingController(text: widget.card.back);
     noteController = TextEditingController(text: widget.card.note);
 
+    termController.text = widget.card.front;
+    definitionController.text = widget.card.back;
+    noteController.text = widget.card.note ?? '';
+
     termFocusNode = FocusNode();
     definitionFocusNode = FocusNode();
     noteFocusNode = FocusNode();

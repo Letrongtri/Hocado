@@ -10,9 +10,9 @@ import 'package:hocado/presentation/views/create_deck/flashcard_info_item.dart';
 import 'package:hocado/presentation/widgets/hocado_divider.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
-  final Deck? deck;
+  final String? did;
 
-  const CreateDeckScreen({super.key, this.deck});
+  const CreateDeckScreen({super.key, this.did});
 
   @override
   ConsumerState<CreateDeckScreen> createState() => _CreateDeckScreenState();
@@ -21,28 +21,44 @@ class CreateDeckScreen extends ConsumerStatefulWidget {
 class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   late Deck deck;
   late final String did;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    deck = widget.deck ?? Deck.empty();
-    did = deck.did;
+    // deck = widget.deck ?? Deck.empty();
+    if (widget.did != null) {
+      did = widget.did!;
+      _loadDeck();
+    } else {
+      deck = Deck.empty();
+      did = deck.did;
+    }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Nếu deck có flashcards -> load từ repo
-    if (widget.deck != null && widget.deck!.totalCards > 0) {
-      ref
-          .read(flashcardsViewModelProvider(deck.did).notifier)
-          .fetchFlashcards()
-          .then((cards) {
-            ref
-                .read(editFlashcardsViewModelProvider(deck.did).notifier)
-                .setFlashcards(cards);
-          });
+  Future<void> _loadDeck() async {
+    setState(() => _isLoading = true);
+
+    final fetched = await ref
+        .read(decksViewModelProvider.notifier)
+        .findDeckByDid(widget.did!);
+
+    if (fetched != null) {
+      deck = fetched;
+
+      // Nếu deck có flashcards thì tải luôn
+      if (deck.totalCards > 0) {
+        final cards = await ref
+            .read(flashcardsViewModelProvider(deck.did).notifier)
+            .fetchFlashcards();
+
+        ref
+            .read(editFlashcardsViewModelProvider(deck.did).notifier)
+            .setFlashcards(cards);
+      }
     }
+
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -51,8 +67,15 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
     // Theo dõi danh sách thẻ từ provider
     final flashcardState = ref.watch(editFlashcardsViewModelProvider(did));
-
     final asyncDecks = ref.watch(decksViewModelProvider);
+
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     final cardList = flashcardState.flashcards;
 
@@ -243,9 +266,9 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                       );
 
                       if (shouldDelete == true) {
-                        // ref
-                        //     .read(flashcardViewModelProvider1.notifier)
-                        //     .clearAll();
+                        await ref
+                            .read(decksViewModelProvider.notifier)
+                            .deleteDeck(did);
 
                         await ref
                             .read(flashcardsViewModelProvider(did).notifier)
@@ -254,6 +277,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                         if (context.mounted) {
                           Navigator.of(context)
                             ..pop() // Đóng bottom sheet
+                            ..pop()
                             ..pop(); // Quay lại
                         }
                       }

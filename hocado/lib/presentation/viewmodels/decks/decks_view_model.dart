@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/auth_provider.dart';
@@ -96,6 +97,33 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       state = AsyncData(currentState.copyWith(myDecks: updatedDecks));
     } catch (e, st) {
       state = AsyncError(e, st);
+    }
+  }
+
+  Future<Deck?> findDeckByDid(String did) async {
+    try {
+      // Lấy danh sách hiện có trong state
+      final decksState = state.value;
+      if (decksState == null) return null;
+
+      // Tìm trong myDecks và savedDecks
+      final myDeck = decksState.myDecks?.firstWhereOrNull(
+        (deck) => deck.did == did,
+      );
+      if (myDeck != null) return myDeck;
+
+      final savedDeck = decksState.savedDecks?.firstWhereOrNull(
+        (deck) => deck.did == did,
+      );
+      if (savedDeck != null) return savedDeck;
+
+      // Nếu vẫn không thấy, tải từ repo
+      final deckFromRepo = await _repo.getDeckById(did);
+
+      return deckFromRepo;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return null;
     }
   }
 }

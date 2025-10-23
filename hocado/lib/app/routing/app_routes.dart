@@ -6,4 +6,5 @@ enum AppRoutes {
   createDecks,
   detailDeck,
   learnDeck,
+  editDeck,
 }
