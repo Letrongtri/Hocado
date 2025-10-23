@@ -43,6 +43,10 @@ class DeckService {
   Future<void> createDeck(Map<String, dynamic> deckData) async {
     try {
       // Tạo mới deck
+      if (deckData['did'] == null || deckData['did'].isEmpty) {
+        throw Exception("Deck ID (did) is required");
+      }
+
       final docRef = _firestore.collection('decks').doc(deckData['did']);
       await docRef.set(deckData);
     } catch (e) {

@@ -117,13 +117,16 @@ class _FlashcardFlipItemState extends ConsumerState<FlashcardFlipItem>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Center(
-                child: Text(
-                  content,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Sizes.md),
+                child: Center(
+                  child: Text(
+                    content,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),

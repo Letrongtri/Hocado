@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/auth_provider.dart';
 import 'package:hocado/app/provider/deck_provider.dart';
+import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/data/repositories/deck/deck_repository.dart';
 import 'package:hocado/data/repositories/saved_deck/saved_deck_repository.dart';
 import 'package:hocado/presentation/viewmodels/decks/deck_state.dart';
@@ -10,6 +12,7 @@ import 'package:hocado/presentation/viewmodels/decks/deck_state.dart';
 class DecksViewModel extends AsyncNotifier<DeckState> {
   DeckRepository get _repo => ref.read(deckRepositoryProvider);
   SavedDeckRepository get _savedRepo => ref.read(savedDeckRepositoryProvider);
+  User? get _currentUser => ref.read(currentUserProvider);
 
   @override
   FutureOr<DeckState> build() async {
@@ -18,7 +21,7 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
   }
 
   Future<DeckState> _fetchDecks() async {
-    final user = ref.read(currentUserProvider);
+    final user = _currentUser;
     if (user == null) throw Exception('User not logged in');
 
     final myDecks = await _repo.getDecksByUserId(user.uid);
@@ -26,7 +29,11 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       user.uid,
     );
 
-    return DeckState(myDecks: myDecks, savedDecks: savedDecks);
+    return DeckState(
+      myDecks: myDecks,
+      savedDecks: savedDecks,
+      currentTabIndex: 0,
+    );
   }
 
   Future<void> refreshDecks() async {
@@ -34,5 +41,61 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
 
     // tự báo lỗi, không cần try catch
     state = await AsyncValue.guard(() async => _fetchDecks());
+  }
+
+  Future<void> createDeck({
+    required Deck deck,
+    int? totalCards,
+    required DateTime createdAt,
+  }) async {
+    final user = _currentUser;
+    if (user == null) return;
+
+    // Save deck using the repository
+    final updatedDeck = deck.copyWith(
+      uid: user.uid,
+      totalCards: totalCards,
+      createdAt: createdAt,
+      updatedAt: createdAt,
+    );
+    await _repo.create(updatedDeck);
+
+    final newMyDecks = [updatedDeck, ...?state.value?.myDecks];
+
+    state = AsyncData(
+      state.value?.copyWith(myDecks: newMyDecks) ??
+          DeckState(myDecks: [updatedDeck]),
+    );
+  }
+
+  void changeTab(int index) {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(currentTabIndex: index));
+    }
+  }
+
+  Future<void> deleteDeck(String did) async {
+    final user = _currentUser;
+    if (user == null) return;
+
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final decks = currentState.myDecks;
+    final index = decks!.indexWhere((item) => item.did == did);
+    if (index == -1) return;
+
+    state = const AsyncLoading();
+
+    try {
+      await _repo.delete(did);
+
+      final updatedDecks = List<Deck>.from(decks)..removeAt(index);
+
+      state = AsyncData(currentState.copyWith(myDecks: updatedDecks));
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
 }

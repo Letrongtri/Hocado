@@ -8,7 +8,10 @@ class FilterTabBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final selectedIndex = ref.watch(decksTabIndexProvider);
+    final state = ref.watch(decksViewModelProvider);
+
+    final selectedIndex = state.value?.currentTabIndex ?? 0;
+
     final tabs = ['Của tôi', 'Đã lưu'];
 
     return SizedBox(
@@ -26,7 +29,7 @@ class FilterTabBar extends ConsumerWidget {
             selected: isSelected,
             onSelected: (selected) {
               if (selected) {
-                ref.read(decksTabIndexProvider.notifier).state = index;
+                ref.read(decksViewModelProvider.notifier).changeTab(index);
               }
             },
             backgroundColor: theme.colorScheme.surface,

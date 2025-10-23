@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/presentation/views/create_deck/image_placeholder.dart';
@@ -8,7 +7,9 @@ import 'package:hocado/presentation/widgets/hocado_text_area.dart';
 
 class DeckInfoCard extends ConsumerStatefulWidget {
   final Deck deck;
-  const DeckInfoCard({super.key, required this.deck});
+  final ValueChanged<Deck> onUpdated;
+
+  const DeckInfoCard({super.key, required this.deck, required this.onUpdated});
 
   @override
   ConsumerState<DeckInfoCard> createState() => _DeckInfoCardState();
@@ -38,23 +39,15 @@ class _DeckInfoCardState extends ConsumerState<DeckInfoCard> {
 
   void _onTitleFocusChange() {
     if (!titleFocusNode.hasFocus) {
-      ref
-          .read(flashcardViewModelProvider.notifier)
-          .updateDeckName(
-            widget.deck.did,
-            titleController.text,
-          );
+      widget.onUpdated(widget.deck.copyWith(name: titleController.text));
     }
   }
 
   void _onDescriptionFocusChange() {
     if (!descriptionFocusNode.hasFocus) {
-      ref
-          .read(flashcardViewModelProvider.notifier)
-          .updateDeckDescription(
-            widget.deck.did,
-            descriptionController.text,
-          );
+      widget.onUpdated(
+        widget.deck.copyWith(description: descriptionController.text),
+      );
     }
   }
 

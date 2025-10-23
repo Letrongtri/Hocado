@@ -12,7 +12,6 @@ class DecksScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final state = ref.watch(decksViewModelProvider);
-    final selectedIndex = ref.watch(decksTabIndexProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +76,9 @@ class DecksScreen extends ConsumerWidget {
           ),
 
           data: (data) {
-            final decks = selectedIndex == 0 ? data.myDecks : data.savedDecks;
+            final decks = data.currentTabIndex == 0
+                ? data.myDecks
+                : data.savedDecks;
 
             if (decks == null || decks.isEmpty) {
               return const Center(

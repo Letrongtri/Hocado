@@ -46,7 +46,7 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
   void _onTermFocusChange() {
     if (!termFocusNode.hasFocus) {
       ref
-          .read(flashcardViewModelProvider.notifier)
+          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
           .updateFlashcardFront(
             widget.card.fid,
             termController.text,
@@ -57,7 +57,7 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
   void _onDefinitionFocusChange() {
     if (!definitionFocusNode.hasFocus) {
       ref
-          .read(flashcardViewModelProvider.notifier)
+          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
           .updateFlashcardBack(
             widget.card.fid,
             definitionController.text,
@@ -68,7 +68,7 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
   void _onNoteFocusChange() {
     if (!noteFocusNode.hasFocus) {
       ref
-          .read(flashcardViewModelProvider.notifier)
+          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
           .updateFlashcardNote(
             widget.card.fid,
             noteController.text,
@@ -100,7 +100,9 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
           CustomSlidableAction(
             onPressed: (_) {
               ref
-                  .read(flashcardViewModelProvider.notifier)
+                  .read(
+                    editFlashcardsViewModelProvider(widget.card.did).notifier,
+                  )
                   .deleteFlashcard(widget.card.fid);
             },
             backgroundColor: Colors.transparent,
@@ -173,7 +175,10 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
           ),
         ),
         const SizedBox(height: Sizes.xs),
-        AddCardButton(fid: widget.card.fid),
+        AddCardButton(
+          fid: widget.card.fid,
+          did: widget.card.did,
+        ),
       ],
     );
   }

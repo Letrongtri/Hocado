@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:hocado/app/provider/firebase_provider.dart';
 import 'package:hocado/data/repositories/deck/deck_repository.dart';
 import 'package:hocado/data/repositories/deck/deck_repository_impl.dart';
@@ -36,6 +35,3 @@ final savedDeckRepositoryProvider = Provider<SavedDeckRepository>((ref) {
 final decksViewModelProvider = AsyncNotifierProvider<DecksViewModel, DeckState>(
   DecksViewModel.new,
 );
-
-// Provider for deck screen tab
-final decksTabIndexProvider = StateProvider<int>((ref) => 0);

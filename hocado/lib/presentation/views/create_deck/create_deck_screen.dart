@@ -1,26 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hocado/app/provider/deck_provider.dart';
 import 'package:hocado/app/provider/flashcard_provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
+import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/presentation/views/create_deck/deck_info_card.dart';
 import 'package:hocado/presentation/views/create_deck/flashcard_info_item.dart';
 import 'package:hocado/presentation/widgets/hocado_divider.dart';
 
-class CreateDeckScreen extends ConsumerWidget {
-  const CreateDeckScreen({super.key});
+class CreateDeckScreen extends ConsumerStatefulWidget {
+  final Deck? deck;
+
+  const CreateDeckScreen({super.key, this.deck});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Theo dõi danh sách thẻ từ provider
-    final state = ref.watch(flashcardViewModelProvider);
+  ConsumerState<CreateDeckScreen> createState() => _CreateDeckScreenState();
+}
 
-    final asyncState = ref.watch(flashcardAsyncViewModelProvider);
-    final asyncNotifier = ref.read(flashcardAsyncViewModelProvider.notifier);
+class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
+  late Deck deck;
+  late final String did;
 
-    final cardList = state.cardList;
-    final deck = state.deck;
+  @override
+  void initState() {
+    super.initState();
+    deck = widget.deck ?? Deck.empty();
+    did = deck.did;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Nếu deck có flashcards -> load từ repo
+    if (widget.deck != null && widget.deck!.totalCards > 0) {
+      ref
+          .read(flashcardsViewModelProvider(deck.did).notifier)
+          .fetchFlashcards()
+          .then((cards) {
+            ref
+                .read(editFlashcardsViewModelProvider(deck.did).notifier)
+                .setFlashcards(cards);
+          });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Theo dõi danh sách thẻ từ provider
+    final flashcardState = ref.watch(editFlashcardsViewModelProvider(did));
+
+    final asyncDecks = ref.watch(decksViewModelProvider);
+
+    final cardList = flashcardState.flashcards;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,37 +73,42 @@ class CreateDeckScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              _showSettingDeckModalBottomSheet(
-                context,
-                ref,
-                isPublic: deck?.isPublic ?? false,
-              );
+              _showSettingDeckModalBottomSheet(context, ref);
             },
             icon: const Icon(Icons.settings_outlined),
           ),
           SizedBox(width: Sizes.xs),
           IconButton(
-            onPressed: asyncState.isLoading
+            onPressed: asyncDecks.isLoading
                 ? null
                 : () async {
-                    await asyncNotifier.saveDeckAndFlashcards(deck!, cardList!);
+                    final now = DateTime.now();
 
-                    asyncState.when(
-                      data: (_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Lưu thành công!')),
-                        );
-                        Navigator.of(context).pop();
-                      },
-                      error: (e, _) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Lưu thất bại: $e')),
-                        );
-                      },
-                      loading: () {},
-                    );
+                    await Future.wait([
+                      ref
+                          .read(decksViewModelProvider.notifier)
+                          .createDeck(
+                            deck: deck,
+                            totalCards: cardList.length,
+                            createdAt: now,
+                          ),
+
+                      ref
+                          .read(flashcardsViewModelProvider(deck.did).notifier)
+                          .createFlashcards(
+                            flashcards: cardList,
+                            createdAt: now,
+                          ),
+                    ]);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Lưu thành công!')),
+                      );
+                    }
+                    if (context.mounted) context.pop();
                   },
-            icon: asyncState.isLoading
+            icon: asyncDecks.isLoading
                 ? CircularProgressIndicator()
                 : Icon(Icons.check),
           ),
@@ -81,7 +120,14 @@ class CreateDeckScreen extends ConsumerWidget {
         child: Column(
           children: [
             // Widget cho thông tin bộ thẻ
-            DeckInfoCard(deck: deck!),
+            DeckInfoCard(
+              deck: deck,
+              onUpdated: (updatedDeck) {
+                setState(() {
+                  deck = updatedDeck;
+                });
+              },
+            ),
             const SizedBox(height: Sizes.md),
             HocadoDivider(),
             const SizedBox(height: Sizes.md),
@@ -90,7 +136,7 @@ class CreateDeckScreen extends ConsumerWidget {
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: cardList!.length,
+              itemCount: cardList.length,
               itemBuilder: (context, index) {
                 final card = cardList[index];
                 return Column(
@@ -111,13 +157,12 @@ class CreateDeckScreen extends ConsumerWidget {
     );
   }
 
-  Future<VoidCallback?> _showSettingDeckModalBottomSheet(
+  Future<void> _showSettingDeckModalBottomSheet(
     BuildContext context,
-    WidgetRef ref, {
-    bool isPublic = true,
-  }) {
-    final asyncNotifier = ref.read(flashcardViewModelProvider.notifier);
-    final state = ref.watch(flashcardViewModelProvider);
+    WidgetRef ref,
+  ) async {
+    final theme = Theme.of(context);
+    bool currentPublicStatus = deck.isPublic;
 
     return showModalBottomSheet(
       context: context,
@@ -127,9 +172,6 @@ class CreateDeckScreen extends ConsumerWidget {
         ),
       ),
       builder: (context) {
-        final theme = Theme.of(context);
-        bool currentPublicStatus = isPublic;
-
         return StatefulBuilder(
           builder: (context, setState) {
             return Padding(
@@ -146,14 +188,10 @@ class CreateDeckScreen extends ConsumerWidget {
                       activeThumbColor: theme.colorScheme.primary,
                       onChanged: (value) {
                         // Xử lý cập nhật trạng thái công khai
-                        // currentPublicStatus = value;
                         setState(() {
                           currentPublicStatus = value;
                         });
-                        asyncNotifier.updateDeckIsPublic(
-                          state.deck!.did,
-                          value,
-                        );
+                        deck = deck.copyWith(isPublic: value);
                       },
                     ),
                     shape: RoundedRectangleBorder(
@@ -205,16 +243,19 @@ class CreateDeckScreen extends ConsumerWidget {
                       );
 
                       if (shouldDelete == true) {
-                        ref
-                            .read(flashcardViewModelProvider.notifier)
-                            .clearAll();
+                        // ref
+                        //     .read(flashcardViewModelProvider1.notifier)
+                        //     .clearAll();
 
                         await ref
-                            .read(flashcardAsyncViewModelProvider.notifier)
-                            .deleteDeckAndFlashcards(state.deck!.did);
-                        Navigator.of(context)
-                          ..pop() // Đóng bottom sheet
-                          ..pop(); // Quay lại
+                            .read(flashcardsViewModelProvider(did).notifier)
+                            .deleteFlashcards(did);
+
+                        if (context.mounted) {
+                          Navigator.of(context)
+                            ..pop() // Đóng bottom sheet
+                            ..pop(); // Quay lại
+                        }
                       }
                     },
                     shape: RoundedRectangleBorder(

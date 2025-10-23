@@ -5,7 +5,8 @@ import 'package:hocado/core/constants/sizes.dart';
 
 class AddCardButton extends ConsumerWidget {
   final String fid;
-  const AddCardButton({super.key, required this.fid});
+  final String did;
+  const AddCardButton({super.key, required this.fid, required this.did});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +16,9 @@ class AddCardButton extends ConsumerWidget {
         color: Theme.of(context).colorScheme.onPrimary.withAlpha(100),
         onPressed: () {
           // Gọi hàm addCard từ provider
-          ref.read(flashcardViewModelProvider.notifier).addFlashcardBelow(fid);
+          ref
+              .read(editFlashcardsViewModelProvider(did).notifier)
+              .addFlashcardBelow(fid);
         },
       ),
     );
