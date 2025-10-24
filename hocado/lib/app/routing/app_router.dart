@@ -12,6 +12,7 @@ import 'package:hocado/presentation/views/create_deck/create_deck_screen.dart';
 import 'package:hocado/presentation/views/decks/decks_screen.dart';
 import 'package:hocado/presentation/views/detail_deck/detail_deck_screen.dart';
 import 'package:hocado/presentation/views/home/home_screen.dart';
+import 'package:hocado/presentation/views/learning_settings/learning_settings_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
@@ -104,6 +105,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final did = state.pathParameters['did'];
           return CreateDeckScreen(did: did);
+        },
+      ),
+      GoRoute(
+        path: '/decks/:did/learning-settings',
+        name: AppRoutes.learningSettings.name,
+        builder: (context, state) {
+          final did = state.pathParameters['did']!;
+          return LearningSettingsScreen(did: did);
         },
       ),
     ],

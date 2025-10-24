@@ -9,6 +9,7 @@ import 'package:hocado/data/models/flashcard.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_list_item.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_pager.dart';
 import 'package:hocado/presentation/views/detail_deck/learning_progress_card.dart';
+import 'package:hocado/presentation/widgets/hocado_back.dart';
 
 class DetailDeckScreen extends ConsumerWidget {
   final String deckId;
@@ -60,10 +61,7 @@ class DetailDeckScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.secondary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: HocadoBack(),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.share_outlined)),
           IconButton(
@@ -158,7 +156,12 @@ class DetailDeckScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(Sizes.md),
         color: theme.colorScheme.secondary,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            context.pushNamed(
+              AppRoutes.learningSettings.name,
+              pathParameters: {'did': deckId},
+            );
+          },
           child: const Text(
             'Bắt đầu học',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),

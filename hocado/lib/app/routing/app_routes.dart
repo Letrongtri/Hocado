@@ -7,4 +7,5 @@ enum AppRoutes {
   detailDeck,
   learnDeck,
   editDeck,
+  learningSettings,
 }

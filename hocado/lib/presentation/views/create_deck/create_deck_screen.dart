@@ -7,7 +7,9 @@ import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/presentation/views/create_deck/deck_info_card.dart';
 import 'package:hocado/presentation/views/create_deck/flashcard_info_item.dart';
+import 'package:hocado/presentation/widgets/hocado_back.dart';
 import 'package:hocado/presentation/widgets/hocado_divider.dart';
+import 'package:hocado/presentation/widgets/hocado_switch.dart';
 
 class CreateDeckScreen extends ConsumerStatefulWidget {
   final String? did;
@@ -82,12 +84,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.secondary,
-        leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
+        leading: HocadoBack(),
         title: Text(
           'Tạo thẻ',
           style: theme.textTheme.headlineMedium,
@@ -206,14 +203,10 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
                   ListTile(
                     title: Text("Công khai"),
-                    trailing: Switch(
-                      value: currentPublicStatus,
-                      activeThumbColor: theme.colorScheme.primary,
+                    trailing: HocadoSwitch(
+                      initialValue: currentPublicStatus,
                       onChanged: (value) {
                         // Xử lý cập nhật trạng thái công khai
-                        setState(() {
-                          currentPublicStatus = value;
-                        });
                         deck = deck.copyWith(isPublic: value);
                       },
                     ),
