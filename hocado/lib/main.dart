@@ -21,7 +21,7 @@ void main() async {
         sharedPrefsProvider.overrideWithValue(sharedPrefs),
       ],
       child: DevicePreview(
-        enabled: !kReleaseMode,
+        enabled: false,
         builder: (context) => MyApp(),
       ),
     ),

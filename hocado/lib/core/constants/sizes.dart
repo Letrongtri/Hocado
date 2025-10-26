@@ -22,7 +22,7 @@ class Sizes {
   static const double btnRadius = 24.0;
   static const double btnWidth = 120.0;
   static const double btnElevation = 4.0;
-  static const double btnLgHeight = 76.0;
+  static const double btnLgHeight = 80.0;
   static const double btnLgRadius = 38.0;
 
   // Appbar height
