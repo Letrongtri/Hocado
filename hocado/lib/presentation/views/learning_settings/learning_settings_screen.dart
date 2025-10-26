@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/settings_provider.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/learning_settings.dart';
 import 'package:hocado/presentation/viewmodels/learning_settings/learning_settings_view_model.dart';
@@ -232,7 +234,12 @@ class LearningSettingsScreen extends ConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: _buildStartButton(theme, notifier),
+      bottomNavigationBar: _buildStartButton(
+        context,
+        theme,
+        settings,
+        notifier,
+      ),
     );
   }
 
@@ -332,17 +339,33 @@ class LearningSettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildStartButton(
+    BuildContext context,
     ThemeData theme,
+    LearningSettings settings,
     LearningSettingsViewModel notifier,
   ) {
     return Container(
       padding: const EdgeInsets.all(Sizes.md),
+      height: Sizes.btnLgHeight,
       color: theme.colorScheme.secondary,
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              Sizes.btnLgRadius,
+            ),
+          ),
+        ),
         onPressed: () async {
           await notifier.saveDeckSettings();
 
-          // TODO: Điều hướng sang setup learning
+          if (!context.mounted) return; // tránh lỗi khi widget bị dispose
+
+          context.pushReplacementNamed(
+            AppRoutes.learnDeck.name,
+            pathParameters: {'did': did},
+            extra: settings,
+          );
         },
         child: const Text(
           'Bắt đầu học',

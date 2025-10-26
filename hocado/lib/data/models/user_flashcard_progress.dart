@@ -7,6 +7,7 @@ class UserFlashcardProgress {
   final String uid;
   final String fid;
 
+  final bool isStarred;
   final DateTime? lastReviewed;
   final DateTime? nextReview;
   final int reviewCount;
@@ -18,6 +19,7 @@ class UserFlashcardProgress {
   UserFlashcardProgress({
     required this.uid,
     required this.fid,
+    this.isStarred = false,
     this.lastReviewed,
     this.nextReview,
     required this.reviewCount,
@@ -29,6 +31,7 @@ class UserFlashcardProgress {
   UserFlashcardProgress copyWith({
     String? uid,
     String? fid,
+    bool? isStarred,
     DateTime? lastReviewed,
     DateTime? nextReview,
     int? reviewCount,
@@ -39,6 +42,7 @@ class UserFlashcardProgress {
     return UserFlashcardProgress(
       uid: uid ?? this.uid,
       fid: fid ?? this.fid,
+      isStarred: isStarred ?? this.isStarred,
       lastReviewed: lastReviewed ?? this.lastReviewed,
       nextReview: nextReview ?? this.nextReview,
       reviewCount: reviewCount ?? this.reviewCount,
@@ -52,6 +56,7 @@ class UserFlashcardProgress {
     return <String, dynamic>{
       'uid': uid,
       'fid': fid,
+      'isStarred': isStarred,
       'lastReviewd': lastReviewed,
       'nextReview': nextReview,
       'reviewCount': reviewCount,
@@ -65,6 +70,7 @@ class UserFlashcardProgress {
     return UserFlashcardProgress(
       uid: map['uid'] as String,
       fid: map['fid'] as String,
+      isStarred: map['isStarred'] as bool,
       lastReviewed: map['lastReviewed'] != null
           ? (map['lastReviewed'] as Timestamp).toDate()
           : null,
@@ -87,7 +93,7 @@ class UserFlashcardProgress {
 
   @override
   String toString() {
-    return 'UserFlashcardProgress(uid: $uid, fid: $fid, lastReviewd: $lastReviewed, nextReview: $nextReview, reviewCount: $reviewCount, correctCount: $correctCount, easeFactor: $easeFactor, interval: $interval)';
+    return 'UserFlashcardProgress(uid: $uid, fid: $fid, isStarred: $isStarred lastReviewd: $lastReviewed, nextReview: $nextReview, reviewCount: $reviewCount, correctCount: $correctCount, easeFactor: $easeFactor, interval: $interval)';
   }
 
   @override
@@ -96,6 +102,7 @@ class UserFlashcardProgress {
 
     return other.uid == uid &&
         other.fid == fid &&
+        other.isStarred == isStarred &&
         other.lastReviewed == lastReviewed &&
         other.nextReview == nextReview &&
         other.reviewCount == reviewCount &&
@@ -108,6 +115,7 @@ class UserFlashcardProgress {
   int get hashCode {
     return uid.hashCode ^
         fid.hashCode ^
+        isStarred.hashCode ^
         lastReviewed.hashCode ^
         nextReview.hashCode ^
         reviewCount.hashCode ^
@@ -122,6 +130,7 @@ class UserFlashcardProgress {
     return UserFlashcardProgress(
       uid: data['uid'] as String,
       fid: data['fid'] as String,
+      isStarred: data['isStarred'] as bool,
       lastReviewed: data['lastReviewed'] != null
           ? (data['lastReviewd'] as Timestamp).toDate()
           : null,

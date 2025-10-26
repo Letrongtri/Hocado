@@ -2,6 +2,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
+
+enum StudyMode { learn, review, test }
 
 class StudySession {
   final String sid;
@@ -147,6 +150,22 @@ class StudySession {
       skippedCards: data['skippedCards'] as int,
       mode: data['mode'] as String,
       totalTime: data['totalTime'] as int,
+    );
+  }
+
+  factory StudySession.empty() {
+    return StudySession(
+      sid: Uuid().v4(),
+      uid: '',
+      did: '',
+      start: DateTime.now(),
+      end: null,
+      totalCards: 0,
+      correctCards: 0,
+      incorrectCards: 0,
+      skippedCards: 0,
+      mode: StudyMode.learn.name,
+      totalTime: 0,
     );
   }
 }

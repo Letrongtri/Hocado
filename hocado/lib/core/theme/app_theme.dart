@@ -15,7 +15,7 @@ class AppTheme {
   );
 
   static TextTheme textTheme(ColorScheme colorScheme) {
-    final headingFont = GoogleFonts.notoSansTextTheme();
+    final headingFont = GoogleFonts.merriweatherSansTextTheme();
 
     return TextTheme(
       displayLarge: headingFont.displayLarge?.copyWith(

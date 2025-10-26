@@ -15,9 +15,13 @@ class LearningSettingsViewModel extends AsyncNotifier<LearningSettings> {
   SettingsRepository get _learningSettingsRepo => ref.read(settingsRepository);
   User? get _currentUser => ref.read(currentUserProvider);
 
+  LearningSettings initSettings = LearningSettings.empty();
+
   @override
   FutureOr<LearningSettings> build() async {
-    return await fetchMyLearningSettingsByDeckId();
+    final settings = await fetchMyLearningSettingsByDeckId();
+    initSettings = settings;
+    return settings;
   }
 
   Future<LearningSettings> fetchMyLearningSettingsByDeckId() async {
@@ -40,10 +44,15 @@ class LearningSettingsViewModel extends AsyncNotifier<LearningSettings> {
     final user = _currentUser;
     if (user == null) throw Exception('User not logged in');
 
+    final currentSettings = state.value!;
+
+    if (initSettings == currentSettings) return;
+
     await _learningSettingsRepo.saveDeckSettingsAsDefault(
       did,
       user.uid,
       state.value!,
     );
+    initSettings = currentSettings;
   }
 }

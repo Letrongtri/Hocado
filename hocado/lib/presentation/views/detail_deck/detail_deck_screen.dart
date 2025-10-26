@@ -154,8 +154,16 @@ class DetailDeckScreen extends ConsumerWidget {
       // Bottom "Study" Button
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(Sizes.md),
+        height: Sizes.btnLgHeight,
         color: theme.colorScheme.secondary,
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                Sizes.btnLgRadius,
+              ),
+            ),
+          ),
           onPressed: () {
             context.pushNamed(
               AppRoutes.learningSettings.name,

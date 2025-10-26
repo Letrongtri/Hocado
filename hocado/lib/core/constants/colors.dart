@@ -12,4 +12,12 @@ class AppColors {
 
   static final notLearnedColorBg = Colors.pink.shade100;
   static final notLearnedColorFg = Colors.pink.shade300;
+
+  static final correctColorBg = Colors.green.shade100;
+  static final correctColorFg = Colors.green.shade400;
+
+  static final incorrectColorBg = Colors.red.shade100;
+  static final incorrectColorFg = Colors.red.shade400;
+
+  static final starColor = Colors.amber;
 }

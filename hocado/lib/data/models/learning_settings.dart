@@ -83,19 +83,18 @@ class LearningSettings {
         other.questionFormat == questionFormat &&
         other.defaultRounds == defaultRounds &&
         other.studyStarredOnly == studyStarredOnly &&
-        other.shuffle == shuffle &&
-        other.updatedAt == updatedAt;
+        other.shuffle == shuffle;
   }
 
   @override
-  int get hashCode {
-    return questionTypes.hashCode ^
-        questionFormat.hashCode ^
-        defaultRounds.hashCode ^
-        studyStarredOnly.hashCode ^
-        shuffle.hashCode ^
-        updatedAt.hashCode;
-  }
+  int get hashCode => Object.hashAll([
+    Object.hashAll(questionTypes),
+    questionFormat,
+    defaultRounds,
+    studyStarredOnly,
+    shuffle,
+    updatedAt,
+  ]);
 
   factory LearningSettings.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
