@@ -58,6 +58,8 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       totalCards: totalCards,
       createdAt: createdAt,
       updatedAt: createdAt,
+      searchIndex:
+          '${deck.name.toLowerCase()} ${deck.description.toLowerCase()}',
     );
     await _repo.create(updatedDeck);
 

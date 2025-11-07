@@ -15,6 +15,7 @@ import 'package:hocado/presentation/views/detail_deck/detail_deck_screen.dart';
 import 'package:hocado/presentation/views/home/home_screen.dart';
 import 'package:hocado/presentation/views/learn/learn_screen.dart';
 import 'package:hocado/presentation/views/learning_settings/learning_settings_screen.dart';
+import 'package:hocado/presentation/views/search/search_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
@@ -128,6 +129,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             settings: settings,
           );
         },
+      ),
+      GoRoute(
+        path: '/search',
+        name: AppRoutes.search.name,
+        builder: (context, state) => SearchScreen(),
       ),
     ],
 

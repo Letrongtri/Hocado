@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/deck_provider.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/views/decks/deck_list_item.dart';
-import 'package:hocado/presentation/views/decks/filter_tab_bar.dart';
+import 'package:hocado/presentation/widgets/filter_tab_bar.dart';
 
 class DecksScreen extends ConsumerWidget {
   const DecksScreen({super.key});
@@ -12,6 +14,7 @@ class DecksScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final state = ref.watch(decksViewModelProvider);
+    final tabs = ['Của tôi', 'Đã lưu'];
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +34,11 @@ class DecksScreen extends ConsumerWidget {
           ),
           // Search btn
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              context.pushNamed(
+                AppRoutes.search.name,
+              );
+            },
             icon: const Icon(Icons.search, size: 28),
           ),
           const SizedBox(width: Sizes.sm),
@@ -40,8 +47,16 @@ class DecksScreen extends ConsumerWidget {
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
-            const SliverToBoxAdapter(child: SizedBox(height: Sizes.md)),
-            const SliverToBoxAdapter(child: FilterTabBar()),
+            SliverToBoxAdapter(child: SizedBox(height: Sizes.md)),
+            SliverToBoxAdapter(
+              child: FilterTabBar(
+                tabs: tabs,
+                selectedIndex: state.value?.currentTabIndex ?? 0,
+                onTabSelected: (value) {
+                  ref.read(decksViewModelProvider.notifier).changeTab(value);
+                },
+              ),
+            ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),

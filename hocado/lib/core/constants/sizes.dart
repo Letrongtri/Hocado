@@ -49,6 +49,7 @@ class Sizes {
   static const double spaceBtwInputFields = 16.0;
 
   // Card sizes
+  static const double cardAspectRatio = 0.9;
 
   // Image carousel height
 

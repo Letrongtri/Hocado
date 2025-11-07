@@ -91,4 +91,62 @@ class DeckService {
       throw Exception("Could not fetch deck from database");
     }
   }
+
+  Future<
+    ({
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+      DocumentSnapshot? lastDocument,
+    })
+  >
+  searchDecks(
+    String userId,
+    String? search,
+    DocumentSnapshot? lastDocument, {
+    bool isFindingPublic = true,
+    int limit = 10,
+  }) async {
+    try {
+      Query<Map<String, dynamic>> query = _firestore.collection('decks');
+
+      if (isFindingPublic) {
+        query = query
+            .where('isPublic', isEqualTo: true)
+            .where('uid', isNotEqualTo: userId);
+      } else {
+        query = query.where('uid', isEqualTo: userId);
+      }
+
+      query = query.limit(limit);
+
+      if (search != null && search.isNotEmpty) {
+        query = query.orderBy('searchIndex').startAt([search]).endAt([
+          '$search\uf8ff',
+        ]);
+      } else {
+        // Nếu không có search, sắp xếp theo 'createdAt'
+        query = query.orderBy('createdAt', descending: true);
+      }
+
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) {
+        return (
+          docs: <QueryDocumentSnapshot<Map<String, dynamic>>>[],
+          lastDocument: null,
+        );
+      }
+
+      // lastDocument sẽ là document cuối cùng của lần truy vấn này
+      final newLastDocument = snapshot.docs.last;
+
+      // Trả về danh sách docs và lastDocument
+      return (docs: snapshot.docs, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not fetch decks from database");
+    }
+  }
 }

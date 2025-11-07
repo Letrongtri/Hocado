@@ -8,4 +8,5 @@ enum AppRoutes {
   learnDeck,
   editDeck,
   learningSettings,
+  search,
 }

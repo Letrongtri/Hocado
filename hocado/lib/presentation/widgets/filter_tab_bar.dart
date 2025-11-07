@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/deck_provider.dart';
 
-class FilterTabBar extends ConsumerWidget {
-  const FilterTabBar({super.key});
+class FilterTabBar extends StatelessWidget {
+  const FilterTabBar({
+    super.key,
+    required this.tabs,
+    required this.selectedIndex,
+    required this.onTabSelected,
+  });
+
+  final List<String> tabs;
+  final int selectedIndex;
+  final ValueChanged<int> onTabSelected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = ref.watch(decksViewModelProvider);
-
-    final selectedIndex = state.value?.currentTabIndex ?? 0;
-
-    final tabs = ['Của tôi', 'Đã lưu'];
 
     return SizedBox(
       height: 40,
@@ -29,7 +31,7 @@ class FilterTabBar extends ConsumerWidget {
             selected: isSelected,
             onSelected: (selected) {
               if (selected) {
-                ref.read(decksViewModelProvider.notifier).changeTab(index);
+                onTabSelected(index);
               }
             },
             backgroundColor: theme.colorScheme.surface,

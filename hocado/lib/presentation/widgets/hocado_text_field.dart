@@ -35,6 +35,7 @@ class _HocadoTextFieldState extends State<HocadoTextField> {
     return TextFormField(
       controller: widget.controller,
       obscureText: _obscureText,
+      cursorColor: theme.colorScheme.onPrimary,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white.withAlpha(40),

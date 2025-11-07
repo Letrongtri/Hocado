@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/data/repositories/deck/deck_repository.dart';
 import 'package:hocado/data/services/deck_service.dart';
@@ -58,6 +59,38 @@ class DeckRepositoryImpl implements DeckRepository {
       });
     } catch (e) {
       throw Exception("Could not get deck by id");
+    }
+  }
+
+  @override
+  Future<SearchDecksResult> searchDecks({
+    required String id,
+    bool isFindingPublic = true,
+    String? search,
+    DocumentSnapshot? lastDocument,
+    int limit = 10,
+  }) async {
+    try {
+      final result = await _deckService.searchDecks(
+        id,
+        search,
+        lastDocument,
+        limit: limit,
+        isFindingPublic: isFindingPublic,
+      );
+
+      final docs = result.docs;
+      final newLastDocument = result.lastDocument;
+
+      if (docs.isEmpty) {
+        return (decks: <Deck>[], lastDocument: null);
+      }
+
+      final decks = docs.map((doc) => Deck.fromFirestore(doc)).toList();
+
+      return (decks: decks, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
     }
   }
 }

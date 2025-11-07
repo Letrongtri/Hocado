@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/core/constants/images.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/views/home/home_header.dart';
-import 'package:hocado/presentation/views/home/deck_card.dart';
+import 'package:hocado/presentation/widgets/deck_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -109,6 +109,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   itemBuilder: (context, index) {
                     final deck = ongoingDecks[index];
                     return DeckCard(
+                      did: '1',
                       title: deck['title']!,
                       description: deck['description']!,
                     );

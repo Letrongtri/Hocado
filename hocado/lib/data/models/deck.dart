@@ -14,6 +14,7 @@ class Deck {
   final int totalCards;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? searchIndex;
 
   Deck({
     required this.did,
@@ -25,6 +26,7 @@ class Deck {
     required this.totalCards,
     required this.createdAt,
     required this.updatedAt,
+    this.searchIndex,
   });
 
   Deck copyWith({
@@ -38,6 +40,7 @@ class Deck {
     DateTime? createdAt,
     DateTime? updatedAt,
     List<String>? tagIds,
+    String? searchIndex,
   }) {
     return Deck(
       did: did ?? this.did,
@@ -49,6 +52,7 @@ class Deck {
       totalCards: totalCards ?? this.totalCards,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      searchIndex: searchIndex ?? this.searchIndex,
     );
   }
 
@@ -63,6 +67,7 @@ class Deck {
       'totalCards': totalCards,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'searchIndex': searchIndex,
     };
   }
 
@@ -79,6 +84,9 @@ class Deck {
       totalCards: map['totalCards'] as int,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       updatedAt: (map['updatedAt'] as Timestamp).toDate(),
+      searchIndex: map['searchIndex'] != null
+          ? map['searchIndex'] as String
+          : null,
     );
   }
 
@@ -89,7 +97,7 @@ class Deck {
 
   @override
   String toString() {
-    return 'Deck(did: $did, uid: $uid, name: $name, description: $description, thumbnailUrl: $thumbnailUrl, isPublic: $isPublic, totalCards: $totalCards, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'Deck(did: $did, uid: $uid, name: $name, description: $description, thumbnailUrl: $thumbnailUrl, isPublic: $isPublic, totalCards: $totalCards, createdAt: $createdAt, updatedAt: $updatedAt, searchIndex: $searchIndex)';
   }
 
   @override
@@ -132,6 +140,9 @@ class Deck {
       totalCards: data['totalCards'],
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      searchIndex: data['searchIndex'] != null
+          ? data['searchIndex'] as String
+          : null,
     );
   }
 
@@ -144,6 +155,7 @@ class Deck {
       totalCards: 0,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      searchIndex: '',
     );
   }
 }
