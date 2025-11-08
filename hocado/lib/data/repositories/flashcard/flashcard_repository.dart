@@ -5,12 +5,7 @@ abstract class FlashcardRepository {
     String deckId,
   );
 
-  Future<void> createFlashcards(
-    List<Flashcard> flashcardData,
-    String deckId,
-  );
-
-  Future<void> updateFlashcards(
+  Future<void> createAndUpdateFlashcards(
     List<Flashcard> flashcardData,
     String deckId,
   );

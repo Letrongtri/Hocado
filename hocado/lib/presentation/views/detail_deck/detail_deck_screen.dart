@@ -6,6 +6,7 @@ import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/presentation/viewmodels/detail_deck/detail_deck_state.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_list_item.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_pager.dart';
 import 'package:hocado/presentation/views/detail_deck/learning_progress_card.dart';
@@ -29,6 +30,7 @@ class DetailDeckScreen extends ConsumerWidget {
           context,
           deck,
           flashcards,
+          state.ownershipStatus,
           ref,
         );
       },
@@ -56,6 +58,7 @@ class DetailDeckScreen extends ConsumerWidget {
     BuildContext context,
     Deck deck,
     List<Flashcard>? flashcards,
+    DeckOwnershipStatus ownershipStatus,
     WidgetRef ref,
   ) {
     return Scaffold(
@@ -64,24 +67,37 @@ class DetailDeckScreen extends ConsumerWidget {
         leading: HocadoBack(),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.share_outlined)),
-          IconButton(
-            onPressed: () {
-              context.pushNamed(
-                AppRoutes.editDeck.name,
-                pathParameters: {'did': deckId},
-              );
-            },
-            icon: const Icon(Icons.edit_outlined),
-          ),
+
+          if (ownershipStatus == DeckOwnershipStatus.myDeck)
+            IconButton(
+              onPressed: () {
+                context.pushNamed(
+                  AppRoutes.editDeck.name,
+                  pathParameters: {'did': deckId},
+                );
+              },
+              icon: const Icon(Icons.edit_outlined),
+            ),
+
+          if (ownershipStatus == DeckOwnershipStatus.savedDeck)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.favorite, color: Colors.red),
+            ),
+
+          if (ownershipStatus == DeckOwnershipStatus.unsaveDeck)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.favorite_outline),
+            ),
+
           IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
         ],
       ),
 
       body: RefreshIndicator(
         onRefresh: () async {
-          await ref
-              .read(detailDeckViewModelProvider(deckId).notifier)
-              .refreshDeckDetails();
+          await ref.read(detailDeckViewModelProvider(deckId).notifier).build();
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

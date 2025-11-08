@@ -9,16 +9,17 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
     : _flashcardService = flashcardService;
 
   @override
-  Future<void> createFlashcards(
+  Future<void> createAndUpdateFlashcards(
     List<Flashcard> flashcardData,
     String deckId,
   ) async {
     try {
-      await _flashcardService.createFlashcards(
+      await _flashcardService.createAndUpdateFlashcards(
         flashcardData.map((card) => card.toMap()).toList(),
         deckId,
       );
     } catch (e) {
+      print(e);
       throw Exception("Could not create flashcards");
     }
   }
@@ -47,21 +48,6 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
       return docs.map((doc) => Flashcard.fromFirestore(doc)).toList();
     } catch (e) {
       throw Exception("Could not retrieve flashcards");
-    }
-  }
-
-  @override
-  Future<void> updateFlashcards(
-    List<Flashcard> flashcardData,
-    String deckId,
-  ) async {
-    try {
-      return await _flashcardService.updateFlashcards(
-        flashcardData.map((card) => card.toMap()).toList(),
-        deckId,
-      );
-    } catch (e) {
-      throw Exception("Could not update flashcards");
     }
   }
 

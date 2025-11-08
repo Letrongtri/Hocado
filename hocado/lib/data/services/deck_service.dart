@@ -40,7 +40,7 @@ class DeckService {
   }
 
   // Create decks
-  Future<void> createDeck(Map<String, dynamic> deckData) async {
+  Future<void> createAndUpdateDeck(Map<String, dynamic> deckData) async {
     try {
       // Tạo mới deck
       if (deckData['did'] == null || deckData['did'].isEmpty) {
@@ -61,16 +61,6 @@ class DeckService {
       await docRef.delete();
     } catch (e) {
       throw Exception("Could not delete deck from database");
-    }
-  }
-
-  // Update deck
-  Future<void> updateDeck(Map<String, dynamic> deckData) async {
-    try {
-      final docRef = _firestore.collection('decks').doc(deckData['did']);
-      await docRef.update(deckData);
-    } catch (e) {
-      throw Exception("Could not update deck in database");
     }
   }
 

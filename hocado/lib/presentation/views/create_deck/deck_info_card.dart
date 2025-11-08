@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/presentation/views/create_deck/image_placeholder.dart';
 import 'package:hocado/presentation/widgets/hocado_text_area.dart';
 
-class DeckInfoCard extends ConsumerStatefulWidget {
+class DeckInfoCard extends StatefulWidget {
   final Deck deck;
   final ValueChanged<Deck> onUpdated;
 
   const DeckInfoCard({super.key, required this.deck, required this.onUpdated});
 
   @override
-  ConsumerState<DeckInfoCard> createState() => _DeckInfoCardState();
+  State<DeckInfoCard> createState() => _DeckInfoCardState();
 }
 
-class _DeckInfoCardState extends ConsumerState<DeckInfoCard> {
+class _DeckInfoCardState extends State<DeckInfoCard> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
 

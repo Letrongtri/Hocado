@@ -8,7 +8,7 @@ class FlashcardService {
     : _firestore = firestore;
 
   // Save flashcards
-  Future<void> createFlashcards(
+  Future<void> createAndUpdateFlashcards(
     List<Map<String, dynamic>> flashcardData,
     String did,
   ) async {
@@ -26,28 +26,6 @@ class FlashcardService {
       await batch.commit();
     } catch (e) {
       throw Exception("Could not save flashcard to database");
-    }
-  }
-
-  // Update flashcards
-  Future<void> updateFlashcards(
-    List<Map<String, dynamic>> flashcardData,
-    String did,
-  ) async {
-    try {
-      final batch = _firestore.batch();
-      final collectionRef = _firestore
-          .collection('decks')
-          .doc(did)
-          .collection(collectionPath);
-
-      for (var card in flashcardData) {
-        final docRef = collectionRef.doc(card['fid']);
-        batch.update(docRef, card);
-      }
-      await batch.commit();
-    } catch (e) {
-      throw Exception("Could not update flashcard in database");
     }
   }
 

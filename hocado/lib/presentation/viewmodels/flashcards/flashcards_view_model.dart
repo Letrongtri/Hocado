@@ -47,7 +47,7 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
   //   state = await AsyncValue.guard(() async => _fetchFlashcards());
   // }
 
-  Future<void> createFlashcards({
+  Future<void> createAndUpdateFlashcards({
     required List<Flashcard> flashcards,
     required DateTime createdAt,
   }) async {
@@ -62,7 +62,7 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
           )
           .toList();
 
-      await _flashcardRepository.createFlashcards(createdCards, did);
+      await _flashcardRepository.createAndUpdateFlashcards(createdCards, did);
 
       if (!ref.mounted) return;
 

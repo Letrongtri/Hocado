@@ -3,7 +3,6 @@ import 'package:hocado/app/provider/firebase_provider.dart';
 import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
 import 'package:hocado/data/repositories/flashcard/flashcard_repository_impl.dart';
 import 'package:hocado/data/services/flashcard_service.dart';
-import 'package:hocado/presentation/viewmodels/flashcards/edit_flashcards_view_model.dart';
 import 'package:hocado/presentation/viewmodels/flashcards/flashcards_state.dart';
 import 'package:hocado/presentation/viewmodels/flashcards/flashcards_view_model.dart';
 
@@ -27,9 +26,4 @@ final flashcardRepositoryProvider = Provider<FlashcardRepository>(
 final flashcardsViewModelProvider = AsyncNotifierProvider.autoDispose
     .family<FlashcardsViewModel, FlashcardsState, String>(
       FlashcardsViewModel.new,
-    );
-
-final editFlashcardsViewModelProvider = NotifierProvider.autoDispose
-    .family<EditFlashcardsViewModel, FlashcardsState, String>(
-      EditFlashcardsViewModel.new,
     );

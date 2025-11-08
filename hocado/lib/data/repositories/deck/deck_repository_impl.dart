@@ -34,18 +34,9 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   @override
-  Future<void> updateDeck(String id, Deck data) async {
+  Future<void> createAndUpdate(Deck deck) {
     try {
-      await _deckService.updateDeck(data.toMap());
-    } catch (e) {
-      throw Exception("Could not update deck");
-    }
-  }
-
-  @override
-  Future<void> create(Deck deck) {
-    try {
-      return _deckService.createDeck(deck.toMap());
+      return _deckService.createAndUpdateDeck(deck.toMap());
     } catch (e) {
       throw Exception("Could not create deck");
     }

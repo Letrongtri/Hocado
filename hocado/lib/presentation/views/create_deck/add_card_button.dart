@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
+import 'package:hocado/app/provider/create_deck_provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
 
 class AddCardButton extends ConsumerWidget {
@@ -17,7 +17,7 @@ class AddCardButton extends ConsumerWidget {
         onPressed: () {
           // Gọi hàm addCard từ provider
           ref
-              .read(editFlashcardsViewModelProvider(did).notifier)
+              .read(createDeckViewModelProvider(did).notifier)
               .addFlashcardBelow(fid);
         },
       ),

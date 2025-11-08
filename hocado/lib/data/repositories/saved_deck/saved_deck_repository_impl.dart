@@ -61,4 +61,20 @@ class SavedDeckRepositoryImpl implements SavedDeckRepository {
       throw Exception("Could not convert documents to decks");
     }
   }
+
+  @override
+  Future<bool> isDeckSavedByUser({
+    required String userId,
+    required String deckId,
+  }) async {
+    try {
+      return await _savedDeckService.isDeckSavedByUser(
+        userId: userId,
+        deckId: deckId,
+      );
+    } catch (e) {
+      print("Error in isDeckSavedByUser: $e");
+      throw Exception("Could not check if deck is saved");
+    }
+  }
 }

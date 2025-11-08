@@ -1,86 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hocado/app/provider/deck_provider.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
+import 'package:hocado/app/provider/create_deck_provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/deck.dart';
+import 'package:hocado/data/models/flashcard.dart';
 import 'package:hocado/presentation/views/create_deck/deck_info_card.dart';
 import 'package:hocado/presentation/views/create_deck/flashcard_info_item.dart';
 import 'package:hocado/presentation/widgets/hocado_back.dart';
 import 'package:hocado/presentation/widgets/hocado_divider.dart';
 import 'package:hocado/presentation/widgets/hocado_switch.dart';
 
-class CreateDeckScreen extends ConsumerStatefulWidget {
+class CreateDeckScreen extends ConsumerWidget {
   final String? did;
 
   const CreateDeckScreen({super.key, this.did});
 
   @override
-  ConsumerState<CreateDeckScreen> createState() => _CreateDeckScreenState();
-}
-
-class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
-  late Deck deck;
-  late final String did;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // deck = widget.deck ?? Deck.empty();
-    if (widget.did != null) {
-      did = widget.did!;
-      _loadDeck();
-    } else {
-      deck = Deck.empty();
-      did = deck.did;
-    }
-  }
-
-  Future<void> _loadDeck() async {
-    setState(() => _isLoading = true);
-
-    final fetched = await ref
-        .read(decksViewModelProvider.notifier)
-        .findDeckByDid(widget.did!);
-
-    if (fetched != null) {
-      deck = fetched;
-
-      // Nếu deck có flashcards thì tải luôn
-      if (deck.totalCards > 0) {
-        final cards = await ref
-            .read(flashcardsViewModelProvider(deck.did).notifier)
-            .fetchFlashcards();
-
-        ref
-            .read(editFlashcardsViewModelProvider(deck.did).notifier)
-            .setFlashcards(cards);
-      }
-    }
-
-    setState(() => _isLoading = false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    // Theo dõi danh sách thẻ từ provider
-    final flashcardState = ref.watch(editFlashcardsViewModelProvider(did));
-    final asyncDecks = ref.watch(decksViewModelProvider);
+    final asyncCreateState = ref.watch(createDeckViewModelProvider(did));
 
-    if (_isLoading) {
-      return Scaffold(
+    return asyncCreateState.when(
+      loading: () => Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
-      );
-    }
+      ),
+      error: (error, stack) => Scaffold(
+        body: Center(
+          child: Text('Đã có lỗi xảy ra: $error'),
+        ),
+      ),
+      data: (createState) {
+        final deck = createState.deck;
+        final cardList = createState.flashcards;
 
-    final cardList = flashcardState.flashcards;
+        return _buildMainScaffold(theme, ref, context, deck, cardList);
+      },
+    );
+  }
 
+  Scaffold _buildMainScaffold(
+    ThemeData theme,
+    WidgetRef ref,
+    BuildContext context,
+    Deck deck,
+    List<Flashcard>? cardList,
+  ) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.secondary,
@@ -93,44 +61,25 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              _showSettingDeckModalBottomSheet(context, ref);
+              _showSettingDeckModalBottomSheet(context, ref, deck);
             },
             icon: const Icon(Icons.settings_outlined),
           ),
           SizedBox(width: Sizes.xs),
           IconButton(
-            onPressed: asyncDecks.isLoading
-                ? null
-                : () async {
-                    final now = DateTime.now();
+            onPressed: () async {
+              await ref
+                  .read(createDeckViewModelProvider(did).notifier)
+                  .saveChanges();
 
-                    await Future.wait([
-                      ref
-                          .read(decksViewModelProvider.notifier)
-                          .createDeck(
-                            deck: deck,
-                            totalCards: cardList.length,
-                            createdAt: now,
-                          ),
-
-                      ref
-                          .read(flashcardsViewModelProvider(deck.did).notifier)
-                          .createFlashcards(
-                            flashcards: cardList,
-                            createdAt: now,
-                          ),
-                    ]);
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Lưu thành công!')),
-                      );
-                    }
-                    if (context.mounted) context.pop();
-                  },
-            icon: asyncDecks.isLoading
-                ? CircularProgressIndicator()
-                : Icon(Icons.check),
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Lưu thành công!')),
+                );
+                context.pop();
+              }
+            },
+            icon: Icon(Icons.check),
           ),
         ],
       ),
@@ -143,9 +92,9 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
             DeckInfoCard(
               deck: deck,
               onUpdated: (updatedDeck) {
-                setState(() {
-                  deck = updatedDeck;
-                });
+                ref
+                    .read(createDeckViewModelProvider(did).notifier)
+                    .updateDeckInfo(updatedDeck);
               },
             ),
             const SizedBox(height: Sizes.md),
@@ -156,9 +105,9 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: cardList.length,
+              itemCount: cardList?.length ?? 0,
               itemBuilder: (context, index) {
-                final card = cardList[index];
+                final card = cardList![index];
                 return Column(
                   children: [
                     FlashcardInfoItem(
@@ -180,6 +129,7 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
   Future<void> _showSettingDeckModalBottomSheet(
     BuildContext context,
     WidgetRef ref,
+    Deck deck,
   ) async {
     final theme = Theme.of(context);
     bool currentPublicStatus = deck.isPublic;
@@ -260,12 +210,10 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
 
                       if (shouldDelete == true) {
                         await ref
-                            .read(decksViewModelProvider.notifier)
-                            .deleteDeck(did);
-
-                        await ref
-                            .read(flashcardsViewModelProvider(did).notifier)
-                            .deleteFlashcards(did);
+                            .read(
+                              createDeckViewModelProvider(did).notifier,
+                            )
+                            .deleteDeck();
 
                         if (context.mounted) {
                           Navigator.of(context)

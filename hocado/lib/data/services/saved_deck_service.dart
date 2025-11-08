@@ -74,4 +74,23 @@ class SavedDeckService {
       throw Exception("Could not fetch decks from database");
     }
   }
+
+  Future<bool> isDeckSavedByUser({
+    required String userId,
+    required String deckId,
+  }) async {
+    try {
+      final doc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('saved_decks')
+          .doc(deckId)
+          .get();
+
+      return doc.exists;
+    } catch (e) {
+      print("Error checking if deck is saved: $e");
+      throw Exception("Could not check if deck is saved");
+    }
+  }
 }

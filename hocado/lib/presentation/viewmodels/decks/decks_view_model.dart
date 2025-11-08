@@ -44,26 +44,34 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     state = await AsyncValue.guard(() async => _fetchDecks());
   }
 
-  Future<void> createDeck({
+  Future<void> createAndUpdateDeck({
     required Deck deck,
     int? totalCards,
     required DateTime createdAt,
+    bool isUpdate = false,
   }) async {
-    final user = _currentUser;
-    if (user == null) return;
-
     // Save deck using the repository
     final updatedDeck = deck.copyWith(
-      uid: user.uid,
       totalCards: totalCards,
       createdAt: createdAt,
       updatedAt: createdAt,
       searchIndex:
           '${deck.name.toLowerCase()} ${deck.description.toLowerCase()}',
     );
-    await _repo.create(updatedDeck);
+    await _repo.createAndUpdate(updatedDeck);
 
-    final newMyDecks = [updatedDeck, ...?state.value?.myDecks];
+    final currentDecks = List<Deck>.from(state.value!.myDecks!);
+    if (isUpdate) {
+      final index = state.value?.myDecks?.indexWhere(
+        (d) => d.did == updatedDeck.did,
+      );
+
+      if (index != null && index != -1) {
+        currentDecks.removeAt(index);
+      }
+    }
+
+    final newMyDecks = [updatedDeck, ...currentDecks];
 
     state = AsyncData(
       state.value?.copyWith(myDecks: newMyDecks) ??
@@ -102,30 +110,41 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     }
   }
 
-  Future<Deck?> findDeckByDid(String did) async {
-    try {
-      // Lấy danh sách hiện có trong state
-      final decksState = state.value;
-      if (decksState == null) return null;
+  Deck? findDeckByDid(String did) {
+    // Lấy danh sách hiện có trong state
+    final decksState = state.value;
+    if (decksState == null) return null;
 
-      // Tìm trong myDecks và savedDecks
-      final myDeck = decksState.myDecks?.firstWhereOrNull(
-        (deck) => deck.did == did,
-      );
-      if (myDeck != null) return myDeck;
+    // Tìm trong myDecks và savedDecks
+    final myDeck = decksState.myDecks?.firstWhereOrNull(
+      (deck) => deck.did == did,
+    );
+    if (myDeck != null) return myDeck;
 
-      final savedDeck = decksState.savedDecks?.firstWhereOrNull(
-        (deck) => deck.did == did,
-      );
-      if (savedDeck != null) return savedDeck;
-
-      // Nếu vẫn không thấy, tải từ repo
-      final deckFromRepo = await _repo.getDeckById(did);
-
-      return deckFromRepo;
-    } catch (e, st) {
-      state = AsyncError(e, st);
-      return null;
-    }
+    final savedDeck = decksState.savedDecks?.firstWhereOrNull(
+      (deck) => deck.did == did,
+    );
+    return savedDeck;
   }
+
+  // Future<void> updateDeck(Deck updatedDeck) async {
+  //   final currentState = state.value;
+  //   if (currentState == null) return;
+
+  //   final decks = currentState.myDecks;
+  //   final index = decks!.indexWhere((item) => item.did == updatedDeck.did);
+  //   if (index == -1) return;
+
+  //   state = const AsyncLoading();
+
+  //   try {
+  //     await _repo.updateDeck(updatedDeck.did, updatedDeck);
+
+  //     final updatedDecks = List<Deck>.from(decks)..[index] = updatedDeck;
+
+  //     state = AsyncData(currentState.copyWith(myDecks: updatedDecks));
+  //   } catch (e, st) {
+  //     state = AsyncError(e, st);
+  //   }
+  // }
 }

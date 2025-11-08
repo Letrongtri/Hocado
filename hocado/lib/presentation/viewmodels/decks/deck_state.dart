@@ -23,4 +23,6 @@ class DeckState {
       currentTabIndex: currentTabIndex ?? this.currentTabIndex,
     );
   }
+
+  // Deck? get
 }

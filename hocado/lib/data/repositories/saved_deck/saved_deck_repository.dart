@@ -13,4 +13,9 @@ abstract class SavedDeckRepository {
     DocumentSnapshot? lastDocument,
     int limit = 10,
   });
+
+  Future<bool> isDeckSavedByUser({
+    required String userId,
+    required String deckId,
+  });
 }

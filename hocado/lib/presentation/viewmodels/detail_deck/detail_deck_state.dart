@@ -1,19 +1,32 @@
 import 'package:hocado/data/models/deck.dart';
 import 'package:hocado/data/models/flashcard.dart';
 
+enum DeckOwnershipStatus {
+  myDeck,
+  savedDeck,
+  unsaveDeck,
+}
+
 class DetailDeckState {
   final Deck deck;
   final List<Flashcard>? cardList;
+  final DeckOwnershipStatus ownershipStatus;
 
-  DetailDeckState({required this.deck, required this.cardList});
+  DetailDeckState({
+    required this.deck,
+    required this.cardList,
+    this.ownershipStatus = DeckOwnershipStatus.unsaveDeck,
+  });
 
   DetailDeckState copyWith({
     Deck? deck,
     List<Flashcard>? cardList,
+    DeckOwnershipStatus? ownershipStatus,
   }) {
     return DetailDeckState(
       deck: deck ?? this.deck,
       cardList: cardList ?? this.cardList,
+      ownershipStatus: ownershipStatus ?? this.ownershipStatus,
     );
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
+import 'package:hocado/app/provider/create_deck_provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/presentation/viewmodels/create_deck/create_deck_view_model.dart';
 import 'package:hocado/presentation/views/create_deck/add_card_button.dart';
 import 'package:hocado/presentation/views/create_deck/image_placeholder.dart';
 import 'package:hocado/presentation/widgets/hocado_text_area.dart';
@@ -25,9 +26,15 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
   late final FocusNode definitionFocusNode;
   late final FocusNode noteFocusNode;
 
+  late final CreateDeckViewModel viewModel;
+
   @override
   void initState() {
     super.initState();
+
+    viewModel = ref.read(
+      createDeckViewModelProvider(widget.card.did).notifier,
+    );
 
     termController = TextEditingController(text: widget.card.front);
     definitionController = TextEditingController(text: widget.card.back);
@@ -49,34 +56,19 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
 
   void _onTermFocusChange() {
     if (!termFocusNode.hasFocus) {
-      ref
-          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
-          .updateFlashcardFront(
-            widget.card.fid,
-            termController.text,
-          );
+      viewModel.updateFlashcardFront(widget.card.fid, termController.text);
     }
   }
 
   void _onDefinitionFocusChange() {
     if (!definitionFocusNode.hasFocus) {
-      ref
-          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
-          .updateFlashcardBack(
-            widget.card.fid,
-            definitionController.text,
-          );
+      viewModel.updateFlashcardBack(widget.card.fid, definitionController.text);
     }
   }
 
   void _onNoteFocusChange() {
     if (!noteFocusNode.hasFocus) {
-      ref
-          .read(editFlashcardsViewModelProvider(widget.card.did).notifier)
-          .updateFlashcardNote(
-            widget.card.fid,
-            noteController.text,
-          );
+      viewModel.updateFlashcardNote(widget.card.fid, noteController.text);
     }
   }
 
@@ -103,11 +95,7 @@ class _FlashcardInfoItemState extends ConsumerState<FlashcardInfoItem> {
         children: [
           CustomSlidableAction(
             onPressed: (_) {
-              ref
-                  .read(
-                    editFlashcardsViewModelProvider(widget.card.did).notifier,
-                  )
-                  .deleteFlashcard(widget.card.fid);
+              viewModel.deleteFlashcard(widget.card.fid);
             },
             backgroundColor: Colors.transparent,
             child: Container(

@@ -9,11 +9,9 @@ typedef SearchDecksResult = ({
 abstract class DeckRepository {
   Future<List<Deck>> getDecksByUserId(String id);
 
-  Future<void> updateDeck(String id, Deck data);
-
   Future<void> delete(String id);
 
-  Future<void> create(Deck deck);
+  Future<void> createAndUpdate(Deck deck);
 
   Future<Deck> getDeckById(String id);
 
