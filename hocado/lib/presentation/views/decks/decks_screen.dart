@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hocado/app/provider/deck_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/views/decks/deck_list_item.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/deck.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/create_deck/image_placeholder.dart';
 import 'package:hocado/presentation/widgets/hocado_text_area.dart';
 

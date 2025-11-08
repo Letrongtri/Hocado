@@ -1,4 +1,4 @@
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 
 abstract class FlashcardRepository {
   Future<List<Flashcard>> getFlashcardsByDeckId(

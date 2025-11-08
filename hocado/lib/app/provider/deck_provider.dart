@@ -1,13 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/firebase_provider.dart';
-import 'package:hocado/data/repositories/deck/deck_repository.dart';
-import 'package:hocado/data/repositories/deck/deck_repository_impl.dart';
-import 'package:hocado/data/repositories/saved_deck/saved_deck_repository.dart';
-import 'package:hocado/data/repositories/saved_deck/saved_deck_repository_impl.dart';
-import 'package:hocado/data/services/deck_service.dart';
-import 'package:hocado/data/services/saved_deck_service.dart';
-import 'package:hocado/presentation/viewmodels/decks/deck_state.dart';
-import 'package:hocado/presentation/viewmodels/decks/decks_view_model.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 // My decks
 final deckServiceProvider = Provider<DeckService>((ref) {

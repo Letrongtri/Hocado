@@ -1,18 +1,17 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/auth_provider.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
-import 'package:hocado/data/models/flashcard.dart';
-import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
-import 'package:hocado/presentation/viewmodels/flashcards/flashcards_state.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
   final String did;
   FlashcardRepository get _flashcardRepository =>
       ref.read(flashcardRepositoryProvider);
-  User? get _currentUser => ref.read(currentUserProvider);
+  fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   FlashcardsViewModel(this.did);
 

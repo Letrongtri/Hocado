@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/study_session.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/utils/format_date_time.dart';
 
 class LearningOverview extends StatelessWidget {

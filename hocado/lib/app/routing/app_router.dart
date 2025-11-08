@@ -3,19 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hocado/app/provider/auth_provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
-import 'package:hocado/data/models/learning_settings.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/presentation/views/screens.dart';
 import 'package:hocado/presentation/main_scaffold.dart';
-import 'package:hocado/presentation/views/auth/sign_in_screen.dart';
-import 'package:hocado/presentation/views/auth/sign_up_screen.dart';
-import 'package:hocado/presentation/views/create_deck/create_deck_screen.dart';
-import 'package:hocado/presentation/views/decks/decks_screen.dart';
-import 'package:hocado/presentation/views/detail_deck/detail_deck_screen.dart';
-import 'package:hocado/presentation/views/home/home_screen.dart';
-import 'package:hocado/presentation/views/learn/learn_screen.dart';
-import 'package:hocado/presentation/views/learning_settings/learning_settings_screen.dart';
-import 'package:hocado/presentation/views/search/search_screen.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {

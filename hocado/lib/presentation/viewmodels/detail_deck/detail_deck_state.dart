@@ -1,5 +1,4 @@
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 
 enum DeckOwnershipStatus {
   myDeck,

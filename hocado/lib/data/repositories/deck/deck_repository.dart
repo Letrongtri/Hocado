@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/data/models/deck.dart';
+import 'package:hocado/data/models/models.dart';
 
 typedef SearchDecksResult = ({
   List<Deck> decks,

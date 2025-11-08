@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/detail_deck_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 
 class FlashcardFlipItem extends ConsumerStatefulWidget {
   final Flashcard card;

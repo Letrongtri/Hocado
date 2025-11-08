@@ -1,6 +1,6 @@
 import 'package:hocado/data/models/flashcard.dart';
-import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
-import 'package:hocado/data/services/flashcard_service.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   final FlashcardService _flashcardService;

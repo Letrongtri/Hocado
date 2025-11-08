@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/shared_prefs_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_router.dart';
 import 'package:hocado/core/theme/app_theme.dart';
 import 'package:hocado/firebase_options.dart';

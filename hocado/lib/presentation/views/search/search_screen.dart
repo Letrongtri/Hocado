@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/search_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/presentation/viewmodels/search/search_state.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:hocado/presentation/widgets/deck_card.dart';
 import 'package:hocado/presentation/widgets/filter_tab_bar.dart';
 

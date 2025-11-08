@@ -1,19 +1,17 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/auth_provider.dart';
-import 'package:hocado/app/provider/deck_provider.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/repositories/deck/deck_repository.dart';
-import 'package:hocado/data/repositories/saved_deck/saved_deck_repository.dart';
-import 'package:hocado/presentation/viewmodels/decks/deck_state.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 class DecksViewModel extends AsyncNotifier<DeckState> {
   DeckRepository get _repo => ref.read(deckRepositoryProvider);
   SavedDeckRepository get _savedRepo => ref.read(savedDeckRepositoryProvider);
-  User? get _currentUser => ref.read(currentUserProvider);
+  fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   @override
   FutureOr<DeckState> build() async {

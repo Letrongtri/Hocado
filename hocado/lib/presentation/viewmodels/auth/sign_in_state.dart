@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:hocado/data/models/user.dart';
+import 'package:hocado/data/models/models.dart';
 
 class SignInState {
   final bool isLoading;

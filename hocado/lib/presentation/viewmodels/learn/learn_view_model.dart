@@ -1,21 +1,11 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/auth_provider.dart';
-import 'package:hocado/app/provider/flashcard_provider.dart';
-import 'package:hocado/app/provider/study_session_provider.dart';
-import 'package:hocado/app/provider/user_flashcard_progress_provider.dart';
-import 'package:hocado/data/models/flashcard.dart';
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/data/models/question.dart';
-import 'package:hocado/data/models/study_session.dart';
-import 'package:hocado/data/models/user_answer.dart';
-import 'package:hocado/data/models/user_flashcard_progress.dart';
-import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
-import 'package:hocado/data/repositories/study_session/study_session_repository.dart';
-import 'package:hocado/data/repositories/user_flashcard_progress/user_flashcard_progress_repo.dart';
-import 'package:hocado/presentation/viewmodels/learn/learn_state.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 class LearnViewModel extends AsyncNotifier<LearnState> {
   final String did;
@@ -28,7 +18,7 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
       ref.read(studySessionRepositoryProvider);
   UserFlashcardProgressRepo get _progresRepo =>
       ref.read(userFlashcardProgressRepoProvider);
-  User? get _currentUser => ref.read(currentUserProvider);
+  fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   @override
   FutureOr<LearnState> build() async {

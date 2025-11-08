@@ -1,5 +1,5 @@
-import 'package:hocado/data/models/user_flashcard_progress.dart';
-import 'package:hocado/data/services/user_flashcard_progress_service.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/services/services.dart';
 
 class UserFlashcardProgressRepo {
   final UserFlashcardProgressService _userFlashcardProgressService;

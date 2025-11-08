@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/firebase_provider.dart';
-import 'package:hocado/data/repositories/flashcard/flashcard_repository.dart';
-import 'package:hocado/data/repositories/flashcard/flashcard_repository_impl.dart';
-import 'package:hocado/data/services/flashcard_service.dart';
-import 'package:hocado/presentation/viewmodels/flashcards/flashcards_state.dart';
-import 'package:hocado/presentation/viewmodels/flashcards/flashcards_view_model.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 // Service provider
 final flashcardServiceProvider = Provider<FlashcardService>(

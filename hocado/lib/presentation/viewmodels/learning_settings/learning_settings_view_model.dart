@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/auth_provider.dart';
-import 'package:hocado/app/provider/settings_provider.dart';
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/data/repositories/settings/settings_repository.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
 
 class LearningSettingsViewModel extends AsyncNotifier<LearningSettings> {
   final String did;
 
   LearningSettingsViewModel(this.did);
 
-  SettingsRepository get _learningSettingsRepo => ref.read(settingsRepository);
-  User? get _currentUser => ref.read(currentUserProvider);
+  SettingsRepository get _learningSettingsRepo =>
+      ref.read(settingsRepositoryProvider);
+  fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   LearningSettings initSettings = LearningSettings.empty();
 

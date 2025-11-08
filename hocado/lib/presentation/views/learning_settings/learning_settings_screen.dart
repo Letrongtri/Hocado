@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hocado/app/provider/settings_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/presentation/viewmodels/learning_settings/learning_settings_view_model.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:hocado/presentation/widgets/hocado_back.dart';
 import 'package:hocado/presentation/widgets/hocado_switch.dart';
 
@@ -41,8 +41,8 @@ class LearningSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final state = ref.watch(learningSettingsViewModel(did));
-    final notifier = ref.watch(learningSettingsViewModel(did).notifier);
+    final state = ref.watch(learningSettingsViewModelProvider(did));
+    final notifier = ref.watch(learningSettingsViewModelProvider(did).notifier);
 
     final settings = state.value;
 

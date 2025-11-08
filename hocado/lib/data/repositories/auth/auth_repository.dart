@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/data/services/auth_service.dart';
-import 'package:hocado/data/models/user.dart' as hocado_user;
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/data/models/models.dart' as hocado_user;
 
 class AuthRepository {
   final AuthService authService;

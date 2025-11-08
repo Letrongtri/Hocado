@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/user_answer.dart';
+import 'package:hocado/data/models/models.dart';
 
 class WrittenAnswer extends StatelessWidget {
   final void Function(String response)? onAnswered;

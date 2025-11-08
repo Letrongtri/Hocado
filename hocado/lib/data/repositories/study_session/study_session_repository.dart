@@ -1,5 +1,5 @@
-import 'package:hocado/data/models/study_session.dart';
-import 'package:hocado/data/services/study_session_service.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/services/services.dart';
 
 class StudySessionRepository {
   final StudySessionService _studySessionService;

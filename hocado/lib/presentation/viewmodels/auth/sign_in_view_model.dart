@@ -1,5 +1,5 @@
-import 'package:hocado/data/repositories/auth_repository.dart';
-import 'package:hocado/presentation/viewmodels/auth/sign_in_state.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:riverpod/legacy.dart';
 
 class SignInViewModel extends StateNotifier<SignInState> {

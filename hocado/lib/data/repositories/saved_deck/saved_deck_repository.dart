@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/repositories/deck/deck_repository.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
 
 abstract class SavedDeckRepository {
   Future<List<Deck>> getSavedDecksByUserId(String id);

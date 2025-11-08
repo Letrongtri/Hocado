@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 
 class FlashcardListItem extends StatelessWidget {
   final Flashcard card;

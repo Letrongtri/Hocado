@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hocado/app/provider/create_deck_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/create_deck/deck_info_card.dart';
 import 'package:hocado/presentation/views/create_deck/flashcard_info_item.dart';
 import 'package:hocado/presentation/widgets/hocado_back.dart';

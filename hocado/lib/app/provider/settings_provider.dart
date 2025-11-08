@@ -1,28 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/firebase_provider.dart';
-import 'package:hocado/app/provider/shared_prefs_provider.dart';
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/data/repositories/settings/settings_repository.dart';
-import 'package:hocado/data/services/local_settings_service.dart';
-import 'package:hocado/data/services/remote_settings_service.dart';
-import 'package:hocado/presentation/viewmodels/learning_settings/learning_settings_view_model.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 // Services
-final localSettingsServices = Provider((ref) {
+final localSettingsServiceProvider = Provider((ref) {
   final sharedPrefs = ref.read(sharedPrefsProvider);
   return LocalSettingsService(sharedPrefs);
 });
 
-final remoteSettingsServices = Provider((ref) {
+final remoteSettingsServiceProvider = Provider((ref) {
   final firestore = ref.read(firestoreProvider);
   return RemoteSettingsService(firestore);
 });
 
 // settings repository
-final settingsRepository = Provider(
+final settingsRepositoryProvider = Provider(
   (ref) {
-    final localService = ref.read(localSettingsServices);
-    final remoteService = ref.read(remoteSettingsServices);
+    final localService = ref.read(localSettingsServiceProvider);
+    final remoteService = ref.read(remoteSettingsServiceProvider);
 
     return SettingsRepository(
       localSettingsService: localService,
@@ -32,7 +30,7 @@ final settingsRepository = Provider(
 );
 
 // learning settings view model
-final learningSettingsViewModel = AsyncNotifierProvider.autoDispose
+final learningSettingsViewModelProvider = AsyncNotifierProvider.autoDispose
     .family<LearningSettingsViewModel, LearningSettings, String>(
       LearningSettingsViewModel.new,
     );

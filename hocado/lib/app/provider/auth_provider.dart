@@ -1,14 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hocado/app/provider/firebase_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:riverpod/legacy.dart';
-
-import 'package:hocado/presentation/viewmodels/auth/sign_up_state.dart';
-import 'package:hocado/presentation/viewmodels/auth/sign_up_view_model.dart';
-import 'package:hocado/presentation/viewmodels/auth/sign_in_state.dart';
-import 'package:hocado/presentation/viewmodels/auth/sign_in_view_model.dart';
-import 'package:hocado/data/repositories/auth_repository.dart';
-import 'package:hocado/data/services/auth_service.dart';
 
 // provide the authService instance
 final authServiceProvider = Provider<AuthService>((ref) {

@@ -1,8 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:hocado/data/models/question.dart';
-import 'package:hocado/data/models/study_session.dart';
-import 'package:hocado/data/models/user_answer.dart';
-import 'package:hocado/data/models/user_flashcard_progress.dart';
+import 'package:hocado/data/models/models.dart';
 
 class LearnState {
   final StudySession session;

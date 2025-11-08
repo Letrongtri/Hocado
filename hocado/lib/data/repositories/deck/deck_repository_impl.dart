@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/repositories/deck/deck_repository.dart';
-import 'package:hocado/data/services/deck_service.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
 
 class DeckRepositoryImpl implements DeckRepository {
   final DeckService _deckService;

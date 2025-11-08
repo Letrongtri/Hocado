@@ -1,6 +1,5 @@
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/data/services/local_settings_service.dart';
-import 'package:hocado/data/services/remote_settings_service.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/services/services.dart';
 
 class SettingsRepository {
   final LocalSettingsService _localSettingsService;

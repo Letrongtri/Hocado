@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:riverpod/legacy.dart';
-import 'package:hocado/presentation/viewmodels/detail_deck/detail_deck_state.dart';
-import 'package:hocado/presentation/viewmodels/detail_deck/detail_deck_async_view_model.dart';
 
 // ViewModel for the detail deck screen
 final detailDeckViewModelProvider = AsyncNotifierProvider.autoDispose

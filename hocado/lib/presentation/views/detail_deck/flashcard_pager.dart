@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/flashcard.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_flip_item.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

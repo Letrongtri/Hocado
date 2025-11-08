@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/learning_settings.dart';
-import 'package:hocado/data/models/question.dart';
+import 'package:hocado/data/models/models.dart';
 
 class LearnQuestionPrompt extends StatelessWidget {
   const LearnQuestionPrompt({

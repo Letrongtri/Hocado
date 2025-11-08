@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/data/models/deck.dart';
-import 'package:hocado/data/repositories/deck/deck_repository.dart';
-import 'package:hocado/data/repositories/saved_deck/saved_deck_repository.dart';
-import 'package:hocado/data/services/saved_deck_service.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
 
 class SavedDeckRepositoryImpl implements SavedDeckRepository {
   final SavedDeckService _savedDeckService;

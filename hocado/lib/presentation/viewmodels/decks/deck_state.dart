@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:hocado/data/models/deck.dart';
+import 'package:hocado/data/models/models.dart';
 
 class DeckState {
   final List<Deck>? myDecks;

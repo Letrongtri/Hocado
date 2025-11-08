@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hocado/data/models/user.dart' as hocado_user;
+import 'package:hocado/data/models/models.dart' as hocado_user;
 
 class AuthService {
   final FirebaseAuth _auth;

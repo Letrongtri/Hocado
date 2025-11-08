@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
-import 'package:hocado/data/models/question.dart';
-import 'package:hocado/data/models/user_answer.dart';
+import 'package:hocado/data/models/models.dart';
 
 class MultipleChoiceAnswer extends ConsumerWidget {
   const MultipleChoiceAnswer({
