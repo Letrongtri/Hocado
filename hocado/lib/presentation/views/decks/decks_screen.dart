@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/decks/deck_list_item.dart';
 import 'package:hocado/presentation/widgets/filter_tab_bar.dart';
 
@@ -109,12 +110,21 @@ class DecksScreen extends ConsumerWidget {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: Sizes.md),
                 itemBuilder: (context, index) {
-                  final deck = decks[index];
-                  return DeckListItem(
-                    title: deck.name,
-                    lastUpdated: deck.updatedAt,
-                    did: deck.did,
-                  );
+                  final item = decks[index];
+                  if (item is Deck) {
+                    return DeckListItem(
+                      title: item.name,
+                      lastUpdated: item.updatedAt,
+                      did: item.did,
+                    );
+                  } else if (item is SavedDeck) {
+                    return DeckListItem(
+                      title: item.name,
+                      lastUpdated: item.savedAt,
+                      did: item.did,
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
             );

@@ -6,17 +6,34 @@ class SavedDeckService {
   SavedDeckService({required FirebaseFirestore firestore})
     : _firestore = firestore;
 
+  CollectionReference<Map<String, dynamic>> _getSavedDeckRef(String userId) {
+    return _firestore.collection('users').doc(userId).collection('saved_decks');
+  }
+
+  Future<void> saveDeck(String userId, Map<String, dynamic> deckData) async {
+    try {
+      await _getSavedDeckRef(userId).doc(deckData['did']).set(deckData);
+    } catch (e) {
+      throw Exception("Could not save deck to database");
+    }
+  }
+
+  Future<void> unsaveDeck(String userId, String deckId) async {
+    try {
+      await _getSavedDeckRef(userId).doc(deckId).delete();
+    } catch (e) {
+      throw Exception("Could not unsave deck from database");
+    }
+  }
+
   // Lấy tất cả deck đã save của 1 user, sắp xếp theo ngày save
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getUserSavedDecks(
     String userId,
   ) async {
     try {
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('saved_decks')
-          // .orderBy('savedAt', descending: true)
-          .get();
+      final snapshot = await _getSavedDeckRef(
+        userId,
+      ).orderBy('savedAt', descending: true).get();
       return snapshot.docs.isEmpty ? [] : snapshot.docs;
     } catch (e) {
       throw Exception("Could not fetch saved decks from database");
@@ -36,19 +53,15 @@ class SavedDeckService {
     int limit = 10,
   }) async {
     try {
-      Query<Map<String, dynamic>> query = _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('saved_decks')
-          .limit(limit);
+      Query<Map<String, dynamic>> query = _getSavedDeckRef(userId).limit(limit);
 
       if (search != null && search.isNotEmpty) {
         query = query.orderBy('searchIndex').startAt([search]).endAt([
           '$search\uf8ff',
         ]);
       } else {
-        // Nếu không có search, sắp xếp theo 'createdAt'
-        query = query.orderBy('createdAt', descending: true);
+        // Nếu không có search, sắp xếp theo 'savedAt'
+        query = query.orderBy('savedAt', descending: true);
       }
 
       if (lastDocument != null) {
@@ -80,12 +93,7 @@ class SavedDeckService {
     required String deckId,
   }) async {
     try {
-      final doc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('saved_decks')
-          .doc(deckId)
-          .get();
+      final doc = await _getSavedDeckRef(userId).doc(deckId).get();
 
       return doc.exists;
     } catch (e) {

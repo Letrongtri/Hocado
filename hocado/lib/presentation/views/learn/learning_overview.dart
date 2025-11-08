@@ -26,7 +26,7 @@ class LearningOverview extends StatelessWidget {
               children: [
                 Text("Tiến độ học tập", style: theme.textTheme.titleMedium),
                 Text(
-                  '${studySession.correctCards * 100 / studySession.totalCards}%',
+                  '${(studySession.correctCards * 100 / studySession.totalCards).toStringAsFixed(2)}%',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.blue.shade600,
                   ),

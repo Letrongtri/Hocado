@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
@@ -108,22 +107,78 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     }
   }
 
-  Deck? findDeckByDid(String did) {
-    // Lấy danh sách hiện có trong state
-    final decksState = state.value;
-    if (decksState == null) return null;
+  Future<void> saveDeck(Deck deck) async {
+    final user = _currentUser;
+    if (user == null) return;
 
-    // Tìm trong myDecks và savedDecks
-    final myDeck = decksState.myDecks?.firstWhereOrNull(
-      (deck) => deck.did == did,
-    );
-    if (myDeck != null) return myDeck;
+    final currentState = state.value;
+    if (currentState == null) return;
 
-    final savedDeck = decksState.savedDecks?.firstWhereOrNull(
-      (deck) => deck.did == did,
-    );
-    return savedDeck;
+    final decks = currentState.savedDecks ?? [];
+
+    state = const AsyncLoading();
+
+    try {
+      final savedDeck = SavedDeck(
+        did: deck.did,
+        savedAt: DateTime.now(),
+        description: deck.description,
+        name: deck.name,
+        uid: deck.uid,
+        searchIndex: deck.searchIndex,
+        thumbnailUrl: deck.thumbnailUrl,
+      );
+
+      await _savedRepo.saveDeck(user.uid, savedDeck);
+
+      final updatedDecks = [savedDeck, ...decks];
+
+      state = AsyncData(currentState.copyWith(savedDecks: updatedDecks));
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
+
+  Future<void> unsaveDeck(String did) async {
+    final user = _currentUser;
+    if (user == null) return;
+
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final decks = currentState.savedDecks;
+    final index = decks!.indexWhere((item) => item.did == did);
+    if (index == -1) return;
+
+    state = const AsyncLoading();
+
+    try {
+      await _savedRepo.unsaveDeck(user.uid, did);
+
+      final updatedDecks = List<SavedDeck>.from(decks)..removeAt(index);
+
+      state = AsyncData(currentState.copyWith(savedDecks: updatedDecks));
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+
+  // Deck? findDeckByDid(String did) {
+  //   // Lấy danh sách hiện có trong state
+  //   final decksState = state.value;
+  //   if (decksState == null) return null;
+
+  //   // Tìm trong myDecks và savedDecks
+  //   final myDeck = decksState.myDecks?.firstWhereOrNull(
+  //     (deck) => deck.did == did,
+  //   );
+  //   if (myDeck != null) return myDeck;
+
+  //   final savedDeck = decksState.savedDecks?.firstWhereOrNull(
+  //     (deck) => deck.did == did,
+  //   );
+  //   return savedDeck;
+  // }
 
   // Future<void> updateDeck(Deck updatedDeck) async {
   //   final currentState = state.value;

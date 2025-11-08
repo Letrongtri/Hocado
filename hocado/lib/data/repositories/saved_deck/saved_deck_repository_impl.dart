@@ -10,13 +10,25 @@ class SavedDeckRepositoryImpl implements SavedDeckRepository {
     : _savedDeckService = savedDeckService;
 
   @override
-  Future<void> delete(String id) async {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> saveDeck(String userId, SavedDeck savedDeck) {
+    try {
+      return _savedDeckService.saveDeck(userId, savedDeck.toMap());
+    } catch (e) {
+      throw Exception("Could not save deck");
+    }
   }
 
   @override
-  Future<List<Deck>> getSavedDecksByUserId(String id) async {
+  Future<void> unsaveDeck(String userId, String deckId) async {
+    try {
+      return _savedDeckService.unsaveDeck(userId, deckId);
+    } catch (e) {
+      throw Exception("Could not unsave deck");
+    }
+  }
+
+  @override
+  Future<List<SavedDeck>> getSavedDecksByUserId(String id) async {
     try {
       final docs = await _savedDeckService.getUserSavedDecks(id);
 
@@ -24,7 +36,7 @@ class SavedDeckRepositoryImpl implements SavedDeckRepository {
         return [];
       }
 
-      return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+      return docs.map((doc) => SavedDeck.fromFirestore(doc)).toList();
     } catch (e) {
       throw Exception("Could not convert documents to decks");
     }

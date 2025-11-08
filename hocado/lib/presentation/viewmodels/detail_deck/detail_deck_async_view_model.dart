@@ -49,9 +49,9 @@ class DetailDeckAsyncViewModel extends AsyncNotifier<DetailDeckState> {
     Deck? deck;
     if (deckState != null) {
       deck = (deckState.myDecks ?? []).firstWhereOrNull((d) => d.did == did);
-      deck ??= (deckState.savedDecks ?? []).firstWhereOrNull(
-        (d) => d.did == did,
-      );
+      // deck ??= (deckState.savedDecks ?? []).firstWhereOrNull(
+      //   (d) => d.did == did,
+      // );
     }
 
     if (deck == null) {
@@ -90,6 +90,25 @@ class DetailDeckAsyncViewModel extends AsyncNotifier<DetailDeckState> {
 
     // Các trường hợp còn lại
     return DeckOwnershipStatus.unsaveDeck;
+  }
+
+  Future<void> saveDeck() async {
+    final ownership = state.value?.ownershipStatus;
+    if (ownership != DeckOwnershipStatus.unsaveDeck) return;
+
+    final deck = state.value?.deck;
+    if (deck == null) {
+      throw Exception('Không thể lưu deck');
+    }
+
+    ref.read(decksViewModelProvider.notifier).saveDeck(deck);
+  }
+
+  Future<void> unsaveDeck() async {
+    final ownership = state.value?.ownershipStatus;
+    if (ownership != DeckOwnershipStatus.savedDeck) return;
+
+    ref.read(decksViewModelProvider.notifier).unsaveDeck(did);
   }
 
   // Future<DetailDeckState> _buildState(Deck deck) async {

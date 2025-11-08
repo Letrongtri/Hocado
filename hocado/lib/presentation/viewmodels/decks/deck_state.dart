@@ -3,7 +3,7 @@ import 'package:hocado/data/models/models.dart';
 
 class DeckState {
   final List<Deck>? myDecks;
-  final List<Deck>? savedDecks;
+  final List<SavedDeck>? savedDecks;
   final int currentTabIndex;
 
   DeckState({
@@ -14,7 +14,7 @@ class DeckState {
 
   DeckState copyWith({
     List<Deck>? myDecks,
-    List<Deck>? savedDecks,
+    List<SavedDeck>? savedDecks,
     int? currentTabIndex,
   }) {
     return DeckState(
@@ -23,6 +23,4 @@ class DeckState {
       currentTabIndex: currentTabIndex ?? this.currentTabIndex,
     );
   }
-
-  // Deck? get
 }

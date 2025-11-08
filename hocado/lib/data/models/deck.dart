@@ -39,7 +39,6 @@ class Deck {
     int? totalCards,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<String>? tagIds,
     String? searchIndex,
   }) {
     return Deck(

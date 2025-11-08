@@ -60,6 +60,8 @@ class DetailDeckScreen extends ConsumerWidget {
     DeckOwnershipStatus ownershipStatus,
     WidgetRef ref,
   ) {
+    final notifier = ref.read(detailDeckViewModelProvider(deckId).notifier);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorScheme.secondary,
@@ -80,13 +82,53 @@ class DetailDeckScreen extends ConsumerWidget {
 
           if (ownershipStatus == DeckOwnershipStatus.savedDeck)
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                final shouldDelete = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("Xác nhận xóa"),
+                    content: Text(
+                      "Bạn có chắc chắn muốn xóa lưu bộ thẻ này không?",
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: Text(
+                          "Hủy",
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Text(
+                          "Xóa",
+                          style: TextStyle(
+                            color: theme.colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldDelete == true) {
+                  notifier.unsaveDeck();
+                }
+              },
               icon: const Icon(Icons.favorite, color: Colors.red),
             ),
 
           if (ownershipStatus == DeckOwnershipStatus.unsaveDeck)
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                notifier.saveDeck();
+              },
               icon: const Icon(Icons.favorite_outline),
             ),
 

@@ -4,41 +4,71 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SavedDeck {
-  final String deckId;
-  final DocumentReference deckRef;
+  final String did;
   final DateTime savedAt;
 
+  final String uid;
+  final String name;
+  final String description;
+  final String? thumbnailUrl;
+  final String? searchIndex;
+
   SavedDeck({
-    required this.deckId,
-    required this.deckRef,
+    required this.did,
     required this.savedAt,
+
+    required this.uid,
+    required this.name,
+    required this.description,
+    this.thumbnailUrl,
+    this.searchIndex,
   });
 
   SavedDeck copyWith({
-    String? deckId,
-    DocumentReference? deckRef,
+    String? did,
     DateTime? savedAt,
+    String? uid,
+    String? name,
+    String? description,
+    String? thumbnailUrl,
+    String? searchIndex,
   }) {
     return SavedDeck(
-      deckId: deckId ?? this.deckId,
-      deckRef: deckRef ?? this.deckRef,
+      did: did ?? this.did,
       savedAt: savedAt ?? this.savedAt,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      searchIndex: searchIndex ?? this.searchIndex,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'deckId': deckId,
-      'deckRef': deckRef,
+      'did': did,
       'savedAt': savedAt,
+      'uid': uid,
+      'name': name,
+      'description': description,
+      'thumbnailUrl': thumbnailUrl,
+      'searchIndex': searchIndex,
     };
   }
 
   factory SavedDeck.fromMap(Map<String, dynamic> map) {
     return SavedDeck(
-      deckId: map['deckId'] as String,
-      deckRef: map['deckRef'],
+      did: map['did'] as String,
       savedAt: (map['savedAt'] as Timestamp).toDate(),
+      uid: map['uid'] as String,
+      name: map['name'] as String,
+      description: map['description'] as String,
+      thumbnailUrl: map['thumbnailUrl'] != null
+          ? map['thumbnailUrl'] as String
+          : null,
+      searchIndex: map['searchIndex'] != null
+          ? map['searchIndex'] as String
+          : null,
     );
   }
 
@@ -49,25 +79,43 @@ class SavedDeck {
 
   @override
   String toString() =>
-      'SavedDeck(deckId: $deckId, deckRef: $deckRef, savedAt: $savedAt)';
+      'SavedDeck(did: $did, savedAt: $savedAt,  uid: $uid, name: $name, description: $description, thumbnailUrl: $thumbnailUrl, searchIndex: $searchIndex)';
 
   @override
   bool operator ==(covariant SavedDeck other) {
     if (identical(this, other)) return true;
 
-    return other.deckId == deckId &&
-        other.deckRef == deckRef &&
-        other.savedAt == savedAt;
+    return other.did == did &&
+        other.savedAt == savedAt &&
+        other.uid == uid &&
+        other.name == name &&
+        other.description == description &&
+        other.thumbnailUrl == thumbnailUrl;
   }
 
   @override
-  int get hashCode => deckId.hashCode ^ deckRef.hashCode ^ savedAt.hashCode;
+  int get hashCode {
+    return did.hashCode ^
+        savedAt.hashCode ^
+        uid.hashCode ^
+        name.hashCode ^
+        description.hashCode ^
+        thumbnailUrl.hashCode;
+  }
 
-  factory SavedDeck.fromFirestore(Map<String, dynamic> data, String id) {
+  factory SavedDeck.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
     return SavedDeck(
-      deckId: data['deckId'] ?? id,
-      deckRef: data['deckRef'],
+      did: data['did'],
       savedAt: (data['savedAt'] as Timestamp).toDate(),
+      uid: data['uid'],
+      name: data['name'],
+      description: data['description'],
+      thumbnailUrl: data['thumbnailUrl'],
+      searchIndex: data['searchIndex'] != null
+          ? data['searchIndex'] as String
+          : null,
     );
   }
 }
