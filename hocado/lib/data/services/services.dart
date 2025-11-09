@@ -6,3 +6,6 @@ export 'remote_settings_service.dart';
 export 'saved_deck_service.dart';
 export 'study_session_service.dart';
 export 'user_flashcard_progress_service.dart';
+export 'daily_learning_stat_service.dart';
+export 'learning_activity_service.dart';
+export 'user_deck_progress_service.dart';

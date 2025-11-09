@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:math';
+
 import 'package:hocado/data/models/learning_settings.dart';
 import 'package:uuid/uuid.dart';
 
@@ -60,16 +63,27 @@ class Question {
         choices: List<String>.from(choices),
       );
     } else if (questionType == QuestionTypes.trueFalse.name) {
-      final makeTrue = (DateTime.now().microsecond % 2 == 0);
+      final random = Random();
+      bool makeTrue = random.nextBool();
       String statement;
+
       if (makeTrue) {
         statement = "$front — $back";
       } else {
-        final wrong = (distractorPool..shuffle()).firstWhere(
-          (c) => c.fid != flashcard.fid,
-          orElse: () => flashcard,
-        );
-
+        dynamic wrong;
+        for (final item in distractorPool..shuffle()) {
+          if (item.fid == flashcard.fid) {
+            distractorPool.remove(item);
+            continue;
+          } else {
+            wrong = item;
+            break;
+          }
+        }
+        if (wrong == null) {
+          statement = "$front — $back";
+          makeTrue = true;
+        }
         final wrongBack =
             questionFormat == QuestionFormat.answerWithDefinition.name
             ? wrong.back
@@ -103,5 +117,10 @@ class Question {
         type: QuestionTypes.flashcard.name,
       );
     }
+  }
+
+  @override
+  String toString() {
+    return 'Question(qid: $qid, fid: $fid, prompt: $prompt, answer: $answer, hint: $hint, type: $type, choices: $choices)';
   }
 }

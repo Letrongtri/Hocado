@@ -21,3 +21,15 @@ export 'study_session/study_session_repository.dart';
 
 // user flashcard progress
 export 'user_flashcard_progress/user_flashcard_progress_repo.dart';
+
+// daily learning stat
+export 'daily_learning_stat/daily_learning_stat_repository.dart';
+export 'daily_learning_stat/daily_learning_stat_repository_impl.dart';
+
+// learning activity
+export 'learning_activity/learning_activity_repository.dart';
+export 'learning_activity/learning_activity_repository_impl.dart';
+
+// user deck progress
+export 'user_deck_progress/user_deck_progress_repository.dart';
+export 'user_deck_progress/user_deck_progress_repository_impl.dart';

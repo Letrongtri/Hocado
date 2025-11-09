@@ -16,9 +16,13 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
   FlashcardRepository get _flashRepo => ref.read(flashcardRepositoryProvider);
   StudySessionRepository get _sessionRepo =>
       ref.read(studySessionRepositoryProvider);
-  UserFlashcardProgressRepo get _progresRepo =>
+  UserFlashcardProgressRepo get _flashcardProgressRepo =>
       ref.read(userFlashcardProgressRepoProvider);
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
+  LearningActivityRepository get _activityRepo =>
+      ref.read(learningActivityRepositoryProvider);
+  UserDeckProgressRepository get _deckProgressRepo =>
+      ref.read(userDeckProgressRepositoryProvider);
 
   @override
   FutureOr<LearnState> build() async {
@@ -29,7 +33,10 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
     final allCards = await _flashRepo.getFlashcardsByDeckId(did);
 
     // 2. Lấy tất cả flashcard đã có progress
-    final progressList = await _progresRepo.getProgressForDeck(user.uid, did);
+    final progressList = await _flashcardProgressRepo.getProgressForDeck(
+      user.uid,
+      did,
+    );
 
     // 3. Lấy danh sách ID của các thẻ được gắn sao
     final starredCardIds = progressList
@@ -214,6 +221,7 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
       final newProgress = UserFlashcardProgress(
         uid: user.uid,
         fid: fid,
+        did: did,
         lastReviewed: now,
         nextReview: now.add(const Duration(days: 1)),
         reviewCount: 1,
@@ -269,8 +277,10 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
 
   Future<void> _finishSession() async {
     final s = state.value;
-
     if (s == null) return;
+
+    final uid = _currentUser?.uid;
+    if (uid == null || uid.isEmpty) return;
 
     final end = DateTime.now();
     final totalSeconds = end.difference(s.session.start).inSeconds;
@@ -284,16 +294,53 @@ class LearnViewModel extends AsyncNotifier<LearnState> {
 
     state = AsyncData(state.value!.copyWith(session: updated));
 
-    // finish
+    // Lưu study sesion
     await _sessionRepo.updateStudySession(updated);
 
     // Ghi batch tất cả progress lên Firestore
     if (s.flashcardProgresses?.isNotEmpty ?? false) {
-      await _progresRepo.updateProgresses(
-        _currentUser!.uid,
+      await _flashcardProgressRepo.updateProgresses(
+        uid,
         s.flashcardProgresses!,
       );
     }
+
+    // Cập nhật deck progress
+    final udid = '${uid}_$did';
+    final learningCardsCount = s.questions.length;
+    final newCardsCount = s.flashcardProgresses!
+        .where((p) => p.reviewCount == 1)
+        .length; // thẻ học lần đầu
+
+    final userDeckProgress = UserDeckProgress(
+      udid: udid,
+      uid: uid,
+      did: did,
+      newCardsCount: newCardsCount,
+      learningCardsCount: learningCardsCount,
+      lastStudied: end,
+    );
+    await _deckProgressRepo.createAndUpdate(userDeckProgress);
+
+    // Cập nhật learning activity
+    final laid = '${uid}_${end.toIso8601String()}';
+    final deckName =
+        ref.read(detailDeckViewModelProvider(did)).value?.deck.name ?? '';
+
+    final learningActivity = LearningActivity(
+      laid: laid,
+      uid: uid,
+      timestamp: end,
+      type: LearningActivityType.studySession.name,
+      did: did,
+      deckName: deckName,
+      durationMinutes: (totalSeconds / 60).round(),
+      cardsReviewed: s.questions.length,
+      cardsCorrect: s.correctCount,
+      cardsIncorrect: s.incorrectCount,
+      newCardsLearned: newCardsCount,
+    );
+    await _activityRepo.createAndUpdate(learningActivity);
   }
 
   int calculateQuality(UserAnswer answer) {

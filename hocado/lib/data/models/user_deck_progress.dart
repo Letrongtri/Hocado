@@ -1,15 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /* Tóm tắt tiến độ chung của người dùng với bộ flashcard */
 class UserDeckProgress {
+  final String udid; // 'uid_did'
   final String uid;
   final String did;
   final int newCardsCount;
   final int learningCardsCount;
   final DateTime? lastStudied;
+  // Lưu sau khi kết thúc phiên học
 
   UserDeckProgress({
+    required this.udid,
     required this.uid,
     required this.did,
     required this.newCardsCount,
@@ -18,6 +23,7 @@ class UserDeckProgress {
   });
 
   UserDeckProgress copyWith({
+    String? udid,
     String? uid,
     String? did,
     int? newCardsCount,
@@ -25,6 +31,7 @@ class UserDeckProgress {
     DateTime? lastStudied,
   }) {
     return UserDeckProgress(
+      udid: udid ?? this.udid,
       uid: uid ?? this.uid,
       did: did ?? this.did,
       newCardsCount: newCardsCount ?? this.newCardsCount,
@@ -35,22 +42,24 @@ class UserDeckProgress {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'udid': udid,
       'uid': uid,
       'did': did,
       'newCardsCount': newCardsCount,
       'learningCardsCount': learningCardsCount,
-      'lastStudied': lastStudied?.millisecondsSinceEpoch,
+      'lastStudied': lastStudied,
     };
   }
 
   factory UserDeckProgress.fromMap(Map<String, dynamic> map) {
     return UserDeckProgress(
+      udid: map['udid'] as String,
       uid: map['uid'] as String,
       did: map['did'] as String,
       newCardsCount: map['newCardsCount'] as int,
       learningCardsCount: map['learningCardsCount'] as int,
       lastStudied: map['lastStudied'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['lastStudied'] as int)
+          ? (map['lastStudied'] as Timestamp).toDate()
           : null,
     );
   }
@@ -62,14 +71,15 @@ class UserDeckProgress {
 
   @override
   String toString() {
-    return 'UserDeckProgress(uid: $uid, did: $did, newCardsCount: $newCardsCount, learningCardsCount: $learningCardsCount, lastStudied: $lastStudied)';
+    return 'UserDeckProgress(udid: $udid, uid: $uid, did: $did, newCardsCount: $newCardsCount, learningCardsCount: $learningCardsCount, lastStudied: $lastStudied)';
   }
 
   @override
   bool operator ==(covariant UserDeckProgress other) {
     if (identical(this, other)) return true;
 
-    return other.uid == uid &&
+    return other.udid == udid &&
+        other.uid == uid &&
         other.did == did &&
         other.newCardsCount == newCardsCount &&
         other.learningCardsCount == learningCardsCount &&
@@ -78,10 +88,25 @@ class UserDeckProgress {
 
   @override
   int get hashCode {
-    return uid.hashCode ^
+    return udid.hashCode ^
+        uid.hashCode ^
         did.hashCode ^
         newCardsCount.hashCode ^
         learningCardsCount.hashCode ^
         lastStudied.hashCode;
+  }
+
+  factory UserDeckProgress.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return UserDeckProgress(
+      udid: data['udid'] as String,
+      uid: data['uid'] as String,
+      did: data['did'] as String,
+      newCardsCount: data['newCardsCount'] as int,
+      learningCardsCount: data['learningCardsCount'] as int,
+      lastStudied: data['lastStudied'] != null
+          ? (data['lastStudied'] as Timestamp).toDate()
+          : null,
+    );
   }
 }
