@@ -11,6 +11,7 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
   DeckRepository get _repo => ref.read(deckRepositoryProvider);
   SavedDeckRepository get _savedRepo => ref.read(savedDeckRepositoryProvider);
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
+  UserRepository get _userRepo => ref.read(userRepositoryProvider);
 
   @override
   FutureOr<DeckState> build() async {
@@ -66,6 +67,9 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       if (index != null && index != -1) {
         currentDecks.removeAt(index);
       }
+    } else {
+      final field = "createdDecksCount";
+      _userRepo.incrementCount(_currentUser!.uid, field);
     }
 
     final newMyDecks = [updatedDeck, ...currentDecks];
@@ -99,6 +103,9 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     try {
       await _repo.delete(did);
 
+      final field = "createdDecksCount";
+      _userRepo.decrementCount(_currentUser!.uid, field);
+
       final updatedDecks = List<Deck>.from(decks)..removeAt(index);
 
       state = AsyncData(currentState.copyWith(myDecks: updatedDecks));
@@ -131,6 +138,9 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
 
       await _savedRepo.saveDeck(user.uid, savedDeck);
 
+      final field = "savedDecksCount";
+      _userRepo.incrementCount(_currentUser!.uid, field);
+
       final updatedDecks = [savedDeck, ...decks];
 
       state = AsyncData(currentState.copyWith(savedDecks: updatedDecks));
@@ -154,6 +164,9 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
 
     try {
       await _savedRepo.unsaveDeck(user.uid, did);
+
+      final field = "savedDecksCount";
+      _userRepo.decrementCount(_currentUser!.uid, field);
 
       final updatedDecks = List<SavedDeck>.from(decks)..removeAt(index);
 

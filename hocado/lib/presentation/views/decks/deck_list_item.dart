@@ -39,7 +39,7 @@ class DeckListItem extends StatelessWidget {
 
       title: Text(title, style: theme.textTheme.titleMedium),
       subtitle: Text(
-        formatDateTime(lastUpdated),
+        formatTimeAgo(lastUpdated),
         style: theme.textTheme.bodySmall,
       ),
 

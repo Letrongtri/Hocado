@@ -30,3 +30,7 @@ export 'learning_settings/learning_settings_view_model.dart';
 // search
 export 'search/search_state.dart';
 export 'search/search_view_model.dart';
+
+// profile
+export 'profile/profile_state.dart';
+export 'profile/profile_view_model.dart';

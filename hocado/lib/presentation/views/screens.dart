@@ -7,3 +7,4 @@ export 'home/home_screen.dart';
 export 'learn/learn_screen.dart';
 export 'learning_settings/learning_settings_screen.dart';
 export 'search/search_screen.dart';
+export 'profile/profile_screen.dart';

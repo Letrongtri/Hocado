@@ -22,6 +22,14 @@ export 'study_session/study_session_repository.dart';
 // user flashcard progress
 export 'user_flashcard_progress/user_flashcard_progress_repo.dart';
 
+// user
+export 'user/user_repository.dart';
+export 'user/user_repository_impl.dart';
+
+// user archievement
+export 'user_archievement/user_archievement_repository.dart';
+export 'user_archievement/user_archievement_repository_impl.dart';
+
 // daily learning stat
 export 'daily_learning_stat/daily_learning_stat_repository.dart';
 export 'daily_learning_stat/daily_learning_stat_repository_impl.dart';

@@ -22,7 +22,7 @@ class DailyLearningStat {
     required this.totalCardsReviewed,
     required this.totalCorrect,
     required this.totalIncorrect,
-    required this.totalNewCardsLearned,
+    this.totalNewCardsLearned = 0,
   });
 
   DailyLearningStat copyWith({

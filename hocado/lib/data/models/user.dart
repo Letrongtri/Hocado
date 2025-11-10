@@ -12,9 +12,13 @@ class User {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? lastLogin;
-  final int totalPoints;
-
-  // mật khẩu không lưu trực tiếp trong model này
+  final int xp;
+  final int level;
+  final int nextLevelXp;
+  final int followersCount;
+  final int followingCount;
+  final int createdDecksCount;
+  final int savedDecksCount;
 
   User({
     required this.uid,
@@ -24,8 +28,14 @@ class User {
     required this.phone,
     required this.createdAt,
     required this.updatedAt,
-    required this.lastLogin,
-    required this.totalPoints,
+    this.lastLogin,
+    this.xp = 0,
+    this.level = 1,
+    this.nextLevelXp = 0,
+    this.createdDecksCount = 0,
+    this.savedDecksCount = 0,
+    this.followersCount = 0,
+    this.followingCount = 0,
   });
 
   User copyWith({
@@ -37,7 +47,13 @@ class User {
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? lastLogin,
-    int? totalPoints,
+    int? xp,
+    int? level,
+    int? nextLevelXp,
+    int? followersCount,
+    int? followingCount,
+    int? createdDecksCount,
+    int? savedDecksCount,
   }) {
     return User(
       uid: uid ?? this.uid,
@@ -48,7 +64,13 @@ class User {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       lastLogin: lastLogin ?? this.lastLogin,
-      totalPoints: totalPoints ?? this.totalPoints,
+      xp: xp ?? this.xp,
+      level: level ?? this.level,
+      nextLevelXp: nextLevelXp ?? this.nextLevelXp,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
+      createdDecksCount: createdDecksCount ?? this.createdDecksCount,
+      savedDecksCount: savedDecksCount ?? this.savedDecksCount,
     );
   }
 
@@ -62,7 +84,13 @@ class User {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'lastLogin': lastLogin,
-      'totalPoints': totalPoints,
+      'xp': xp,
+      'level': level,
+      'nextLevelXp': nextLevelXp,
+      'followersCount': followersCount,
+      'followingCount': followingCount,
+      'createdDecksCount': createdDecksCount,
+      'savedDecksCount': savedDecksCount,
     };
   }
 
@@ -78,7 +106,13 @@ class User {
       lastLogin: map['lastLogin'] != null
           ? (map['lastLogin'] as Timestamp).toDate()
           : null,
-      totalPoints: map['totalPoints'] as int,
+      xp: map['xp'] as int,
+      level: map['level'] as int,
+      nextLevelXp: map['nextLevelXp'] as int,
+      followersCount: map['followersCount'] as int,
+      followingCount: map['followingCount'] as int,
+      createdDecksCount: map['createdDecksCount'] as int,
+      savedDecksCount: map['savedDecksCount'] as int,
     );
   }
 
@@ -89,7 +123,7 @@ class User {
 
   @override
   String toString() {
-    return 'User(uid: $uid, email: $email, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, totalPoints: $totalPoints)';
+    return 'User(uid: $uid, email: $email, avatarUrl: $avatarUrl, fullName: $fullName, phone: $phone, createdAt: $createdAt, updatedAt: $updatedAt, lastLogin: $lastLogin, xp: $xp, level: $level, nextLevelXp: $nextLevelXp, followersCount: $followersCount, followingCount: $followingCount, createdDecksCount: $createdDecksCount, savedDecksCount: $savedDecksCount)';
   }
 
   @override
@@ -104,7 +138,13 @@ class User {
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt &&
         other.lastLogin == lastLogin &&
-        other.totalPoints == totalPoints;
+        other.xp == xp &&
+        other.level == level &&
+        other.nextLevelXp == nextLevelXp &&
+        other.followersCount == followersCount &&
+        other.followingCount == followingCount &&
+        other.createdDecksCount == createdDecksCount &&
+        other.savedDecksCount == savedDecksCount;
   }
 
   @override
@@ -117,7 +157,13 @@ class User {
         createdAt.hashCode ^
         updatedAt.hashCode ^
         lastLogin.hashCode ^
-        totalPoints.hashCode;
+        xp.hashCode ^
+        level.hashCode ^
+        nextLevelXp.hashCode ^
+        followersCount.hashCode ^
+        followingCount.hashCode ^
+        createdDecksCount.hashCode ^
+        savedDecksCount.hashCode;
   }
 
   // Phương thức để chuyển đổi từ Firestore DocumentSnapshot sang UserModel
@@ -129,12 +175,18 @@ class User {
       avatarUrl: data['avatarUrl'],
       fullName: data['fullName'],
       phone: data['phone'],
-      totalPoints: data['totalPoints'] ?? 0,
+      xp: data['xp'] ?? 0,
+      level: data['level'] ?? 1,
+      nextLevelXp: data['nextLevelXp'] ?? 0,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       updatedAt: (data['updatedAt'] as Timestamp).toDate(),
       lastLogin: data['lastLogin'] != null
           ? (data['lastLogin'] as Timestamp).toDate()
           : null,
+      followersCount: data['followersCount'] ?? 0,
+      followingCount: data['followingCount'] ?? 0,
+      createdDecksCount: data['createdDecksCount'] ?? 0,
+      savedDecksCount: data['savedDecksCount'] ?? 0,
     );
   }
 }

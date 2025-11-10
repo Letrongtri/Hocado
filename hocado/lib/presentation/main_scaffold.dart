@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hocado/app/provider/auth_provider.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 
 class MainScaffold extends ConsumerWidget {
@@ -36,11 +38,14 @@ class MainScaffold extends ConsumerWidget {
           onDestinationSelected: (index) {
             final destination = _indexToRoute(index);
             if (destination != location) {
-              // TODO: thay go thành goNamed
-              if (destination == '/create') {
-                context.push(destination);
+              if (destination == AppRoutes.createDecks.name) {
+                context.pushNamed(destination);
+              } else if (destination == AppRoutes.profile.name) {
+                final userId = ref.watch(currentUserProvider)?.uid;
+                if (userId == null || userId.isEmpty) return;
+                context.goNamed(destination, pathParameters: {'uid': userId});
               } else {
-                context.go(destination);
+                context.goNamed(destination);
               }
             }
           },
@@ -87,21 +92,20 @@ class MainScaffold extends ConsumerWidget {
   int _locationToIndex(String location) {
     if (location.startsWith('/decks')) return 1;
     if (location.startsWith('/create')) return 2;
-    if (location.startsWith('/profile')) return 3;
+    if (location.startsWith('/users')) return 3;
     return 0; // default: home
   }
 
-  // TODO: Sửa lại hàm này chuyển path thành path_name
   String _indexToRoute(int index) {
     switch (index) {
       case 1:
-        return '/decks';
+        return AppRoutes.decks.name;
       case 2:
-        return '/create';
+        return AppRoutes.createDecks.name;
       case 3:
-        return '/add';
+        return AppRoutes.profile.name;
       default:
-        return '/home';
+        return AppRoutes.home.name;
     }
   }
 }

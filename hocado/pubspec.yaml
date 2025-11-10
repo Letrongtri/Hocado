@@ -54,6 +54,7 @@ dependencies:
   collection: ^1.19.1
   shared_preferences: ^2.5.3
   confetti: ^0.8.0
+  material_charts: ^0.0.39
 
 dev_dependencies:
   flutter_test:

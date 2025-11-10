@@ -24,13 +24,13 @@ class LearningActivity {
     required this.uid,
     required this.timestamp,
     required this.type,
-    required this.did,
-    required this.deckName,
-    required this.durationMinutes,
-    required this.cardsReviewed,
-    required this.cardsCorrect,
-    required this.cardsIncorrect,
-    required this.newCardsLearned,
+    this.did,
+    this.deckName,
+    this.durationMinutes,
+    this.cardsReviewed,
+    this.cardsCorrect,
+    this.cardsIncorrect,
+    this.newCardsLearned,
   });
 
   LearningActivity copyWith({

@@ -9,4 +9,5 @@ enum AppRoutes {
   editDeck,
   learningSettings,
   search,
+  profile,
 }

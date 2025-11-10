@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hocado/data/models/models.dart';
-import 'package:hocado/data/repositories/repositories.dart';
+
+typedef SearchSavedDecksResult = ({
+  List<Deck> decks,
+  DocumentSnapshot? lastDocument,
+});
 
 abstract class SavedDeckRepository {
   Future<List<SavedDeck>> getSavedDecksByUserId(String id);
@@ -9,7 +13,7 @@ abstract class SavedDeckRepository {
 
   Future<void> saveDeck(String userId, SavedDeck savedDeck);
 
-  Future<SearchDecksResult> searchDecks({
+  Future<SearchSavedDecksResult> searchSavedDecks({
     required String id,
     String? search,
     DocumentSnapshot? lastDocument,

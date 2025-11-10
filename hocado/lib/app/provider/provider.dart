@@ -13,3 +13,4 @@ export 'study_session_provider.dart';
 export 'user_flashcard_progress_provider.dart';
 export 'learning_activity_provider.dart';
 export 'user_deck_progress_provider.dart';
+export 'user_provider.dart';

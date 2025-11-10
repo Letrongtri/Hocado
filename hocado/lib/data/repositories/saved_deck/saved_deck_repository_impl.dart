@@ -43,7 +43,7 @@ class SavedDeckRepositoryImpl implements SavedDeckRepository {
   }
 
   @override
-  Future<SearchDecksResult> searchDecks({
+  Future<SearchSavedDecksResult> searchSavedDecks({
     required String id,
     String? search,
     DocumentSnapshot? lastDocument,

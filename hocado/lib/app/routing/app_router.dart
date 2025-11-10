@@ -79,6 +79,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: AppRoutes.decks.name,
             builder: (context, state) => DecksScreen(),
           ),
+          GoRoute(
+            path: '/users/:uid',
+            name: AppRoutes.profile.name,
+            builder: (context, state) {
+              final uid = state.pathParameters['uid']!;
+              return ProfileScreen(userId: uid);
+            },
+          ),
         ],
       ),
       GoRoute(
