@@ -16,7 +16,11 @@ final flashcardServiceProvider = Provider<FlashcardService>(
 final flashcardRepositoryProvider = Provider<FlashcardRepository>(
   (ref) {
     final flashcardService = ref.read(flashcardServiceProvider);
-    return FlashcardRepositoryImpl(flashcardService: flashcardService);
+    final geminiService = ref.read(geminiServiceProvider);
+    return FlashcardRepositoryImpl(
+      flashcardService: flashcardService,
+      geminiService: geminiService,
+    );
   },
 );
 

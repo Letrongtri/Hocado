@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:hocado/data/models/flashcard.dart';
 import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/data/services/services.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   final FlashcardService _flashcardService;
+  final GeminiService _geminiService;
 
-  FlashcardRepositoryImpl({required FlashcardService flashcardService})
-    : _flashcardService = flashcardService;
+  FlashcardRepositoryImpl({
+    required FlashcardService flashcardService,
+    required GeminiService geminiService,
+  }) : _flashcardService = flashcardService,
+       _geminiService = geminiService;
 
   @override
   Future<void> createAndUpdateFlashcards(
@@ -19,7 +25,6 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
         deckId,
       );
     } catch (e) {
-      print(e);
       throw Exception("Could not create flashcards");
     }
   }
@@ -57,6 +62,38 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
       return await _flashcardService.deleteFlashcardsByDeckId(deckId);
     } catch (e) {
       throw Exception("Could not delete flashcards by deck id");
+    }
+  }
+
+  @override
+  Future<List<Flashcard>> generateFlashcardsFromText(String text) async {
+    final prompt =
+        '''
+          You are an AI that generates flashcards from a given text. Your task is to read the provided content and create a set of flashcards that capture its key ideas.
+          Follow these rules strictly:
+            1. Produce pairs of concise questions (“front”) and succinct answers (“back”) that summarize the main points of the input text.
+            2. Keep every question short and direct; keep every answer brief and clear.
+            3. Your output must be a pure JSON array only — no markdown formatting, no code fences, no explanations, no introductory sentences.
+            4. JSON structure: [{"front": "Question", "back": "Answer"}]
+          Here is the input text to process:
+          $text
+        ''';
+
+    final rawResponse = await _geminiService.generateContent(prompt);
+
+    if (rawResponse == null) {
+      throw Exception("Could not generate flashcards from text");
+    }
+
+    try {
+      final List<dynamic> jsonList = jsonDecode(rawResponse);
+
+      final result = jsonList.map((e) => Flashcard.fromGemini(e)).toList();
+      print(result);
+
+      return result;
+    } catch (e) {
+      throw Exception("Format error: $e");
     }
   }
 }

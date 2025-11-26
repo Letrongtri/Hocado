@@ -18,4 +18,6 @@ abstract class FlashcardRepository {
   Future<void> deleteFlashcardsByDeckId(
     String deckId,
   );
+
+  Future<List<Flashcard>> generateFlashcardsFromText(String text);
 }

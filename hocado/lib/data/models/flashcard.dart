@@ -22,7 +22,7 @@ class Flashcard {
     required this.back,
     this.frontImageUrl,
     this.backImageUrl,
-    required this.note,
+    this.note,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -143,6 +143,17 @@ class Flashcard {
       front: '',
       back: '',
       note: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  factory Flashcard.fromGemini(Map<String, dynamic> data) {
+    return Flashcard(
+      fid: Uuid().v4(),
+      did: '',
+      front: data['front'] as String,
+      back: data['back'] as String,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

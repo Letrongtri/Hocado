@@ -10,13 +10,31 @@ import 'package:hocado/presentation/widgets/hocado_back.dart';
 import 'package:hocado/presentation/widgets/hocado_divider.dart';
 import 'package:hocado/presentation/widgets/hocado_switch.dart';
 
-class CreateDeckScreen extends ConsumerWidget {
+class CreateDeckScreen extends ConsumerStatefulWidget {
   final String? did;
+  final List<Flashcard>? flashcards;
 
-  const CreateDeckScreen({super.key, this.did});
+  const CreateDeckScreen({super.key, this.did, this.flashcards});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CreateDeckScreenState();
+}
+
+class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
+  String? did;
+  List<Flashcard>? flashcards;
+  bool _hasLoadedAiCards = false;
+
+  @override
+  void initState() {
+    super.initState();
+    did = widget.did;
+    flashcards = widget.flashcards;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final asyncCreateState = ref.watch(createDeckViewModelProvider(did));
@@ -33,6 +51,20 @@ class CreateDeckScreen extends ConsumerWidget {
         ),
       ),
       data: (createState) {
+        if (widget.flashcards != null && !_hasLoadedAiCards) {
+          Future.microtask(() {
+            if (mounted) {
+              ref
+                  .read(createDeckViewModelProvider(widget.did).notifier)
+                  .loadGeneratedFlashcards(widget.flashcards!);
+
+              setState(() {
+                _hasLoadedAiCards = true;
+              });
+            }
+          });
+        }
+
         final deck = createState.deck;
         final cardList = createState.flashcards;
 

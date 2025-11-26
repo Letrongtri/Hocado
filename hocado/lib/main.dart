@@ -2,6 +2,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_router.dart';
@@ -15,6 +17,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final sharedPrefs = await SharedPreferences.getInstance();
+
+  await dotenv.load();
+  Gemini.init(apiKey: dotenv.env['GOOGLE_GEMINI_API_KEY']!);
+
   runApp(
     ProviderScope(
       overrides: [

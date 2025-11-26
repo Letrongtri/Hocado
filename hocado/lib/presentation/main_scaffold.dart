@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/auth_provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
+import 'package:hocado/presentation/views/create_deck/create_options.dart';
 
 class MainScaffold extends ConsumerWidget {
   final Widget child;
@@ -39,7 +40,8 @@ class MainScaffold extends ConsumerWidget {
             final destination = _indexToRoute(index);
             if (destination != location) {
               if (destination == AppRoutes.createDecks.name) {
-                context.pushNamed(destination);
+                // context.pushNamed(destination);
+                showCreateOptions(context, ref);
               } else if (destination == AppRoutes.profile.name) {
                 final userId = ref.watch(currentUserProvider)?.uid;
                 if (userId == null || userId.isEmpty) return;

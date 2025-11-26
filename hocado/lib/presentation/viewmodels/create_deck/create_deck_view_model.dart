@@ -153,7 +153,14 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
   Future<void> saveChanges() async {
     if (!state.hasValue) throw Exception("State không hợp lệ");
 
-    final currentState = state.value!;
+    final deckName = state.value!.deck.name.trim().isEmpty
+        ? state.value!.deck.did
+        : state.value!.deck.name.trim();
+
+    final currentState = state.value!.copyWith(
+      deck: state.value!.deck.copyWith(name: deckName),
+    );
+
     final now = DateTime.now();
 
     // Gọi các hàm của SSOT ViewModel để cập nhật dữ liệu gốc
@@ -190,5 +197,15 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
           .read(flashcardsViewModelProvider(did!).notifier)
           .deleteFlashcards(did!);
     }
+  }
+
+  void loadGeneratedFlashcards(List<Flashcard> flashcards) {
+    if (!state.hasValue) return;
+    final currentDid = state.value!.deck.did;
+    final newCards = flashcards
+        .map((card) => card.copyWith(did: currentDid))
+        .toList();
+
+    state = AsyncData(state.value!.copyWith(flashcards: newCards));
   }
 }

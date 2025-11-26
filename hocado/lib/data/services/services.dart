@@ -11,3 +11,5 @@ export 'user_archievement_service.dart';
 export 'daily_learning_stat_service.dart';
 export 'learning_activity_service.dart';
 export 'user_deck_progress_service.dart';
+export 'file_service.dart';
+export 'gemini_service.dart';

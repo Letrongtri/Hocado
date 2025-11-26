@@ -92,7 +92,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/create',
         name: AppRoutes.createDecks.name,
-        builder: (context, state) => CreateDeckScreen(),
+        builder: (context, state) {
+          final flashcards = state.extra as List<Flashcard>?;
+          print(state.extra);
+          return CreateDeckScreen(flashcards: flashcards);
+        },
       ),
       GoRoute(
         path: '/decks/:did',
