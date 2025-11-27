@@ -222,10 +222,7 @@ class DetailDeckScreen extends ConsumerWidget {
             ),
           ),
           onPressed: () {
-            context.pushNamed(
-              AppRoutes.learningSettings.name,
-              pathParameters: {'did': deckId},
-            );
+            showLearningOptionsSheet(context);
           },
           child: const Text(
             'Bắt đầu học',
@@ -233,6 +230,51 @@ class DetailDeckScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void showLearningOptionsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (sheetContext) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.sm,
+            vertical: Sizes.md,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.menu_book_rounded),
+                title: const Text('Học bộ thẻ'),
+                onTap: () {
+                  sheetContext.pop();
+                  context.pushNamed(
+                    AppRoutes.learningSettings.name,
+                    pathParameters: {'did': deckId},
+                    queryParameters: {'mode': 'learn'},
+                  );
+                },
+              ),
+              SizedBox(height: Sizes.sm),
+              ListTile(
+                leading: const Icon(Icons.quiz_outlined),
+                title: const Text('Kiểm tra'),
+                onTap: () {
+                  sheetContext.pop();
+                  context.pushNamed(
+                    AppRoutes.learningSettings.name,
+                    pathParameters: {'did': deckId},
+                    queryParameters: {'mode': 'test'},
+                  );
+                },
+              ),
+              SizedBox(height: Sizes.xl * 1.5),
+            ],
+          ),
+        );
+      },
     );
   }
 

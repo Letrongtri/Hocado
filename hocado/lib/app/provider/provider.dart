@@ -7,6 +7,7 @@ export 'create_deck_provider.dart';
 export 'detail_deck_provider.dart';
 export 'flashcard_provider.dart';
 export 'learn_provider.dart';
+export 'test_provider.dart';
 export 'search_provider.dart';
 export 'settings_provider.dart';
 export 'study_session_provider.dart';

@@ -24,6 +24,10 @@ export 'flashcards/flashcards_view_model.dart';
 export 'learn/learn_state.dart';
 export 'learn/learn_view_model.dart';
 
+// test
+export 'test/test_state.dart';
+export 'test/test_view_model.dart';
+
 // learning settings
 export 'learning_settings/learning_settings_view_model.dart';
 

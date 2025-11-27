@@ -11,8 +11,13 @@ import 'package:hocado/presentation/widgets/hocado_switch.dart';
 
 class LearningSettingsScreen extends ConsumerWidget {
   final String did;
+  final String mode;
 
-  const LearningSettingsScreen({super.key, required this.did});
+  const LearningSettingsScreen({
+    super.key,
+    required this.did,
+    required this.mode,
+  });
 
   LearningSettings _updateQuestionType(
     bool value,
@@ -72,24 +77,25 @@ class LearningSettingsScreen extends ConsumerWidget {
                 children: [
                   // Question Types
                   _buildSectionTitle(context, 'Loại câu hỏi', theme),
-                  _buildToggleOption(
-                    ref,
-                    'Flashcards',
-                    theme,
-                    settings.questionTypes.contains(
-                      QuestionTypes.flashcard.name,
-                    ),
-                    (value) {
-                      final newSettings = _updateQuestionType(
-                        value,
-                        settings,
+                  if (mode == 'learn')
+                    _buildToggleOption(
+                      ref,
+                      'Flashcards',
+                      theme,
+                      settings.questionTypes.contains(
                         QuestionTypes.flashcard.name,
-                      );
+                      ),
+                      (value) {
+                        final newSettings = _updateQuestionType(
+                          value,
+                          settings,
+                          QuestionTypes.flashcard.name,
+                        );
 
-                      // Gọi notifier để cập nhật state
-                      notifier.updateSettings(newSettings);
-                    },
-                  ),
+                        // Gọi notifier để cập nhật state
+                        notifier.updateSettings(newSettings);
+                      },
+                    ),
                   _buildToggleOption(
                     ref,
                     'Nhiều lựa chọn',
@@ -202,7 +208,8 @@ class LearningSettingsScreen extends ConsumerWidget {
 
                   // Learning Options
                   _buildSectionTitle(context, 'Tùy chọn học tập', theme),
-                  _buildLengthOfRounds(ref, theme, settings, notifier),
+                  if (mode == 'learn')
+                    _buildLengthOfRounds(ref, theme, settings, notifier),
                   _buildToggleOption(
                     ref,
                     'Chỉ học cụm từ có dấu sao',
@@ -361,11 +368,19 @@ class LearningSettingsScreen extends ConsumerWidget {
 
           if (!context.mounted) return; // tránh lỗi khi widget bị dispose
 
-          context.pushReplacementNamed(
-            AppRoutes.learnDeck.name,
-            pathParameters: {'did': did},
-            extra: settings,
-          );
+          if (mode == 'learn') {
+            context.pushReplacementNamed(
+              AppRoutes.learnDeck.name,
+              pathParameters: {'did': did},
+              extra: settings,
+            );
+          } else if (mode == 'test') {
+            context.pushReplacementNamed(
+              AppRoutes.testDeck.name,
+              pathParameters: {'did': did},
+              extra: settings,
+            );
+          }
         },
         child: const Text(
           'Bắt đầu học',

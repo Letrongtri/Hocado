@@ -94,7 +94,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.createDecks.name,
         builder: (context, state) {
           final flashcards = state.extra as List<Flashcard>?;
-          print(state.extra);
           return CreateDeckScreen(flashcards: flashcards);
         },
       ),
@@ -119,7 +118,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.learningSettings.name,
         builder: (context, state) {
           final did = state.pathParameters['did']!;
-          return LearningSettingsScreen(did: did);
+          final mode = state.uri.queryParameters['mode'];
+          return LearningSettingsScreen(did: did, mode: mode ?? 'learn');
         },
       ),
       GoRoute(
@@ -129,6 +129,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           final settings = state.extra as LearningSettings;
           final did = state.pathParameters['did']!;
           return LearnScreen(
+            did: did,
+            settings: settings,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/decks/:did/test',
+        name: AppRoutes.testDeck.name,
+        builder: (context, state) {
+          final settings = state.extra as LearningSettings;
+          final did = state.pathParameters['did']!;
+          return TestScreen(
             did: did,
             settings: settings,
           );

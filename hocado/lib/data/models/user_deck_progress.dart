@@ -8,8 +8,8 @@ class UserDeckProgress {
   final String udid; // 'uid_did'
   final String uid;
   final String did;
-  final int newCardsCount;
-  final int learningCardsCount;
+  final int? newCardsCount;
+  final int? learningCardsCount;
   final DateTime? lastStudied;
   // Lưu sau khi kết thúc phiên học
 
@@ -17,8 +17,8 @@ class UserDeckProgress {
     required this.udid,
     required this.uid,
     required this.did,
-    required this.newCardsCount,
-    required this.learningCardsCount,
+    this.newCardsCount,
+    this.learningCardsCount,
     this.lastStudied,
   });
 
@@ -56,8 +56,12 @@ class UserDeckProgress {
       udid: map['udid'] as String,
       uid: map['uid'] as String,
       did: map['did'] as String,
-      newCardsCount: map['newCardsCount'] as int,
-      learningCardsCount: map['learningCardsCount'] as int,
+      newCardsCount: map['newCardsCount'] != null
+          ? map['newCardsCount'] as int
+          : null,
+      learningCardsCount: map['learningCardsCount'] != null
+          ? map['learningCardsCount'] as int
+          : null,
       lastStudied: map['lastStudied'] != null
           ? (map['lastStudied'] as Timestamp).toDate()
           : null,
@@ -102,8 +106,12 @@ class UserDeckProgress {
       udid: data['udid'] as String,
       uid: data['uid'] as String,
       did: data['did'] as String,
-      newCardsCount: data['newCardsCount'] as int,
-      learningCardsCount: data['learningCardsCount'] as int,
+      newCardsCount: data['newCardsCount'] != null
+          ? data['newCardsCount'] as int
+          : null,
+      learningCardsCount: data['learningCardsCount'] != null
+          ? data['learningCardsCount'] as int
+          : null,
       lastStudied: data['lastStudied'] != null
           ? (data['lastStudied'] as Timestamp).toDate()
           : null,
