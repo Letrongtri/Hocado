@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/user_provider.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/viewmodels/profile/profile_state.dart';
 import 'package:hocado/presentation/views/profile/achievements_section.dart';
@@ -59,7 +61,9 @@ class ProfileScreen extends ConsumerWidget {
           SizedBox(width: Sizes.sm),
           IconButton.filled(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
+            onPressed: () {
+              context.pushNamed(AppRoutes.appSettings.name);
+            },
             style: IconButton.styleFrom(
               backgroundColor: theme.colorScheme.secondary,
               foregroundColor: theme.colorScheme.onPrimary,

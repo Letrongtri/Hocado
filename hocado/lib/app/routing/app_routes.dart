@@ -11,4 +11,5 @@ enum AppRoutes {
   learningSettings,
   search,
   profile,
+  appSettings,
 }
