@@ -13,5 +13,8 @@ class Images {
   static const String flashcardIcon = "assets/icons/flash-cards.png";
 
   // backgrounds
-  static const String bg1 = "assets/images/bg_1.jpg";
+  static const String profileBg = "assets/images/profile_background.png";
+
+  // avatars
+  static const String avatarDefault = "assets/images/default_avatar.png";
 }

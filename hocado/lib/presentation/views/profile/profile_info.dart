@@ -4,6 +4,7 @@ import 'package:hocado/core/constants/images.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/user.dart';
 import 'package:hocado/presentation/views/profile/profile_stats_info.dart';
+import 'package:hocado/presentation/widgets/hocado_avatar.dart';
 import 'package:hocado/utils/format_date_time.dart';
 
 class ProfileInfo extends StatelessWidget {
@@ -27,7 +28,10 @@ class ProfileInfo extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
-                image: DecorationImage(image: AssetImage(Images.bg1)),
+                image: DecorationImage(
+                  image: AssetImage(Images.profileBg),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             // Nội dung chính
@@ -41,16 +45,7 @@ class ProfileInfo extends StatelessWidget {
                   children: [
                     SizedBox(width: Sizes.md),
                     // Avatar
-                    const CircleAvatar(
-                      radius: 52,
-                      backgroundColor: Colors.white, // Viền trắng
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                          'https://i.imgur.com/example.png',
-                        ), // Thay bằng ảnh avatar thật
-                      ),
-                    ),
+                    HocadoAvatar(user: user),
                     Spacer(),
                     IconButton(
                       icon: Icon(

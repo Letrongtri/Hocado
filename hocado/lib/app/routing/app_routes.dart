@@ -12,4 +12,5 @@ enum AppRoutes {
   search,
   profile,
   appSettings,
+  profileSettings,
 }

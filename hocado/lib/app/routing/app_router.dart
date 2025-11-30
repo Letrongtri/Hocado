@@ -156,6 +156,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.appSettings.name,
         builder: (context, state) => AppSettingsScreen(),
       ),
+      GoRoute(
+        path: '/profile-settings',
+        name: AppRoutes.profileSettings.name,
+        builder: (context, state) => ProfileSettingsScreen(),
+      ),
     ],
 
     // Optional: Xử lý lỗi khi không tìm thấy route

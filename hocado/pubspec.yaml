@@ -48,7 +48,7 @@ dependencies:
   build_runner: ^2.9.0
   flutter_slidable: ^4.0.3
   uuid: ^4.5.1
-  image_picker: ^1.2.0
+  image_picker: ^1.2.1
   timeago: ^3.7.1
   smooth_page_indicator: ^1.2.1
   collection: ^1.19.1
@@ -61,6 +61,7 @@ dependencies:
   flutter_gemini: ^3.0.0
   flutter_dotenv: ^6.0.0
   doc_text_extractor: ^2.0.0
+  firebase_storage: ^13.0.4
 
 dev_dependencies:
   flutter_test:

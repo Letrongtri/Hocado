@@ -1,11 +1,8 @@
 import 'package:hocado/data/models/models.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class UserRepository {
-  // Future<List<User>> getDecksByUserId(String id);
-
-  // Future<void> delete(String id);
-
-  Future<void> updateUser(User user);
+  Future<void> updateUser(User user, XFile? avatar);
 
   Future<void> deleteUser(String id);
 
@@ -15,11 +12,5 @@ abstract class UserRepository {
 
   Future<void> decrementCount(String uid, String field, {int count = 1});
 
-  // Future<SearchDecksResult> searchDecks({
-  //   required String id,
-  //   bool isFindingPublic,
-  //   String? search,
-  //   DocumentSnapshot? lastDocument,
-  //   int limit = 10,
-  // });
+  Stream<User> getUserStream(String uid);
 }

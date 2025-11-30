@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/widgets/hocado_back.dart';
+import 'package:hocado/presentation/widgets/hocado_dialog.dart';
 
-class AppSettingsScreen extends StatelessWidget {
+class AppSettingsScreen extends ConsumerWidget {
   const AppSettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -17,7 +22,7 @@ class AppSettingsScreen extends StatelessWidget {
         leading: HocadoBack(),
         title: Text(
           'Cài đặt',
-          style: theme.textTheme.headlineMedium,
+          style: theme.textTheme.headlineSmall,
         ),
         centerTitle: false,
       ),
@@ -40,7 +45,9 @@ class AppSettingsScreen extends StatelessWidget {
                 theme,
                 icon: Icons.person,
                 title: 'Cài đặt tài khoản',
-                onTap: () {},
+                onTap: () {
+                  context.pushNamed(AppRoutes.profileSettings.name);
+                },
               ),
               SizedBox(height: Sizes.sm),
               _buildSettingItem(
@@ -99,7 +106,20 @@ class AppSettingsScreen extends StatelessWidget {
                 iconColor: AppColors.incorrectColorBg,
                 title: 'Đăng xuất',
                 hasTrailing: false,
-                onTap: () {},
+                onTap: () async {
+                  final confirm = await showConfirmDialog(
+                    context,
+                    "Đăng xuất",
+                    "Bạn có chắc muốn đăng xuất?",
+                  );
+
+                  if (confirm == null || !confirm) return;
+
+                  ref.read(profileSettingsViewModelProvider.notifier).signOut();
+                  if (context.mounted) {
+                    showSuccessSnackbar(context, "Đăng xuất thành công!");
+                  }
+                },
               ),
             ],
           ),

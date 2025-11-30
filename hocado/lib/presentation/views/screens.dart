@@ -10,3 +10,4 @@ export 'search/search_screen.dart';
 export 'profile/profile_screen.dart';
 export 'test/test_screen.dart';
 export 'app_settings/app_settings_screen.dart';
+export 'profile_settings/profile_settings_screen.dart';

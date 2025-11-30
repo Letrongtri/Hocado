@@ -13,3 +13,4 @@ export 'learning_activity_service.dart';
 export 'user_deck_progress_service.dart';
 export 'file_service.dart';
 export 'gemini_service.dart';
+export 'storage_service.dart';

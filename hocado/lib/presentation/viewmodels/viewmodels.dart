@@ -38,3 +38,6 @@ export 'search/search_view_model.dart';
 // profile
 export 'profile/profile_state.dart';
 export 'profile/profile_view_model.dart';
+
+// profile settings
+export 'profile_settings/profile_settings_view_model.dart';

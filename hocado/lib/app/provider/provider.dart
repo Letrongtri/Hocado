@@ -17,3 +17,4 @@ export 'user_deck_progress_provider.dart';
 export 'user_provider.dart';
 export 'gemini_provider.dart';
 export 'file_provider.dart';
+export 'storage_provider.dart';

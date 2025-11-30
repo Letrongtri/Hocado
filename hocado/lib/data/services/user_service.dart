@@ -58,4 +58,12 @@ class UserService {
       throw Exception("Could not decrease count of user to database");
     }
   }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String uid) {
+    try {
+      return _firestore.collection('users').doc(uid).snapshots();
+    } catch (e) {
+      throw Exception("Could not fetch user from database");
+    }
+  }
 }

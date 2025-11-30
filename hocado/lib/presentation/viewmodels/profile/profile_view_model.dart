@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/data/models/models.dart';
-import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 class ProfileViewModel extends AsyncNotifier<ProfileState> {
@@ -12,15 +11,15 @@ class ProfileViewModel extends AsyncNotifier<ProfileState> {
 
   ProfileViewModel(this.uid);
 
-  UserRepository get _userRepo => ref.read(userRepositoryProvider);
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   @override
   FutureOr<ProfileState> build() async {
+    final user = await ref.watch(userProfileProvider(uid).future);
+
     final currentUserId = _currentUser?.uid;
     if (currentUserId == null) throw Exception('Bạn chưa đăng nhập.');
 
-    final user = await _userRepo.getUserById(uid);
     final isMyProfile = uid == currentUserId;
 
     final List<LearningActivity> mockActivities = [
