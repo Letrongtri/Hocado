@@ -41,3 +41,6 @@ export 'learning_activity/learning_activity_repository_impl.dart';
 // user deck progress
 export 'user_deck_progress/user_deck_progress_repository.dart';
 export 'user_deck_progress/user_deck_progress_repository_impl.dart';
+
+// notification
+export 'notification/notification_repository.dart';

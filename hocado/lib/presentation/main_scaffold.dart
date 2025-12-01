@@ -2,23 +2,96 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hocado/app/provider/auth_provider.dart';
+import 'package:hocado/app/provider/notification_provider.dart';
 import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
+import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/create_deck/create_options.dart';
 
-class MainScaffold extends ConsumerWidget {
+class MainScaffold extends ConsumerStatefulWidget {
   final Widget child;
   const MainScaffold({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainScaffoldState();
+}
+
+class _MainScaffoldState extends ConsumerState<MainScaffold> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupNotification();
+    });
+  }
+
+  void _setupNotification() {
+    ref.read(notificationViewModelProvider.notifier).setupInteractedMessage(
+      (message) {
+        if (mounted) {
+          _openNotification(context, message);
+        }
+      },
+    );
+  }
+
+  void _openNotification(BuildContext context, NotificationMessage noti) {
+    final metadata = noti.metadata ?? {};
+
+    switch (noti.type) {
+      case NotificationType.achievement:
+        final userId = metadata['uid'] as String;
+        if (userId.isNotEmpty) {
+          context.pushNamed(
+            AppRoutes.profile.name,
+            pathParameters: {'uid': userId},
+          );
+        } else {
+          context.pushNamed(AppRoutes.home.name);
+        }
+        break;
+      case NotificationType.reminder:
+        final deckId = metadata['did'] as String;
+        if (deckId.isNotEmpty) {
+          context.pushNamed(
+            AppRoutes.detailDeck.name,
+            pathParameters: {'did': deckId},
+          );
+        } else {
+          context.pushNamed(AppRoutes.home.name);
+        }
+        break;
+      case NotificationType.social:
+        final userId = metadata['uid'] as String;
+        if (userId.isNotEmpty) {
+          context.pushNamed(
+            AppRoutes.profile.name,
+            pathParameters: {'uid': userId},
+          );
+        } else {
+          context.pushNamed(AppRoutes.home.name);
+        }
+        break;
+      case NotificationType.promotion:
+        break;
+      default:
+        final specificRoute = metadata['route'];
+        if (specificRoute != null) {
+          context.push(specificRoute);
+        }
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final location = GoRouterState.of(context).uri.toString();
 
     final currentIndex = _locationToIndex(location);
 
     return Scaffold(
-      body: child,
+      body: widget.child,
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {

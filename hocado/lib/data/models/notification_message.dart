@@ -2,40 +2,49 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
-class Notification {
+enum NotificationType {
+  system, // Thông báo hệ thông (bảo trì, update, ...)
+  reminder, // Nhắc nhở ôn tập
+  achievement, // chúc mừng đạt danh hiệu, hoàn thành bộ thẻ,...
+  social, // follow, share deck
+  promotion, // giới thiệu gói/ tính năng pro, ...
+}
+
+class NotificationMessage {
   final String nid;
   final String uid;
   final String title;
   final String message;
-  final String type;
+  final NotificationType type;
   final bool isRead;
   final DateTime createdAt;
   final Map<String, dynamic>? metadata;
 
-  Notification({
+  NotificationMessage({
     required this.nid,
     required this.uid,
     required this.title,
     required this.message,
     required this.type,
-    required this.isRead,
+    this.isRead = false,
     required this.createdAt,
     this.metadata,
   });
 
-  Notification copyWith({
+  NotificationMessage copyWith({
     String? nid,
     String? uid,
     String? title,
     String? message,
-    String? type,
+    NotificationType? type,
     bool? isRead,
     DateTime? createdAt,
     Map<String, dynamic>? metadata,
   }) {
-    return Notification(
+    return NotificationMessage(
       nid: nid ?? this.nid,
       uid: uid ?? this.uid,
       title: title ?? this.title,
@@ -53,20 +62,20 @@ class Notification {
       'uid': uid,
       'title': title,
       'message': message,
-      'type': type,
+      'type': _parseTypeToString(type),
       'isRead': isRead,
       'createdAt': createdAt,
       'metadata': metadata,
     };
   }
 
-  factory Notification.fromMap(Map<String, dynamic> map) {
-    return Notification(
+  factory NotificationMessage.fromMap(Map<String, dynamic> map) {
+    return NotificationMessage(
       nid: map['nid'] as String,
       uid: map['uid'] as String,
       title: map['title'] as String,
       message: map['message'] as String,
-      type: map['type'] as String,
+      type: map['type'] as NotificationType,
       isRead: map['isRead'] as bool,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       metadata: map['metadata'] != null
@@ -77,8 +86,8 @@ class Notification {
 
   String toJson() => json.encode(toMap());
 
-  factory Notification.fromJson(String source) =>
-      Notification.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory NotificationMessage.fromJson(String source) =>
+      NotificationMessage.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -86,7 +95,7 @@ class Notification {
   }
 
   @override
-  bool operator ==(covariant Notification other) {
+  bool operator ==(covariant NotificationMessage other) {
     if (identical(this, other)) return true;
 
     return other.nid == nid &&
@@ -111,20 +120,72 @@ class Notification {
         metadata.hashCode;
   }
 
-  factory Notification.fromFirestore(DocumentSnapshot doc) {
+  factory NotificationMessage.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    return Notification(
+    return NotificationMessage(
       nid: data['nid'] as String,
       uid: data['uid'] as String,
       title: data['title'] as String,
       message: data['message'] as String,
-      type: data['type'] as String,
-      isRead: data['isRead'] as bool,
+      type: _parseType(data['type'] as String),
+      isRead: data['isRead'] != null ? data['isRead'] as bool : false,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       metadata: data['metadata'] != null
           ? Map<String, dynamic>.from(data['metadata'] as Map<String, dynamic>)
           : null,
     );
   }
+
+  // Factory để parse từ Firebase RemoteMessage
+  factory NotificationMessage.fromRemoteMessage(
+    RemoteMessage message, {
+    String? currentUid,
+  }) {
+    final data = message.data;
+    return NotificationMessage(
+      nid: data['nid'] ?? '',
+      uid: currentUid ?? '',
+      title: message.notification?.title ?? data['title'] ?? 'Thông báo mới',
+      message: message.notification?.body ?? data['message'] ?? '',
+      type: _parseType(data['type']),
+      createdAt: message.sentTime ?? DateTime.now(),
+      metadata: data,
+    );
+  }
+
+  // Helper chuyển đổi String sang Enum
+  static NotificationType _parseType(String? typeStr) {
+    switch (typeStr) {
+      case 'reminder':
+        return NotificationType.reminder;
+      case 'achievement':
+        return NotificationType.achievement;
+      case 'social':
+        return NotificationType.social;
+      case 'promotion':
+        return NotificationType.promotion;
+      default:
+        return NotificationType.system;
+    }
+  }
+
+  // Helper chuyển đổi Enum sang String
+  static String _parseTypeToString(NotificationType type) {
+    switch (type) {
+      case NotificationType.reminder:
+        return 'reminder';
+      case NotificationType.achievement:
+        return 'achievement';
+      case NotificationType.social:
+        return 'social';
+      case NotificationType.promotion:
+        return 'promotion';
+      default:
+        return 'system';
+    }
+  }
+
+  // Helper check xem có cần điều hướng đặc biệt không
+  bool get hasDeepLink => metadata != null && metadata!.containsKey('route');
 }

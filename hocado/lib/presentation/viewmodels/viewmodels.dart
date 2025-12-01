@@ -41,3 +41,6 @@ export 'profile/profile_view_model.dart';
 
 // profile settings
 export 'profile_settings/profile_settings_view_model.dart';
+
+// notification
+export 'notification/notification_view_model.dart';

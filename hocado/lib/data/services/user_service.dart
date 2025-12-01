@@ -66,4 +66,24 @@ class UserService {
       throw Exception("Could not fetch user from database");
     }
   }
+
+  // Lưu FCM token cho người dùng
+  Future<void> saveFCMToken(String uid, String token) async {
+    try {
+      await _firestore.collection('users').doc(uid).set({
+        'fcmToken': token,
+        'lastActive': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      throw Exception("Could not save FCM token to database");
+    }
+  }
+
+  Future<void> deleteFCMToken(String uid) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({'fcmToken': ''});
+    } catch (e) {
+      throw Exception("Could not delete FCM token from database");
+    }
+  }
 }

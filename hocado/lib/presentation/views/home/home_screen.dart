@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/core/constants/images.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/presentation/views/home/home_header.dart';
+import 'package:hocado/presentation/views/home/home_search_bar.dart';
 import 'package:hocado/presentation/widgets/deck_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -32,7 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(Sizes.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -41,20 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(height: Sizes.lg),
 
                 // Section 2: Search Bar
-                TextField(
-                  cursorColor: theme.colorScheme.onPrimary,
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    fillColor: theme.colorScheme.onSurface.withAlpha(30),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                ),
+                const HomeSearchBar(),
                 const SizedBox(height: Sizes.lg),
 
                 // Section 3: Banner

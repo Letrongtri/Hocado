@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_router.dart';
 import 'package:hocado/core/theme/app_theme.dart';
+import 'package:hocado/data/services/services.dart';
 import 'package:hocado/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +18,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   final sharedPrefs = await SharedPreferences.getInstance();
 
   await dotenv.load();

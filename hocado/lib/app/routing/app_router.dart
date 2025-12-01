@@ -149,7 +149,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/search',
         name: AppRoutes.search.name,
-        builder: (context, state) => SearchScreen(),
+        builder: (context, state) {
+          final focus =
+              (state.extra is Map && (state.extra as Map)['isFocus'] == true);
+
+          return SearchScreen(isFocus: focus);
+        },
       ),
       GoRoute(
         path: '/settings',
@@ -160,6 +165,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/profile-settings',
         name: AppRoutes.profileSettings.name,
         builder: (context, state) => ProfileSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        name: AppRoutes.notifications.name,
+        builder: (context, state) => NotificationsScreen(),
       ),
     ],
 

@@ -19,7 +19,7 @@ class HocadoAvatar extends StatelessWidget {
       backgroundColor: Colors.white, // Viền trắng
       child: CircleAvatar(
         radius: size,
-        backgroundImage: user.avatarUrl != null
+        backgroundImage: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
             ? NetworkImage(
                 user.avatarUrl!,
               )

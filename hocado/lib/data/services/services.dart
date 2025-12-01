@@ -14,3 +14,6 @@ export 'user_deck_progress_service.dart';
 export 'file_service.dart';
 export 'gemini_service.dart';
 export 'storage_service.dart';
+export 'notification_messaging_service.dart';
+export 'local_notification_service.dart';
+export 'notification_service.dart';

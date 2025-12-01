@@ -10,13 +10,16 @@ import 'package:hocado/presentation/widgets/deck_card.dart';
 import 'package:hocado/presentation/widgets/filter_tab_bar.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, this.isFocus = false});
+
+  final bool isFocus;
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
+  late FocusNode _focusNode;
   late TextEditingController searchController;
   late ScrollController _scrollController;
 
@@ -25,6 +28,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
+    if (widget.isFocus) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _focusNode.requestFocus(),
+      );
+    }
+
     searchController = TextEditingController();
     _scrollController = ScrollController();
 
@@ -36,6 +46,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -116,6 +127,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       appBar: AppBar(
         // Search bar
         title: TextField(
+          focusNode: _focusNode,
           controller: searchController,
           cursorColor: theme.colorScheme.onPrimary,
           decoration: InputDecoration(

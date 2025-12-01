@@ -2,7 +2,7 @@ export 'archievement.dart';
 export 'deck.dart';
 export 'flashcard.dart';
 export 'learning_settings.dart';
-export 'notification.dart';
+export 'notification_message.dart';
 export 'question.dart';
 export 'saved_deck.dart';
 export 'study_session.dart';
