@@ -24,4 +24,6 @@ abstract class DeckRepository {
   });
 
   Future<List<Deck>> getDecksByIds(List<String> ids);
+
+  Future<List<Deck>> getPublicDecksByUserId(String id);
 }

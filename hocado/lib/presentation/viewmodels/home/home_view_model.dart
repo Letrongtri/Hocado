@@ -36,6 +36,15 @@ class HomeViewModel extends StreamNotifier<HomeState> {
 
     final onGoingUserIds = onGoingProgress.map((e) => e.uid).toList();
 
+    if (onGoingUserIds.isEmpty) {
+      yield HomeState(
+        onGoingDecks: [],
+        // suggestedDecks: [],
+        users: [],
+      );
+      return;
+    }
+
     yield* _userRepo.getUserByIds(onGoingUserIds).map((newUsers) {
       final onGoingDecks = onGoingProgress
           .map((p) {

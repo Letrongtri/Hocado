@@ -14,3 +14,4 @@ export 'user_flashcard_progress.dart';
 export 'user.dart';
 export 'daily_learning_stat.dart';
 export 'learning_activity.dart';
+export 'follow.dart';

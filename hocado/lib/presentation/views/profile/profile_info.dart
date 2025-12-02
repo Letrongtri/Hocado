@@ -3,6 +3,8 @@ import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/images.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/user.dart';
+import 'package:hocado/presentation/viewmodels/viewmodels.dart';
+import 'package:hocado/presentation/views/profile/follow_button.dart';
 import 'package:hocado/presentation/views/profile/profile_stats_info.dart';
 import 'package:hocado/presentation/widgets/hocado_avatar.dart';
 import 'package:hocado/utils/format_date_time.dart';
@@ -11,9 +13,11 @@ class ProfileInfo extends StatelessWidget {
   const ProfileInfo({
     super.key,
     required this.user,
+    required this.profileStatus,
   });
 
   final User user;
+  final String profileStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +83,19 @@ class ProfileInfo extends StatelessWidget {
         children: [
           const SizedBox(height: Sizes.md),
           // tên
-          Text(
-            user.fullName,
-            style: theme.textTheme.headlineMedium,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  user.fullName,
+                  style: theme.textTheme.headlineMedium,
+                ),
+              ),
+
+              if (profileStatus != ProfileStatus.myProfile.name)
+                FollowButton(user: user, profileStatus: profileStatus),
+            ],
           ),
           const SizedBox(height: Sizes.sm),
           Row(

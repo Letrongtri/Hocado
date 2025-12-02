@@ -139,4 +139,20 @@ class DeckService {
       throw Exception("Could not fetch decks from database");
     }
   }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getUserPublicDecks(
+    String userId,
+  ) async {
+    try {
+      final snapshot = await _firestore
+          .collection('decks')
+          .where('uid', isEqualTo: userId)
+          .where('isPublic', isEqualTo: true)
+          .orderBy('updatedAt', descending: true)
+          .get();
+      return snapshot.docs.isEmpty ? [] : snapshot.docs;
+    } catch (e) {
+      throw Exception("Could not fetch public decks from database");
+    }
+  }
 }

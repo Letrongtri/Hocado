@@ -20,3 +20,4 @@ export 'file_provider.dart';
 export 'storage_provider.dart';
 export 'notification_provider.dart';
 export 'home_provider.dart';
+export 'follow_provider.dart';

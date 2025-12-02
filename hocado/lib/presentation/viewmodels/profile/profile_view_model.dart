@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 
 class ProfileViewModel extends AsyncNotifier<ProfileState> {
@@ -12,6 +13,8 @@ class ProfileViewModel extends AsyncNotifier<ProfileState> {
   ProfileViewModel(this.uid);
 
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
+  FollowRepository get _followRepo => ref.read(followRepositoryProvider);
+  DeckRepository get _deckRepo => ref.read(deckRepositoryProvider);
 
   @override
   FutureOr<ProfileState> build() async {
@@ -21,6 +24,24 @@ class ProfileViewModel extends AsyncNotifier<ProfileState> {
     if (currentUserId == null) throw Exception('Bạn chưa đăng nhập.');
 
     final isMyProfile = uid == currentUserId;
+
+    bool isFollowing = false;
+    List<Deck> publicDecks = [];
+    if (!isMyProfile) {
+      final followingUsers = await ref.watch(
+        followingUsersProvider(uid).future,
+      );
+
+      isFollowing = followingUsers.any((f) => f.uid == currentUserId);
+
+      publicDecks = await _deckRepo.getPublicDecksByUserId(uid);
+    }
+
+    final profileStatus = isMyProfile
+        ? ProfileStatus.myProfile.name
+        : isFollowing
+        ? ProfileStatus.isFollowing.name
+        : ProfileStatus.notFollowing.name;
 
     final List<LearningActivity> mockActivities = [
       LearningActivity(
@@ -128,11 +149,51 @@ class ProfileViewModel extends AsyncNotifier<ProfileState> {
 
     final profile = ProfileState(
       user: user,
-      isMyProfile: isMyProfile,
+      profileStatus: profileStatus,
       achievements: [],
       learningStats: mockStats,
       learningActivities: mockActivities,
+      publicDecks: publicDecks,
     );
     return profile;
+  }
+
+  Future<void> followUser(
+    String followingUid,
+    String followingDisplayName,
+  ) async {
+    final uid = _currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      final followingData = Follow(
+        uid: followingUid,
+        displayName: followingDisplayName,
+        createdAt: DateTime.now(),
+      );
+
+      await _followRepo.followUser(uid, followingData);
+
+      state = AsyncData(
+        state.value!.copyWith(profileStatus: ProfileStatus.isFollowing.name),
+      );
+    } catch (e) {
+      throw Exception("Could not follow user to database");
+    }
+  }
+
+  Future<void> unfollowUser(String followingUid) async {
+    final uid = _currentUser?.uid;
+    if (uid == null) return;
+
+    try {
+      await _followRepo.unfollowUser(uid, followingUid);
+
+      state = AsyncData(
+        state.value!.copyWith(profileStatus: ProfileStatus.notFollowing.name),
+      );
+    } catch (e) {
+      throw Exception("Could not unfollow user to database");
+    }
   }
 }

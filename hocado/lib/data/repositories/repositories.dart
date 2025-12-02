@@ -44,3 +44,7 @@ export 'user_deck_progress/user_deck_progress_repository_impl.dart';
 
 // notification
 export 'notification/notification_repository.dart';
+
+// follow
+export 'follow/follow_repository.dart';
+export 'follow/follow_repository_impl.dart';

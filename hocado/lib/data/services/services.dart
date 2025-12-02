@@ -17,3 +17,4 @@ export 'storage_service.dart';
 export 'notification_messaging_service.dart';
 export 'local_notification_service.dart';
 export 'notification_service.dart';
+export 'follow_service.dart';

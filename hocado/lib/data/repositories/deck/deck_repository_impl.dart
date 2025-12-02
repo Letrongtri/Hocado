@@ -95,4 +95,19 @@ class DeckRepositoryImpl implements DeckRepository {
       throw Exception("Could not convert documents to decks");
     }
   }
+
+  @override
+  Future<List<Deck>> getPublicDecksByUserId(String id) async {
+    try {
+      final docs = await _deckService.getUserPublicDecks(id);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
+      return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+    } catch (e) {
+      throw Exception("Could not convert documents to public decks");
+    }
+  }
 }
