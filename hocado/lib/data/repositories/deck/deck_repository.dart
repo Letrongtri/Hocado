@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hocado/data/models/models.dart';
 
-typedef SearchDecksResult = ({
+typedef PaginationDecksResult = ({
   List<Deck> decks,
   DocumentSnapshot? lastDocument,
 });
@@ -15,7 +15,7 @@ abstract class DeckRepository {
 
   Future<Deck> getDeckById(String id);
 
-  Future<SearchDecksResult> searchDecks({
+  Future<PaginationDecksResult> searchDecks({
     required String id,
     bool isFindingPublic,
     String? search,
@@ -26,4 +26,10 @@ abstract class DeckRepository {
   Future<List<Deck>> getDecksByIds(List<String> ids);
 
   Future<List<Deck>> getPublicDecksByUserId(String id);
+
+  Future<PaginationDecksResult> getSuggestedDeckByFollowingUids(
+    List<String> ids, {
+    int limit = 10,
+    DocumentSnapshot? lastDocument,
+  });
 }

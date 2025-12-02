@@ -15,17 +15,18 @@ class OnGoingDecks extends ConsumerWidget {
 
     final state = ref.watch(homeViewModelProvider);
 
-    return Column(
-      children: [
-        _buildOnGoingDeckHeader(theme, context),
-        const SizedBox(height: Sizes.md),
+    return state.when(
+      data: (data) {
+        final ongoingDecks = data.onGoingDecks ?? [];
 
-        // Section 5: Decks Grid
-        state.when(
-          data: (data) {
-            final ongoingDecks = data.onGoingDecks ?? [];
+        if (ongoingDecks.isEmpty) return const SizedBox.shrink();
 
-            return GridView.builder(
+        return Column(
+          children: [
+            _buildOnGoingDeckHeader(theme, context),
+            const SizedBox(height: Sizes.md),
+
+            GridView.builder(
               itemCount: ongoingDecks.length,
               physics:
                   const NeverScrollableScrollPhysics(), // Để scroll view cha xử lý
@@ -49,12 +50,12 @@ class OnGoingDecks extends ConsumerWidget {
                   owner: owner,
                 );
               },
-            );
-          },
-          error: (error, stackTrace) => Center(child: Text('Error: $error')),
-          loading: () => const Center(child: CircularProgressIndicator()),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
+      error: (error, stackTrace) => Center(child: Text('Error: $error')),
+      loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
 

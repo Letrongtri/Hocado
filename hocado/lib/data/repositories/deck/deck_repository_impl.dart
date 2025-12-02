@@ -54,7 +54,7 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   @override
-  Future<SearchDecksResult> searchDecks({
+  Future<PaginationDecksResult> searchDecks({
     required String id,
     bool isFindingPublic = true,
     String? search,
@@ -108,6 +108,34 @@ class DeckRepositoryImpl implements DeckRepository {
       return docs.map((doc) => Deck.fromFirestore(doc)).toList();
     } catch (e) {
       throw Exception("Could not convert documents to public decks");
+    }
+  }
+
+  @override
+  Future<PaginationDecksResult> getSuggestedDeckByFollowingUids(
+    List<String> ids, {
+    int limit = 10,
+    DocumentSnapshot? lastDocument,
+  }) async {
+    try {
+      final result = await _deckService.getSuggestedDeckByFollowingUids(
+        ids,
+        limit: limit,
+        lastDocument: lastDocument,
+      );
+
+      final docs = result.docs;
+      final newLastDocument = result.lastDocument;
+
+      if (docs.isEmpty) {
+        return (decks: <Deck>[], lastDocument: null);
+      }
+
+      final decks = docs.map((doc) => Deck.fromFirestore(doc)).toList();
+
+      return (decks: decks, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
     }
   }
 }

@@ -155,4 +155,54 @@ class DeckService {
       throw Exception("Could not fetch public decks from database");
     }
   }
+
+  Future<
+    ({
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+      DocumentSnapshot? lastDocument,
+    })
+  >
+  getSuggestedDeckByFollowingUids(
+    List<String> ids, {
+    int limit = 10,
+    DocumentSnapshot? lastDocument,
+  }) async {
+    if (ids.isEmpty) {
+      return (
+        docs: <QueryDocumentSnapshot<Map<String, dynamic>>>[],
+        lastDocument: null,
+      );
+    }
+
+    try {
+      Query<Map<String, dynamic>> query = _firestore
+          .collection('decks')
+          .where('uid', whereIn: ids)
+          .where('isPublic', isEqualTo: true)
+          .orderBy('updatedAt', descending: true)
+          .limit(limit);
+
+      // Nếu đã có lastDoc → phân trang
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isEmpty) {
+        return (
+          docs: <QueryDocumentSnapshot<Map<String, dynamic>>>[],
+          lastDocument: null,
+        );
+      }
+
+      // lastDocument sẽ là document cuối cùng của lần truy vấn này
+      final newLastDocument = snapshot.docs.last;
+
+      // Trả về danh sách docs và lastDocument
+      return (docs: snapshot.docs, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not fetch suggested decks from database");
+    }
+  }
 }

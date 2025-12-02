@@ -5,6 +5,7 @@ import 'package:hocado/presentation/views/home/home_banner.dart';
 import 'package:hocado/presentation/views/home/home_header.dart';
 import 'package:hocado/presentation/views/home/home_search_bar.dart';
 import 'package:hocado/presentation/views/home/on_going_decks.dart';
+import 'package:hocado/presentation/views/home/suggested_deck_list.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,6 +34,10 @@ class HomeScreen extends StatelessWidget {
 
                 // Section 4: Ongoing Decks
                 const OnGoingDecks(),
+                const SizedBox(height: Sizes.lg),
+
+                // Section 5: Suggested Decks
+                const SuggestedDeckList(),
               ],
             ),
           ),
