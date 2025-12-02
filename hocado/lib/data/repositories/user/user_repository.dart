@@ -13,4 +13,6 @@ abstract class UserRepository {
   Future<void> decrementCount(String uid, String field, {int count = 1});
 
   Stream<User> getUserStream(String uid);
+
+  Stream<List<User>> getUserByIds(List<String> uids);
 }

@@ -44,3 +44,7 @@ export 'profile_settings/profile_settings_view_model.dart';
 
 // notification
 export 'notification/notification_view_model.dart';
+
+// home
+export 'home/home_state.dart';
+export 'home/home_view_model.dart';

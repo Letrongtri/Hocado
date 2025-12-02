@@ -67,6 +67,20 @@ class UserService {
     }
   }
 
+  Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getUserByIds(
+    List<String> uids,
+  ) {
+    try {
+      return _firestore
+          .collection('users')
+          .where(FieldPath.documentId, whereIn: uids)
+          .snapshots()
+          .map((snapshot) => snapshot.docs);
+    } catch (e) {
+      throw Exception("Could not fetch users from database");
+    }
+  }
+
   // Lưu FCM token cho người dùng
   Future<void> saveFCMToken(String uid, String token) async {
     try {

@@ -83,4 +83,15 @@ class UserRepositoryImpl implements UserRepository {
       throw Exception("Could not fetch user from database");
     }
   }
+
+  @override
+  Stream<List<User>> getUserByIds(List<String> uids) {
+    try {
+      return _userService
+          .getUserByIds(uids)
+          .map((docs) => docs.map(User.fromFirestore).toList());
+    } catch (e) {
+      throw Exception("Could not fetch users from database");
+    }
+  }
 }

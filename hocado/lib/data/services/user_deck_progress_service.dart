@@ -35,4 +35,21 @@ class UserDeckProgressService {
       throw Exception("Could not save user deck progress to database");
     }
   }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getRecentProgress(
+    String uid, {
+    int limit = 10,
+  }) async {
+    try {
+      final snapshot = await _firestore
+          .collection('deck_progress')
+          .where('uid', isEqualTo: uid)
+          .orderBy('lastStudied', descending: true)
+          .limit(limit)
+          .get();
+      return snapshot.docs.isEmpty ? [] : snapshot.docs;
+    } catch (e) {
+      throw Exception("Could not fetch user deck progress from database");
+    }
+  }
 }

@@ -19,3 +19,4 @@ export 'gemini_provider.dart';
 export 'file_provider.dart';
 export 'storage_provider.dart';
 export 'notification_provider.dart';
+export 'home_provider.dart';

@@ -84,4 +84,15 @@ class DeckRepositoryImpl implements DeckRepository {
       throw Exception("Could not convert documents to decks");
     }
   }
+
+  @override
+  Future<List<Deck>> getDecksByIds(List<String> ids) {
+    try {
+      return _deckService.getDecksByIds(ids).then((docs) {
+        return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+      });
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
+    }
+  }
 }

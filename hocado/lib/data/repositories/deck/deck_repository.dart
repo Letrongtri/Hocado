@@ -22,4 +22,6 @@ abstract class DeckRepository {
     DocumentSnapshot? lastDocument,
     int limit = 10,
   });
+
+  Future<List<Deck>> getDecksByIds(List<String> ids);
 }
