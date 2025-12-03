@@ -34,3 +34,10 @@ final learningSettingsViewModelProvider = AsyncNotifierProvider.autoDispose
     .family<LearningSettingsViewModel, LearningSettings, String>(
       LearningSettingsViewModel.new,
     );
+
+// system settings view model
+final systemSettingsViewModelProvider =
+    AsyncNotifierProvider.autoDispose<
+      SystemSettingsViewModel,
+      SystemSettingsState
+    >(SystemSettingsViewModel.new);

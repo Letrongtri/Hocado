@@ -14,4 +14,5 @@ enum AppRoutes {
   appSettings,
   profileSettings,
   notifications,
+  systemSettings,
 }

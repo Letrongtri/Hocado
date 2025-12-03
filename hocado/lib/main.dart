@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hocado/app/provider/music_provider.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/app/routing/app_router.dart';
 import 'package:hocado/core/theme/app_theme.dart';
 import 'package:hocado/data/services/services.dart';
 import 'package:hocado/firebase_options.dart';
+import 'package:hocado/presentation/music_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -44,12 +46,36 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
 
-    return MaterialApp.router(
-      title: 'Hocado',
-      theme: AppTheme.lightTheme,
-      debugShowCheckedModeBanner: false,
-      // themeMode: ThemeMode.system,
-      routerConfig: goRouter,
+    final systemSettings = ref.watch(systemSettingsViewModelProvider);
+
+    return systemSettings.when(
+      data: (data) {
+        if (data.isSoundOn) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(musicServiceProvider).playMusic();
+          });
+        }
+
+        return MaterialApp.router(
+          title: 'Hocado',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          debugShowCheckedModeBanner: false,
+          themeMode: data.themeMode,
+          routerConfig: goRouter,
+          builder: (context, child) {
+            return MusicManager(child: child!);
+          },
+        );
+      },
+      error: (err, stack) => MaterialApp.router(
+        title: 'Hocado',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        routerConfig: goRouter,
+      ),
+      loading: () => const CircularProgressIndicator(),
     );
   }
 }

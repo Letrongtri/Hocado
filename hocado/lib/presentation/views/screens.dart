@@ -12,3 +12,4 @@ export 'test/test_screen.dart';
 export 'app_settings/app_settings_screen.dart';
 export 'profile_settings/profile_settings_screen.dart';
 export 'notifications/notifications_screen.dart';
+export 'system_settings/system_settings_screen.dart';

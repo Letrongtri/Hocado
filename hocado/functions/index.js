@@ -214,7 +214,7 @@ exports.incrementUnreadCount = onDocumentCreated(
 );
 
 /**
-* 2. KHI CẬP NHẬT TRẠNG THÁI THÔNG BÁO (UPDATE)
+* KHI CẬP NHẬT TRẠNG THÁI THÔNG BÁO (UPDATE)
  * - Từ Chưa đọc -> Đã đọc: Giảm count -1
  * - Từ Đã đọc -> Chưa đọc: Tăng count +1
 */
@@ -248,7 +248,7 @@ exports.updateUnreadCount = onDocumentUpdated(
 );
 
 /**
- * 3. KHI XÓA THÔNG BÁO (DELETE)
+ * KHI XÓA THÔNG BÁO (DELETE)
  * - Nếu xóa một thông báo đang "chưa đọc" -> Giảm count -1
  * - Nếu xóa thông báo "đã đọc" rồi thì không làm gì cả.
  */
@@ -265,6 +265,128 @@ exports.decrementUnreadCountOnDelete = onDocumentDeleted(
         logger.info(
             `Decremented unread count for user ${userId} due to deletion`,
         );
+      }
+    },
+);
+
+// Trigger: +1 follow cho user nếu có người follow mới được tạo
+exports.incrementFollowerCount = onDocumentCreated(
+    "users/{userId}/following/{followingId}",
+    async (event) => {
+      const userId = event.params.userId;
+      const followingId = event.params.followingId;
+
+      const userRef = db.collection("users").doc(followingId);
+
+      try {
+        await userRef.update({
+          followersCount: FieldValue.increment(1),
+        });
+      } catch (error) {
+        console
+            .error(`Failed to increment follower count for ${userId}:`, error);
+      }
+    },
+);
+
+// Trigger: -1 follow cho user nếu có người unfollow mới được tạo
+exports.decrementFollowerCount = onDocumentDeleted(
+    "users/{userId}/following/{followingId}",
+    async (event) => {
+      const userId = event.params.userId;
+      const followingId = event.params.followingId;
+
+      const userRef = db.collection("users").doc(followingId);
+
+      try {
+        await userRef.update({
+          followersCount: FieldValue.increment(-1),
+        });
+      } catch (error) {
+        console
+            .error(`Failed to decrement follower count for ${userId}:`, error);
+      }
+    },
+);
+
+// Trigger: +1 create deck count cho user nếu tạo deck mới
+exports.incrementCreateDecksCount = onDocumentCreated(
+    "decks/{deckId}",
+    async (event) => {
+      const newDeck = event.data ? event.data.data() : null;
+      if (!newDeck) return;
+
+      const userId = newDeck.uid;
+
+      const userRef = db.collection("users").doc(userId);
+
+      try {
+        await userRef.update({
+          createDecksCount: FieldValue.increment(1),
+        });
+      } catch (error) {
+        console.error(`Failed to increment create decks count for ${userId}:`,
+            error);
+      }
+    },
+);
+
+// Trigger: -1 create deck count cho user nếu xóa deck
+exports.decrementCreateDecksCount = onDocumentDeleted(
+    "decks/{deckId}",
+    async (event) => {
+      const deletedDeck = event.data ? event.data.data() : null;
+      if (!deletedDeck) return;
+
+      const userId = deletedDeck.uid;
+
+      const userRef = db.collection("users").doc(userId);
+
+      try {
+        await userRef.update({
+          createDecksCount: FieldValue.increment(-1),
+        });
+      } catch (error) {
+        console.error(`Failed to decrement create decks count for ${userId}:`,
+            error);
+      }
+    },
+);
+
+// Trigger: +1 save deck count cho user nếu lưu deck mới
+exports.incrementSavedDecksCount = onDocumentCreated(
+    "users/{userId}/saved_decks/{savedDeckId}",
+    async (event) => {
+      const userId = event.params.userId;
+
+      const userRef = db.collection("users").doc(userId);
+
+      try {
+        await userRef.update({
+          savedDecksCount: FieldValue.increment(1),
+        });
+      } catch (error) {
+        console.error(`Failed to increment saved decks count for ${userId}:`,
+            error);
+      }
+    },
+);
+
+// Trigger: -1 saved deck count cho user nếu xóa lưu deck
+exports.decrementSavedDecksCount = onDocumentDeleted(
+    "users/{userId}/saved_decks/{savedDeckId}",
+    async (event) => {
+      const userId = event.params.userId;
+
+      const userRef = db.collection("users").doc(userId);
+
+      try {
+        await userRef.update({
+          createDecksCount: FieldValue.increment(-1),
+        });
+      } catch (error) {
+        console.error(`Failed to decrement saved decks count for ${userId}:`,
+            error);
       }
     },
 );

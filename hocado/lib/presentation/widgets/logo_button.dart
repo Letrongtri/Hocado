@@ -3,12 +3,14 @@ import 'package:hocado/core/constants/sizes.dart';
 
 class LogoButton extends StatelessWidget {
   final String iconName;
+  final Color? color;
   final VoidCallback? onPressed;
 
   const LogoButton({
     super.key,
     required this.iconName,
     this.onPressed,
+    this.color,
   });
 
   @override
@@ -16,7 +18,7 @@ class LogoButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: color ?? Theme.of(context).colorScheme.onPrimary,
         ),
         borderRadius: BorderRadius.circular(100),
       ),

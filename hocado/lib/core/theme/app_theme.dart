@@ -80,4 +80,42 @@ class AppTheme {
     ),
     cardColor: lightColorScheme.secondary,
   );
+
+  static const ColorScheme darkColorScheme = ColorScheme(
+    brightness: Brightness.dark,
+    primary: Color(0xFFcae642),
+    onPrimary: Colors.white,
+    secondary: Color(0xFF252525), // Card chuyển sang màu xám đen
+    onSecondary: Color(0xFFC2C3C5),
+    error: Color(0xffCF6679), // Màu đỏ dịu cho dark mode
+    onError: Colors.black,
+    surface: Color(0xff121212), // Nền App chuyển sang đen
+    onSurface: Colors.white,
+  );
+
+  static ThemeData get darkTheme => ThemeData(
+    colorScheme: darkColorScheme,
+    useMaterial3: true,
+    scaffoldBackgroundColor: darkColorScheme.surface,
+
+    // Tái sử dụng hàm textTheme cũ của bạn
+    textTheme: textTheme(darkColorScheme),
+
+    appBarTheme: AppBarTheme(
+      backgroundColor: darkColorScheme.surface,
+      foregroundColor: darkColorScheme.onPrimary, // Màu trắng
+      elevation: 0,
+    ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: darkColorScheme.primary,
+        foregroundColor: const Color(0xFF1A1A1C),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+    ),
+    cardColor: darkColorScheme.secondary,
+  );
 }

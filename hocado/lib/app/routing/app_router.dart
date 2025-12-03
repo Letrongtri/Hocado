@@ -171,6 +171,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         name: AppRoutes.notifications.name,
         builder: (context, state) => NotificationsScreen(),
       ),
+      GoRoute(
+        path: '/system-settings',
+        name: AppRoutes.systemSettings.name,
+        builder: (context, state) => SystemSettingsScreen(),
+      ),
     ],
 
     // Optional: Xử lý lỗi khi không tìm thấy route

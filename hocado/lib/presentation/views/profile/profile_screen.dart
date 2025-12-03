@@ -13,6 +13,7 @@ import 'package:hocado/presentation/views/profile/learning_stats_chart.dart';
 import 'package:hocado/presentation/views/profile/level_progress.dart';
 import 'package:hocado/presentation/views/profile/profile_info.dart';
 import 'package:hocado/presentation/widgets/deck_card.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key, required this.userId});
@@ -58,9 +59,10 @@ class ProfileScreen extends ConsumerWidget {
           IconButton.filled(
             icon: const Icon(Icons.upload_outlined),
             onPressed: () {
-              context.pushNamed(
-                AppRoutes.profile.name,
-                pathParameters: {'uid': '4iuZc4k5WqOkrXn6x6PraUuo5Nn2'},
+              SharePlus.instance.share(
+                ShareParams(
+                  // uri: Uri.https(authority)
+                ),
               );
             },
             style: IconButton.styleFrom(

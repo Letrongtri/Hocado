@@ -24,4 +24,16 @@ class LocalSettingsService {
   ) async {
     await prefs.setString(_keyForDeck(userId, deckId), settings);
   }
+
+  Future<void> saveString(String key, String value) async {
+    await prefs.setString(key, value);
+  }
+
+  Future<String?> loadString(String key) async => prefs.getString(key);
+
+  Future<void> saveBool(String key, bool value) async {
+    await prefs.setBool(key, value);
+  }
+
+  Future<bool> loadBool(String key) async => prefs.getBool(key) ?? false;
 }

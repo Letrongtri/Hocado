@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/data/services/services.dart';
 
@@ -103,5 +104,40 @@ class SettingsRepository {
       settings.toSharedPrefsString(),
     );
     await _remoteSettingsService.upsertDeckSettings(uid, did, settings.toMap());
+  }
+
+  Future<void> saveTheme(ThemeMode mode) async {
+    try {
+      await _localSettingsService.saveString('theme', mode.name);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<ThemeMode> loadTheme() async {
+    try {
+      final value = await _localSettingsService.loadString('theme');
+      return ThemeMode.values.firstWhere((element) => element.name == value);
+    } catch (e) {
+      debugPrint(e.toString());
+      return ThemeMode.system;
+    }
+  }
+
+  Future<void> saveIsSoundOn(bool isOn) async {
+    try {
+      await _localSettingsService.saveBool('is_sound_on', isOn);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<bool> loadIsSoundOn() async {
+    try {
+      return await _localSettingsService.loadBool('is_sound_on');
+    } catch (e) {
+      debugPrint(e.toString());
+      return true;
+    }
   }
 }

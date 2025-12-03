@@ -37,9 +37,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final state = ref.watch(signInViewModelProvider);
     final viewModel = ref.read(signInViewModelProvider.notifier);
 
+    final textTheme = Theme.of(context).textTheme;
+    final primaryColor = Color(0xFFcae642);
+    final onPrimaryColor = Color(0xFF1A1A1C);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: primaryColor,
       body: Padding(
         padding: EdgeInsets.only(
           top: Sizes.appBarHeight,
@@ -68,6 +72,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         controller: emailController,
                         text: "Email",
                         prefixIcon: Icon(Icons.mail_outline),
+                        color: onPrimaryColor,
                       ),
                       SizedBox(height: Sizes.spaceBtwInputFields),
 
@@ -76,6 +81,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         text: "Password",
                         prefixIcon: Icon(Icons.lock_outline),
                         isPassword: true,
+                        color: onPrimaryColor,
                       ),
                       SizedBox(
                         height: Sizes.spaceBtwInputFields / 2,
@@ -85,17 +91,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         children: [
                           Text(
                             "Quên mật khẩu?",
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: textTheme.bodyLarge?.copyWith(
+                              color: onPrimaryColor,
+                            ),
                           ),
 
                           TextButton(
                             onPressed: () {},
                             child: Text(
                               "Đặt lại",
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style: textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: onPrimaryColor,
+                              ),
                             ),
                           ),
                         ],
@@ -114,7 +122,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               passwordController.text.trim(),
                             );
 
-                            if (state.errorMessage != null) {
+                            if (state.errorMessage != null && context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(state.errorMessage!)),
                               );
@@ -133,7 +141,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   children: [
                     Flexible(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: onPrimaryColor,
                         thickness: 0.5,
                         indent: 60,
                         endIndent: 5,
@@ -141,11 +149,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ),
                     Text(
                       "or Sign in With",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: onPrimaryColor,
+                      ),
                     ),
                     Flexible(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: onPrimaryColor,
                         thickness: 0.5,
                         indent: 5,
                         endIndent: 60,
@@ -159,11 +169,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   children: [
                     LogoButton(
                       iconName: Images.googleLogo,
+                      color: onPrimaryColor,
                       onPressed: () {},
                     ),
                     SizedBox(width: Sizes.spaceBtwItems),
                     LogoButton(
                       iconName: Images.facebookLogo,
+                      color: onPrimaryColor,
                       onPressed: () {},
                     ),
                   ],
@@ -179,15 +191,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   children: [
                     Text(
                       "Bạn chưa có tài khoản?",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: onPrimaryColor,
+                      ),
                     ),
 
                     TextButton(
                       onPressed: () => context.goNamed(AppRoutes.signUp.name),
                       child: Text(
                         "Tạo tài khoản",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        style: textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: onPrimaryColor,
                         ),
                       ),
                     ),

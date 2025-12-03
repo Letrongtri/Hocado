@@ -55,23 +55,9 @@ class AppSettingsScreen extends ConsumerWidget {
                 icon: Icons.palette,
                 iconColor: AppColors.ongoingColorBg,
                 title: 'Tùy chỉnh',
-                onTap: () {},
-              ),
-              SizedBox(height: Sizes.sm),
-              _buildSettingItem(
-                theme,
-                icon: Icons.language,
-                iconColor: AppColors.almostDoneColorBg,
-                title: 'Ngôn ngữ',
-                onTap: () {},
-              ),
-              SizedBox(height: Sizes.sm),
-              _buildSettingItem(
-                theme,
-                icon: Icons.notifications,
-                iconColor: AppColors.notLearnedColorBg,
-                title: 'Thông báo',
-                onTap: () {},
+                onTap: () {
+                  context.pushNamed(AppRoutes.systemSettings.name);
+                },
               ),
 
               SizedBox(height: Sizes.md),

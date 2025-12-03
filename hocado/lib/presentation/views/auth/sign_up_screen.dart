@@ -42,9 +42,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final state = ref.watch(signUpViewModelProvider);
     final viewModel = ref.read(signUpViewModelProvider.notifier);
 
+    final textTheme = Theme.of(context).textTheme;
+    final primaryColor = Color(0xFFcae642);
+    final onPrimaryColor = Color(0xFF1A1A1C);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: primaryColor,
       body: Padding(
         padding: EdgeInsets.only(
           top: Sizes.appBarHeight,
@@ -73,6 +77,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         controller: fullnameController,
                         text: "Full name",
                         prefixIcon: Icon(Icons.person_outline),
+                        color: onPrimaryColor,
                       ),
                       SizedBox(height: Sizes.spaceBtwInputFields),
 
@@ -80,6 +85,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         controller: emailController,
                         text: "Email",
                         prefixIcon: Icon(Icons.mail_outline),
+                        color: onPrimaryColor,
                       ),
                       SizedBox(height: Sizes.spaceBtwInputFields),
 
@@ -87,6 +93,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         controller: phoneController,
                         text: "Phone number",
                         prefixIcon: Icon(Icons.phone_outlined),
+                        color: onPrimaryColor,
                       ),
                       SizedBox(height: Sizes.spaceBtwInputFields),
 
@@ -95,6 +102,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         text: "Password",
                         prefixIcon: Icon(Icons.lock_outline),
                         isPassword: true,
+                        color: onPrimaryColor,
                       ),
                       SizedBox(height: Sizes.spaceBtwSections),
 
@@ -112,7 +120,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               phone: phoneController.text.trim(),
                             );
 
-                            if (state.errorMessage != null) {
+                            if (state.errorMessage != null && context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(state.errorMessage!)),
                               );
@@ -130,7 +138,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   children: [
                     Flexible(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: onPrimaryColor,
                         thickness: 0.5,
                         indent: 60,
                         endIndent: 5,
@@ -138,11 +146,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                     Text(
                       "or Sign up With",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: onPrimaryColor,
+                      ),
                     ),
                     Flexible(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: onPrimaryColor,
                         thickness: 0.5,
                         indent: 5,
                         endIndent: 60,
@@ -156,11 +166,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   children: [
                     LogoButton(
                       iconName: Images.googleLogo,
+                      color: onPrimaryColor,
                       onPressed: () {},
                     ),
                     SizedBox(width: Sizes.spaceBtwItems),
                     LogoButton(
                       iconName: Images.facebookLogo,
+                      color: onPrimaryColor,
                       onPressed: () {},
                     ),
                   ],
@@ -176,15 +188,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   children: [
                     Text(
                       "Bạn đã có tài khoản?",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: onPrimaryColor,
+                      ),
                     ),
 
                     TextButton(
                       onPressed: () => context.goNamed(AppRoutes.signIn.name),
                       child: Text(
                         "Đăng nhập",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        style: textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: onPrimaryColor,
                         ),
                       ),
                     ),

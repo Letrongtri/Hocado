@@ -48,3 +48,7 @@ export 'notification/notification_view_model.dart';
 // home
 export 'home/home_state.dart';
 export 'home/home_view_model.dart';
+
+// system settings
+export 'system_settings/system_settings_state.dart';
+export 'system_settings/system_settings_view_model.dart';
