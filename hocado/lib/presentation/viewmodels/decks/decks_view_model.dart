@@ -6,12 +6,12 @@ import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DecksViewModel extends AsyncNotifier<DeckState> {
   DeckRepository get _repo => ref.read(deckRepositoryProvider);
   SavedDeckRepository get _savedRepo => ref.read(savedDeckRepositoryProvider);
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
-  UserRepository get _userRepo => ref.read(userRepositoryProvider);
 
   @override
   FutureOr<DeckState> build() async {
@@ -47,6 +47,7 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     int? totalCards,
     required DateTime createdAt,
     bool isUpdate = false,
+    XFile? thumbnail,
   }) async {
     // Save deck using the repository
     final updatedDeck = deck.copyWith(
@@ -56,7 +57,7 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       searchIndex:
           '${deck.name.toLowerCase()} ${deck.description.toLowerCase()}',
     );
-    await _repo.createAndUpdate(updatedDeck);
+    await _repo.createAndUpdate(updatedDeck, thumbnail);
 
     final currentDecks = List<Deck>.from(state.value!.myDecks!);
     if (isUpdate) {
@@ -67,9 +68,6 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       if (index != null && index != -1) {
         currentDecks.removeAt(index);
       }
-    } else {
-      final field = "createdDecksCount";
-      _userRepo.incrementCount(_currentUser!.uid, field);
     }
 
     final newMyDecks = [updatedDeck, ...currentDecks];
@@ -101,10 +99,8 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     state = const AsyncLoading();
 
     try {
-      await _repo.delete(did);
-
-      final field = "createdDecksCount";
-      _userRepo.decrementCount(_currentUser!.uid, field);
+      final deletedDeck = decks[index];
+      await _repo.delete(did, deletedDeck.thumbnailUrl);
 
       final updatedDecks = List<Deck>.from(decks)..removeAt(index);
 
@@ -138,9 +134,6 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
 
       await _savedRepo.saveDeck(user.uid, savedDeck);
 
-      final field = "savedDecksCount";
-      _userRepo.incrementCount(_currentUser!.uid, field);
-
       final updatedDecks = [savedDeck, ...decks];
 
       state = AsyncData(currentState.copyWith(savedDecks: updatedDecks));
@@ -165,9 +158,6 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
     try {
       await _savedRepo.unsaveDeck(user.uid, did);
 
-      final field = "savedDecksCount";
-      _userRepo.decrementCount(_currentUser!.uid, field);
-
       final updatedDecks = List<SavedDeck>.from(decks)..removeAt(index);
 
       state = AsyncData(currentState.copyWith(savedDecks: updatedDecks));
@@ -175,42 +165,4 @@ class DecksViewModel extends AsyncNotifier<DeckState> {
       state = AsyncError(e, st);
     }
   }
-
-  // Deck? findDeckByDid(String did) {
-  //   // Lấy danh sách hiện có trong state
-  //   final decksState = state.value;
-  //   if (decksState == null) return null;
-
-  //   // Tìm trong myDecks và savedDecks
-  //   final myDeck = decksState.myDecks?.firstWhereOrNull(
-  //     (deck) => deck.did == did,
-  //   );
-  //   if (myDeck != null) return myDeck;
-
-  //   final savedDeck = decksState.savedDecks?.firstWhereOrNull(
-  //     (deck) => deck.did == did,
-  //   );
-  //   return savedDeck;
-  // }
-
-  // Future<void> updateDeck(Deck updatedDeck) async {
-  //   final currentState = state.value;
-  //   if (currentState == null) return;
-
-  //   final decks = currentState.myDecks;
-  //   final index = decks!.indexWhere((item) => item.did == updatedDeck.did);
-  //   if (index == -1) return;
-
-  //   state = const AsyncLoading();
-
-  //   try {
-  //     await _repo.updateDeck(updatedDeck.did, updatedDeck);
-
-  //     final updatedDecks = List<Deck>.from(decks)..[index] = updatedDeck;
-
-  //     state = AsyncData(currentState.copyWith(myDecks: updatedDecks));
-  //   } catch (e, st) {
-  //     state = AsyncError(e, st);
-  //   }
-  // }
 }

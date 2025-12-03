@@ -41,4 +41,22 @@ class StorageService {
       throw Exception("Could not upload image to storage");
     }
   }
+
+  Future<void> deleteImage(String imageUrl) async {
+    try {
+      await _storage.refFromURL(imageUrl).delete();
+    } catch (e) {
+      throw Exception("Could not delete image from storage");
+    }
+  }
+
+  Future<void> deleteImages(List<String> imageUrls) async {
+    try {
+      for (final url in imageUrls) {
+        await _storage.refFromURL(url).delete();
+      }
+    } catch (e) {
+      throw Exception("Could not delete images from storage");
+    }
+  }
 }

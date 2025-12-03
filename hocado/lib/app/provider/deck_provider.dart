@@ -12,7 +12,11 @@ final deckServiceProvider = Provider<DeckService>((ref) {
 
 final deckRepositoryProvider = Provider<DeckRepository>((ref) {
   final deckService = ref.read(deckServiceProvider);
-  return DeckRepositoryImpl(decksService: deckService);
+  final storageService = ref.read(storageServiceProvider);
+  return DeckRepositoryImpl(
+    decksService: deckService,
+    storageService: storageService,
+  );
 });
 
 // Saved decks

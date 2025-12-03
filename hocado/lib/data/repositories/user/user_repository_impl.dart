@@ -25,8 +25,11 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> deleteUser(String id) async {
+  Future<void> deleteUser(String id, String? avatarUrl) async {
     try {
+      if (avatarUrl != null) {
+        await _storageService.deleteImage(avatarUrl);
+      }
       return _userService.deleteUser(id);
     } catch (e) {
       throw Exception("Could not delete user from database");
@@ -50,24 +53,6 @@ class UserRepositoryImpl implements UserRepository {
       return _userService.updateUser(user.toMap());
     } catch (e) {
       throw Exception("Could not update user to database");
-    }
-  }
-
-  @override
-  Future<void> incrementCount(String uid, String field, {int count = 1}) {
-    try {
-      return _userService.incrementCount(uid, field, count: count);
-    } catch (e) {
-      throw Exception("Could not increase count of user to database");
-    }
-  }
-
-  @override
-  Future<void> decrementCount(String uid, String field, {int count = 1}) {
-    try {
-      return _userService.decrementCount(uid, field, count: count);
-    } catch (e) {
-      throw Exception("Could not decrease count of user to database");
     }
   }
 

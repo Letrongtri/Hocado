@@ -122,10 +122,12 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
             // Widget cho thông tin bộ thẻ
             DeckInfoCard(
               deck: deck,
-              onUpdated: (updatedDeck) {
+              onUpdated: (record) {
+                final updatedDeck = record.$1;
+                final thumbnail = record.$2;
                 ref
                     .read(createDeckViewModelProvider(did).notifier)
-                    .updateDeckInfo(updatedDeck);
+                    .updateDeckInfo(updatedDeck, thumbnail);
               },
             ),
             const SizedBox(height: Sizes.md),
@@ -146,6 +148,29 @@ class _CreateDeckScreenState extends ConsumerState<CreateDeckScreen> {
                         card.fid,
                       ), // Key quan trọng để Flutter nhận diện đúng widget
                       card: card,
+                      onCardDelete: (fid) {
+                        ref
+                            .read(createDeckViewModelProvider(did).notifier)
+                            .deleteFlashcard(fid);
+                      },
+                      onCardChanged: (record) {
+                        final flashcard = record.$1;
+                        final frontImage = record.$2;
+                        final backImage = record.$3;
+
+                        ref
+                            .read(createDeckViewModelProvider(did).notifier)
+                            .updateFlashcardInfo(
+                              flashcard,
+                              frontImage,
+                              backImage,
+                            );
+                      },
+                      onAddCard: () {
+                        ref
+                            .read(createDeckViewModelProvider(did).notifier)
+                            .addFlashcardBelow(card.fid);
+                      },
                     ),
                   ],
                 );

@@ -98,7 +98,9 @@ class DecksScreen extends ConsumerWidget {
 
             if (decks == null || decks.isEmpty) {
               return const Center(
-                child: Text('Bạn chưa có bộ thẻ nào. Hãy tạo hoặc lưu bộ thẻ!'),
+                child: Text(
+                  'Bạn chưa có bộ thẻ nào. Hãy tạo hoặc lưu bộ thẻ!',
+                ),
               );
             }
 
@@ -116,6 +118,12 @@ class DecksScreen extends ConsumerWidget {
                       title: item.name,
                       lastUpdated: item.updatedAt,
                       did: item.did,
+                      thumbnailUrl: item.thumbnailUrl,
+                      onDelete: () {
+                        ref
+                            .read(decksViewModelProvider.notifier)
+                            .deleteDeck(item.did);
+                      },
                     );
                   } else if (item is SavedDeck) {
                     return DeckListItem(

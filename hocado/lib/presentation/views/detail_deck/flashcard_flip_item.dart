@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/models.dart';
+import 'package:hocado/presentation/widgets/hocado_dialog.dart';
 
 class FlashcardFlipItem extends ConsumerStatefulWidget {
   final Flashcard card;
@@ -89,11 +90,21 @@ class _FlashcardFlipItemState extends ConsumerState<FlashcardFlipItem>
               ..setEntry(3, 2, 0.001)
               ..rotateX(angle),
             child: isFront
-                ? _buildCard(theme, widget.card.front)
+                ? _buildCard(
+                    theme,
+                    widget.card.front,
+                    widget.card.frontImageUrl,
+                    widget.card.note,
+                  )
                 : Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationX(pi),
-                    child: _buildCard(theme, widget.card.back),
+                    child: _buildCard(
+                      theme,
+                      widget.card.back,
+                      widget.card.backImageUrl,
+                      widget.card.note,
+                    ),
                   ),
           );
         },
@@ -101,7 +112,12 @@ class _FlashcardFlipItemState extends ConsumerState<FlashcardFlipItem>
     );
   }
 
-  Card _buildCard(ThemeData theme, String content) {
+  Widget _buildCard(
+    ThemeData theme,
+    String content,
+    String? imageUrl,
+    String? note,
+  ) {
     return Card(
       color: theme.colorScheme.secondary,
       shape: RoundedRectangleBorder(
@@ -120,12 +136,25 @@ class _FlashcardFlipItemState extends ConsumerState<FlashcardFlipItem>
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(Sizes.md),
                 child: Center(
-                  child: Text(
-                    content,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                    textAlign: TextAlign.center,
+                  child: Column(
+                    children: [
+                      if (imageUrl != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: Sizes.sm),
+                          child: Image.network(
+                            imageUrl,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      Text(
+                        content,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -137,10 +166,14 @@ class _FlashcardFlipItemState extends ConsumerState<FlashcardFlipItem>
                   onPressed: () {},
                   icon: const Icon(Icons.star_border_outlined),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.note_alt_outlined),
-                ),
+
+                if (note != null)
+                  IconButton(
+                    onPressed: () async {
+                      await showNote(context, note);
+                    },
+                    icon: const Icon(Icons.lightbulb_outline_rounded),
+                  ),
               ],
             ),
           ],

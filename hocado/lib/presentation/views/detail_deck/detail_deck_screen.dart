@@ -8,7 +8,6 @@ import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_list_item.dart';
 import 'package:hocado/presentation/views/detail_deck/flashcard_pager.dart';
-import 'package:hocado/presentation/views/detail_deck/learning_progress_card.dart';
 import 'package:hocado/presentation/widgets/hocado_back.dart';
 
 class DetailDeckScreen extends ConsumerWidget {
@@ -147,10 +146,23 @@ class DetailDeckScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  deck.name,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: EdgeInsetsGeometry.all(Sizes.sm),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        deck.name,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: Sizes.sm),
+                      Text(
+                        deck.description,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: Sizes.lg),
@@ -159,13 +171,6 @@ class DetailDeckScreen extends ConsumerWidget {
                 FlashcardPager(flashcards: flashcards ?? []),
                 const SizedBox(height: Sizes.xl),
 
-                // Section 2: Learning Progress
-                const LearningProgressCard(),
-                const SizedBox(height: Sizes.xl),
-
-                // Section 3: Conditions / Term List
-                Text("Điều kiện", style: theme.textTheme.titleMedium),
-                const SizedBox(height: Sizes.md),
                 TextField(
                   decoration: InputDecoration(
                     hintText: 'Tìm kiếm thuật ngữ/định nghĩa',
@@ -179,10 +184,6 @@ class DetailDeckScreen extends ConsumerWidget {
                     contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
-                const SizedBox(height: 16),
-
-                // Filter Chips
-                _buildFilterChips(context, ref),
                 const SizedBox(height: 16),
 
                 // Term List
@@ -275,46 +276,6 @@ class DetailDeckScreen extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildFilterChips(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final selectedFilter = 0;
-    // final selectedFilter = ref.watch(termFilterProvider);
-    final filters = ["Xem tất cả (48)", "Vẫn đang học", "Sắp xong"];
-
-    return SizedBox(
-      height: 40,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final isSelected = selectedFilter == index;
-          return ChoiceChip(
-            label: Text(filters[index]),
-            selected: isSelected,
-            onSelected: (selected) {
-              if (selected) {
-                // ref.read(termFilterProvider.notifier).state = index;
-              }
-            },
-            backgroundColor: theme.colorScheme.secondary,
-            selectedColor: theme.colorScheme.onSurface,
-            labelStyle: TextStyle(
-              color: isSelected
-                  ? theme.colorScheme.surface
-                  : theme.colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-            shape: StadiumBorder(
-              side: BorderSide(color: Colors.grey.shade300, width: 1),
-            ),
-            showCheckmark: false,
-          );
-        },
-      ),
     );
   }
 }

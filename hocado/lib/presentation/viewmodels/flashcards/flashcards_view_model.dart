@@ -6,6 +6,7 @@ import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
   final String did;
@@ -49,6 +50,8 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
   Future<void> createAndUpdateFlashcards({
     required List<Flashcard> flashcards,
     required DateTime createdAt,
+    Map<String, XFile>? pickedFronts,
+    Map<String, XFile>? pickedBacks,
   }) async {
     final user = _currentUser;
     if (user == null) return;
@@ -61,7 +64,12 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
           )
           .toList();
 
-      await _flashcardRepository.createAndUpdateFlashcards(createdCards, did);
+      await _flashcardRepository.createAndUpdateFlashcards(
+        createdCards,
+        did,
+        pickedFronts,
+        pickedBacks,
+      );
 
       if (!ref.mounted) return;
 
@@ -84,9 +92,14 @@ class FlashcardsViewModel extends AsyncNotifier<FlashcardsState> {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await _flashcardRepository.deleteFlashcardsByDeckId(did);
+      List<String> imageUrls = prevState!.flashcards
+          .expand((card) => [card.frontImageUrl, card.backImageUrl])
+          .whereType<String>()
+          .toList();
 
-      return prevState!.copyWith(flashcards: []);
+      await _flashcardRepository.deleteFlashcardsByDeckId(did, imageUrls);
+
+      return prevState.copyWith(flashcards: []);
     });
   }
 }

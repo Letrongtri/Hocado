@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/models.dart';
 
@@ -18,58 +17,32 @@ class FlashcardListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(Sizes.borderRadiusLg),
       ),
       margin: EdgeInsets.only(bottom: Sizes.sm),
-      child: Padding(
-        padding: const EdgeInsets.all(Sizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  index.toString(),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSecondary,
-                  ),
-                ),
-                const SizedBox(width: Sizes.sm),
-                Chip(
-                  // TODO: Replace with actual status
-                  label: Text('ongoing'),
-                  labelStyle: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.ongoingColorFg,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  backgroundColor: AppColors.ongoingColorBg,
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: Sizes.xs),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  side: BorderSide.none,
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.star_border_outlined,
-                    size: Sizes.iconMd,
-                  ),
-                  color: theme.colorScheme.onSurface.withAlpha(100),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: Sizes.sm),
-            Text(
-              card.front,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: Sizes.sm),
-            Text(card.back, style: theme.textTheme.bodyMedium),
-          ],
+      padding: const EdgeInsets.all(Sizes.md),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Text(
+          index.toString(),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSecondary,
+          ),
         ),
+        trailing: IconButton(
+          onPressed: () {
+            // TODO: implement
+          },
+          icon: const Icon(
+            Icons.star_border_outlined,
+            size: Sizes.iconMd,
+          ),
+          color: theme.colorScheme.onSurface.withAlpha(100),
+        ),
+        title: Text(
+          card.front,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(card.back, style: theme.textTheme.bodyMedium),
       ),
     );
   }

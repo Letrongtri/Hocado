@@ -2,16 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/data/services/services.dart';
+import 'package:hocado/utils/paths.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DeckRepositoryImpl implements DeckRepository {
   final DeckService _deckService;
+  final StorageService _storageService;
 
-  DeckRepositoryImpl({required DeckService decksService})
-    : _deckService = decksService;
+  DeckRepositoryImpl({
+    required DeckService decksService,
+    required StorageService storageService,
+  }) : _deckService = decksService,
+       _storageService = storageService;
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(String id, String? thumbnailUrl) async {
     try {
+      if (thumbnailUrl != null) {
+        await _storageService.deleteImage(thumbnailUrl);
+      }
       await _deckService.deleteDeck(id);
     } catch (e) {
       throw Exception("Could not delete deck");
@@ -34,8 +43,19 @@ class DeckRepositoryImpl implements DeckRepository {
   }
 
   @override
-  Future<void> createAndUpdate(Deck deck) {
+  Future<void> createAndUpdate(Deck deck, XFile? thumbnail) async {
     try {
+      String? thumbnailUrl;
+      if (thumbnail != null) {
+        final path = Paths.deckThumbnailPath;
+        thumbnailUrl = await _storageService.uploadImage(
+          image: thumbnail,
+          path: path,
+          name: deck.did,
+        );
+      }
+
+      deck = deck.copyWith(thumbnailUrl: thumbnailUrl ?? deck.thumbnailUrl);
       return _deckService.createAndUpdateDeck(deck.toMap());
     } catch (e) {
       throw Exception("Could not create deck");

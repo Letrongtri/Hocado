@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/colors.dart';
 import 'package:hocado/core/constants/sizes.dart';
+import 'package:hocado/presentation/widgets/hocado_dialog.dart';
 
 class LearnFlashcardHeader extends StatelessWidget {
   final String? hint;
@@ -27,40 +28,7 @@ class LearnFlashcardHeader extends StatelessWidget {
           onPressed: hint == null
               ? null
               : () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Sizes.borderRadiusLg,
-                        ),
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height * 0.4,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(Sizes.md),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  hint!,
-                                  style: theme.textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: Sizes.sm),
-                                ElevatedButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text("Đã hiểu"),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                  showNote(context, hint!);
                 },
         ),
         SizedBox(width: Sizes.sm),

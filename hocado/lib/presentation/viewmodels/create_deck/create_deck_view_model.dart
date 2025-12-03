@@ -6,14 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hocado/app/provider/provider.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/viewmodels/viewmodels.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
   final String? did;
   bool isEditMode = false;
 
+  XFile? _pickedThumbnail;
+  Map<String, XFile>? _pickedFront;
+  Map<String, XFile>? _pickedBack;
+
   CreateDeckViewModel(this.did);
 
-  // DeckRepository get _deckRepo => ref.read(deckRepositoryProvider);
   fb_auth.User? get _currentUser => ref.read(currentUserProvider);
 
   @override
@@ -27,12 +31,13 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
     if (did == null || did!.isEmpty) {
       final deck = Deck.empty().copyWith(uid: userId);
       final flashcards = [newFlashcard()];
+      state = AsyncData(CreateDeckState(deck: deck, flashcards: flashcards));
       return CreateDeckState(deck: deck, flashcards: flashcards);
     }
 
     // Chỉnh sửa deck của tôi
     isEditMode = true;
-    final decksState = await ref.watch(decksViewModelProvider.future);
+    final decksState = await ref.read(decksViewModelProvider.future);
 
     // Tìm deck "gốc"
     Deck? pristineDeck = decksState.myDecks?.firstWhereOrNull(
@@ -44,20 +49,27 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
     }
 
     // Tải flashcards "gốc"
-    final pristineFlashcards = await ref.watch(
+    final pristineFlashcards = await ref.read(
       flashcardsViewModelProvider(did!).future,
     );
 
     // Trả về state ban đầu để chỉnh sửa
+    state = AsyncData(
+      CreateDeckState(
+        deck: pristineDeck,
+        flashcards: pristineFlashcards.flashcards,
+      ),
+    );
     return CreateDeckState(
       deck: pristineDeck,
       flashcards: pristineFlashcards.flashcards,
     );
   }
 
-  void updateDeckInfo(Deck updatedDeck) {
+  void updateDeckInfo(Deck updatedDeck, XFile? thumbnail) {
     if (!state.hasValue) return;
     state = AsyncData(state.value!.copyWith(deck: updatedDeck));
+    if (thumbnail != null) _pickedThumbnail = thumbnail;
   }
 
   Flashcard newFlashcard() {
@@ -67,7 +79,7 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
   void addFlashcardBelow(String fid) {
     if (!state.hasValue) return;
 
-    final flashcards = state.value!.flashcards ?? [];
+    final flashcards = state.value?.flashcards ?? [];
 
     final index = flashcards.indexWhere((card) => card.fid == fid);
 
@@ -88,66 +100,32 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
     state = AsyncData(
       state.value!.copyWith(flashcards: newList),
     );
+    _pickedFront?.remove(fid);
+    _pickedBack?.remove(fid);
   }
 
-  void updateFlashcardFront(String fid, String newFront) {
+  void updateFlashcardInfo(
+    Flashcard updatedFlashcard,
+    XFile? frontImage,
+    XFile? backImage,
+  ) {
     if (!state.hasValue) return;
 
     final index =
-        state.value!.flashcards?.indexWhere((card) => card.fid == fid) ?? -1;
+        state.value!.flashcards?.indexWhere(
+          (card) => card.fid == updatedFlashcard.fid,
+        ) ??
+        -1;
 
     if (index == -1) return;
-
-    final updatedFlashcard = state.value!.flashcards![index].copyWith(
-      front: newFront,
-    );
 
     final updatedList = [...state.value!.flashcards!];
     updatedList[index] = updatedFlashcard;
 
-    state = AsyncData(
-      state.value!.copyWith(flashcards: updatedList),
-    );
-  }
+    state = AsyncData(state.value!.copyWith(flashcards: updatedList));
 
-  void updateFlashcardBack(String fid, String newBack) {
-    if (!state.hasValue) return;
-
-    final index =
-        state.value!.flashcards?.indexWhere((card) => card.fid == fid) ?? -1;
-
-    if (index == -1) return;
-
-    final updatedFlashcard = state.value!.flashcards![index].copyWith(
-      back: newBack,
-    );
-
-    final updatedList = [...state.value!.flashcards!];
-    updatedList[index] = updatedFlashcard;
-
-    state = AsyncData(
-      state.value!.copyWith(flashcards: updatedList),
-    );
-  }
-
-  void updateFlashcardNote(String fid, String newNote) {
-    if (!state.hasValue) return;
-
-    final index =
-        state.value!.flashcards?.indexWhere((card) => card.fid == fid) ?? -1;
-
-    if (index == -1) return;
-
-    final updatedFlashcard = state.value!.flashcards![index].copyWith(
-      note: newNote,
-    );
-
-    final updatedList = [...state.value!.flashcards!];
-    updatedList[index] = updatedFlashcard;
-
-    state = AsyncData(
-      state.value!.copyWith(flashcards: updatedList),
-    );
+    if (frontImage != null) _pickedFront = {updatedFlashcard.fid: frontImage};
+    if (backImage != null) _pickedBack = {updatedFlashcard.fid: backImage};
   }
 
   Future<void> saveChanges() async {
@@ -171,6 +149,8 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
             deck: currentState.deck,
             totalCards: currentState.flashcards?.length ?? 0,
             createdAt: now,
+            isUpdate: isEditMode,
+            thumbnail: _pickedThumbnail,
           ),
       if (currentState.flashcards != null &&
           currentState.flashcards!.isNotEmpty)
@@ -179,6 +159,8 @@ class CreateDeckViewModel extends AsyncNotifier<CreateDeckState> {
             .createAndUpdateFlashcards(
               flashcards: currentState.flashcards!,
               createdAt: now,
+              pickedFronts: _pickedFront,
+              pickedBacks: _pickedBack,
             ),
     ]);
   }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hocado/data/models/models.dart';
+import 'package:image_picker/image_picker.dart';
 
 typedef PaginationDecksResult = ({
   List<Deck> decks,
@@ -9,9 +10,9 @@ typedef PaginationDecksResult = ({
 abstract class DeckRepository {
   Future<List<Deck>> getDecksByUserId(String id);
 
-  Future<void> delete(String id);
+  Future<void> delete(String id, String? thumbnailUrl);
 
-  Future<void> createAndUpdate(Deck deck);
+  Future<void> createAndUpdate(Deck deck, XFile? thumbnail);
 
   Future<Deck> getDeckById(String id);
 

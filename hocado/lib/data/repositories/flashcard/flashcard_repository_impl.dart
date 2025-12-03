@@ -3,25 +3,56 @@ import 'dart:convert';
 import 'package:hocado/data/models/flashcard.dart';
 import 'package:hocado/data/repositories/repositories.dart';
 import 'package:hocado/data/services/services.dart';
+import 'package:hocado/utils/paths.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   final FlashcardService _flashcardService;
   final GeminiService _geminiService;
+  final StorageService _storageService;
 
   FlashcardRepositoryImpl({
     required FlashcardService flashcardService,
     required GeminiService geminiService,
+    required StorageService storageService,
   }) : _flashcardService = flashcardService,
-       _geminiService = geminiService;
+       _geminiService = geminiService,
+       _storageService = storageService;
 
   @override
   Future<void> createAndUpdateFlashcards(
     List<Flashcard> flashcardData,
     String deckId,
+    Map<String, XFile>? pickedFronts,
+    Map<String, XFile>? pickedBacks,
   ) async {
     try {
+      List<Flashcard> flashcards = [];
+      for (final card in flashcardData) {
+        var updated = card;
+
+        if (pickedFronts != null && pickedFronts.containsKey(card.fid)) {
+          final frontUrl = await _storageService.uploadImage(
+            image: pickedFronts[card.fid]!,
+            path: Paths.flashcardImagePath(card.fid),
+            name: 'front',
+          );
+          updated = card.copyWith(frontImageUrl: frontUrl);
+        }
+
+        if (pickedBacks != null && pickedBacks.containsKey(card.fid)) {
+          final backUrl = await _storageService.uploadImage(
+            image: pickedBacks[card.fid]!,
+            path: Paths.flashcardImagePath(card.fid),
+            name: 'back',
+          );
+          updated = card.copyWith(backImageUrl: backUrl);
+        }
+        flashcards.add(updated);
+      }
+
       await _flashcardService.createAndUpdateFlashcards(
-        flashcardData.map((card) => card.toMap()).toList(),
+        flashcards.map((card) => card.toMap()).toList(),
         deckId,
       );
     } catch (e) {
@@ -32,9 +63,13 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   @override
   Future<void> deleteFlashcards(
     List<String> flashcardIds,
+    List<String>? imageUrls,
     String deckId,
   ) async {
     try {
+      if (imageUrls != null && imageUrls.isNotEmpty) {
+        await _storageService.deleteImages(imageUrls);
+      }
       return await _flashcardService.deleteFlashcards(flashcardIds, deckId);
     } catch (e) {
       throw Exception("Could not delete flashcards");
@@ -57,8 +92,14 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   }
 
   @override
-  Future<void> deleteFlashcardsByDeckId(String deckId) async {
+  Future<void> deleteFlashcardsByDeckId(
+    String deckId,
+    List<String>? imageUrls,
+  ) async {
     try {
+      if (imageUrls != null && imageUrls.isNotEmpty) {
+        await _storageService.deleteImages(imageUrls);
+      }
       return await _flashcardService.deleteFlashcardsByDeckId(deckId);
     } catch (e) {
       throw Exception("Could not delete flashcards by deck id");

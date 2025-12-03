@@ -1,12 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/create_deck/image_placeholder.dart';
+import 'package:hocado/presentation/widgets/hocado_dialog.dart';
 import 'package:hocado/presentation/widgets/hocado_text_area.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DeckInfoCard extends StatefulWidget {
   final Deck deck;
-  final ValueChanged<Deck> onUpdated;
+  final ValueChanged<(Deck, XFile?)> onUpdated;
 
   const DeckInfoCard({super.key, required this.deck, required this.onUpdated});
 
@@ -20,6 +23,9 @@ class _DeckInfoCardState extends State<DeckInfoCard> {
 
   late final FocusNode titleFocusNode;
   late final FocusNode descriptionFocusNode;
+
+  XFile? _pickedImage;
+  Uint8List? _webImageBytes; // for web
 
   @override
   void initState() {
@@ -40,15 +46,47 @@ class _DeckInfoCardState extends State<DeckInfoCard> {
 
   void _onTitleFocusChange() {
     if (!titleFocusNode.hasFocus) {
-      widget.onUpdated(widget.deck.copyWith(name: titleController.text));
+      widget.onUpdated((
+        widget.deck.copyWith(name: titleController.text),
+        _pickedImage,
+      ));
     }
   }
 
   void _onDescriptionFocusChange() {
     if (!descriptionFocusNode.hasFocus) {
-      widget.onUpdated(
+      widget.onUpdated((
         widget.deck.copyWith(description: descriptionController.text),
+        _pickedImage,
+      ));
+    }
+  }
+
+  void _onPickImage() async {
+    final imagePicker = ImagePicker();
+    try {
+      final imageFile = await imagePicker.pickImage(
+        source: ImageSource.gallery,
       );
+      if (imageFile == null) return;
+
+      if (kIsWeb) {
+        final bytes = await imageFile.readAsBytes();
+        setState(() {
+          _pickedImage = imageFile;
+          _webImageBytes = bytes; // Lưu bytes để hiển thị Preview
+        });
+      } else {
+        setState(() {
+          _pickedImage = imageFile;
+        });
+      }
+
+      widget.onUpdated((widget.deck, _pickedImage));
+    } catch (e) {
+      if (mounted) {
+        showErrorSnackbar(context, "Lỗi chọn ảnh: $e");
+      }
     }
   }
 
@@ -66,7 +104,13 @@ class _DeckInfoCardState extends State<DeckInfoCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ImagePlaceholder(),
+          ImagePlaceholder(
+            existingImageUrl: widget.deck.thumbnailUrl,
+            pickedImage: _pickedImage,
+            webImageBytes: _webImageBytes,
+            onPickImage: _onPickImage,
+          ),
+
           SizedBox(width: Sizes.md),
           Expanded(
             child: Column(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hocado/core/constants/sizes.dart';
 
 Future<bool?> showConfirmDialog(
   BuildContext context,
@@ -61,6 +62,44 @@ void showErrorSnackbar(BuildContext context, String message) {
         ),
       ),
       backgroundColor: theme.colorScheme.error,
+    ),
+  );
+}
+
+Future<dynamic> showNote(BuildContext context, String note) {
+  final theme = Theme.of(context);
+  return showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          Sizes.borderRadiusLg,
+        ),
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.4,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(Sizes.md),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  note,
+                  style: theme.textTheme.bodyLarge,
+                ),
+                const SizedBox(height: Sizes.sm),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Đã hiểu"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     ),
   );
 }

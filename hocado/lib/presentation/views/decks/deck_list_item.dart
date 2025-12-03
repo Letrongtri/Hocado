@@ -9,12 +9,16 @@ class DeckListItem extends StatelessWidget {
   final String title;
   final DateTime lastUpdated;
   final String did;
+  final String? thumbnailUrl;
+  final Function()? onDelete;
 
   const DeckListItem({
     super.key,
     required this.title,
     required this.lastUpdated,
     required this.did,
+    this.thumbnailUrl,
+    this.onDelete,
   });
 
   @override
@@ -33,9 +37,17 @@ class DeckListItem extends StatelessWidget {
         padding: const EdgeInsets.all(Sizes.iconXs),
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
+          image: thumbnailUrl != null
+              ? DecorationImage(
+                  image: NetworkImage(thumbnailUrl!),
+                  fit: BoxFit.cover,
+                )
+              : null,
           borderRadius: BorderRadius.circular(Sizes.borderRadiusLg),
         ),
-        child: Icon(Icons.description_rounded, color: Colors.grey.shade600),
+        child: thumbnailUrl == null
+            ? Icon(Icons.description_rounded, color: Colors.grey.shade600)
+            : SizedBox(width: 24, height: 24),
       ),
 
       title: Text(title, style: theme.textTheme.titleMedium),
@@ -83,7 +95,9 @@ class DeckListItem extends StatelessWidget {
                         );
 
                         if (confirm != null && confirm) {
-                          // TODO: Xóa bộ thẻ
+                          if (onDelete != null) {
+                            await onDelete!();
+                          }
                         }
                       },
                     ),

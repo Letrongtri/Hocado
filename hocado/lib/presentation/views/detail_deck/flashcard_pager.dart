@@ -36,7 +36,7 @@ class _FlashcardPagerState extends ConsumerState<FlashcardPager> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 200,
+          height: 350,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.flashcards.length,
