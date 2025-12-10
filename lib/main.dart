@@ -1,0 +1,77 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hocado/app/provider/music_provider.dart';
+import 'package:hocado/app/provider/provider.dart';
+import 'package:hocado/app/routing/app_router.dart';
+import 'package:hocado/core/theme/app_theme.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/firebase_options.dart';
+import 'package:hocado/presentation/music_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  final sharedPrefs = await SharedPreferences.getInstance();
+
+  await dotenv.load();
+
+  Gemini.init(apiKey: dotenv.env['GOOGLE_GEMINI_API_KEY']!);
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        sharedPrefsProvider.overrideWithValue(sharedPrefs),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goRouter = ref.watch(goRouterProvider);
+
+    final systemSettings = ref.watch(systemSettingsViewModelProvider);
+
+    return systemSettings.when(
+      data: (data) {
+        if (data.isSoundOn) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(musicServiceProvider).playMusic();
+          });
+        }
+
+        return MaterialApp.router(
+          title: 'Hocado',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          debugShowCheckedModeBanner: false,
+          themeMode: data.themeMode,
+          routerConfig: goRouter,
+          builder: (context, child) {
+            return MusicManager(child: child!);
+          },
+        );
+      },
+      error: (err, stack) => MaterialApp.router(
+        title: 'Hocado',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        routerConfig: goRouter,
+      ),
+      loading: () => const CircularProgressIndicator(),
+    );
+  }
+}

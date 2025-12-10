@@ -1,0 +1,161 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hocado/data/models/models.dart';
+import 'package:hocado/data/repositories/repositories.dart';
+import 'package:hocado/data/services/services.dart';
+import 'package:hocado/utils/paths.dart';
+import 'package:image_picker/image_picker.dart';
+
+class DeckRepositoryImpl implements DeckRepository {
+  final DeckService _deckService;
+  final StorageService _storageService;
+
+  DeckRepositoryImpl({
+    required DeckService decksService,
+    required StorageService storageService,
+  }) : _deckService = decksService,
+       _storageService = storageService;
+
+  @override
+  Future<void> delete(String id, String? thumbnailUrl) async {
+    try {
+      if (thumbnailUrl != null) {
+        await _storageService.deleteImage(thumbnailUrl);
+      }
+      await _deckService.deleteDeck(id);
+    } catch (e) {
+      throw Exception("Could not delete deck");
+    }
+  }
+
+  @override
+  Future<List<Deck>> getDecksByUserId(String id) async {
+    try {
+      final docs = await _deckService.getUserDecks(id);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
+      return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
+    }
+  }
+
+  @override
+  Future<void> createAndUpdate(Deck deck, XFile? thumbnail) async {
+    try {
+      String? thumbnailUrl;
+      if (thumbnail != null) {
+        final path = Paths.deckThumbnailPath;
+        thumbnailUrl = await _storageService.uploadImage(
+          image: thumbnail,
+          path: path,
+          name: deck.did,
+        );
+      }
+
+      deck = deck.copyWith(thumbnailUrl: thumbnailUrl ?? deck.thumbnailUrl);
+      return _deckService.createAndUpdateDeck(deck.toMap());
+    } catch (e) {
+      throw Exception("Could not create deck");
+    }
+  }
+
+  @override
+  Future<Deck> getDeckById(String id) async {
+    try {
+      return await _deckService.getDeckById(id).then((docSnapshot) {
+        return Deck.fromFirestore(docSnapshot);
+      });
+    } catch (e) {
+      throw Exception("Could not get deck by id");
+    }
+  }
+
+  @override
+  Future<PaginationDecksResult> searchDecks({
+    required String id,
+    bool isFindingPublic = true,
+    String? search,
+    DocumentSnapshot? lastDocument,
+    int limit = 10,
+  }) async {
+    try {
+      final result = await _deckService.searchDecks(
+        id,
+        search,
+        lastDocument,
+        limit: limit,
+        isFindingPublic: isFindingPublic,
+      );
+
+      final docs = result.docs;
+      final newLastDocument = result.lastDocument;
+
+      if (docs.isEmpty) {
+        return (decks: <Deck>[], lastDocument: null);
+      }
+
+      final decks = docs.map((doc) => Deck.fromFirestore(doc)).toList();
+
+      return (decks: decks, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
+    }
+  }
+
+  @override
+  Future<List<Deck>> getDecksByIds(List<String> ids) {
+    try {
+      return _deckService.getDecksByIds(ids).then((docs) {
+        return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+      });
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
+    }
+  }
+
+  @override
+  Future<List<Deck>> getPublicDecksByUserId(String id) async {
+    try {
+      final docs = await _deckService.getUserPublicDecks(id);
+
+      if (docs.isEmpty) {
+        return [];
+      }
+
+      return docs.map((doc) => Deck.fromFirestore(doc)).toList();
+    } catch (e) {
+      throw Exception("Could not convert documents to public decks");
+    }
+  }
+
+  @override
+  Future<PaginationDecksResult> getSuggestedDeckByFollowingUids(
+    List<String> ids, {
+    int limit = 10,
+    DocumentSnapshot? lastDocument,
+  }) async {
+    try {
+      final result = await _deckService.getSuggestedDeckByFollowingUids(
+        ids,
+        limit: limit,
+        lastDocument: lastDocument,
+      );
+
+      final docs = result.docs;
+      final newLastDocument = result.lastDocument;
+
+      if (docs.isEmpty) {
+        return (decks: <Deck>[], lastDocument: null);
+      }
+
+      final decks = docs.map((doc) => Deck.fromFirestore(doc)).toList();
+
+      return (decks: decks, lastDocument: newLastDocument);
+    } catch (e) {
+      throw Exception("Could not convert documents to decks");
+    }
+  }
+}
