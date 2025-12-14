@@ -87,6 +87,45 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               return ProfileScreen(userId: uid);
             },
           ),
+          GoRoute(
+            path: '/search',
+            name: AppRoutes.search.name,
+            builder: (context, state) {
+              final focus =
+                  (state.extra is Map &&
+                  (state.extra as Map)['isFocus'] == true);
+
+              return SearchScreen(isFocus: focus);
+            },
+          ),
+          GoRoute(
+            path: '/settings',
+            name: AppRoutes.appSettings.name,
+            builder: (context, state) => AppSettingsScreen(),
+          ),
+          GoRoute(
+            path: '/users/:uid',
+            name: AppRoutes.profile.name,
+            builder: (context, state) {
+              final uid = state.pathParameters['uid']!;
+              return ProfileScreen(userId: uid);
+            },
+          ),
+          GoRoute(
+            path: '/profile-settings',
+            name: AppRoutes.profileSettings.name,
+            builder: (context, state) => ProfileSettingsScreen(),
+          ),
+          GoRoute(
+            path: '/notifications',
+            name: AppRoutes.notifications.name,
+            builder: (context, state) => NotificationsScreen(),
+          ),
+          GoRoute(
+            path: '/system-settings',
+            name: AppRoutes.systemSettings.name,
+            builder: (context, state) => SystemSettingsScreen(),
+          ),
         ],
       ),
       GoRoute(
@@ -145,44 +184,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             settings: settings,
           );
         },
-      ),
-      GoRoute(
-        path: '/search',
-        name: AppRoutes.search.name,
-        builder: (context, state) {
-          final focus =
-              (state.extra is Map && (state.extra as Map)['isFocus'] == true);
-
-          return SearchScreen(isFocus: focus);
-        },
-      ),
-      GoRoute(
-        path: '/settings',
-        name: AppRoutes.appSettings.name,
-        builder: (context, state) => AppSettingsScreen(),
-      ),
-      GoRoute(
-        path: '/users/:uid',
-        name: AppRoutes.profile.name,
-        builder: (context, state) {
-          final uid = state.pathParameters['uid']!;
-          return ProfileScreen(userId: uid);
-        },
-      ),
-      GoRoute(
-        path: '/profile-settings',
-        name: AppRoutes.profileSettings.name,
-        builder: (context, state) => ProfileSettingsScreen(),
-      ),
-      GoRoute(
-        path: '/notifications',
-        name: AppRoutes.notifications.name,
-        builder: (context, state) => NotificationsScreen(),
-      ),
-      GoRoute(
-        path: '/system-settings',
-        name: AppRoutes.systemSettings.name,
-        builder: (context, state) => SystemSettingsScreen(),
       ),
     ],
 

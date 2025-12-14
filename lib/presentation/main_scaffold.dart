@@ -7,6 +7,9 @@ import 'package:hocado/app/routing/app_routes.dart';
 import 'package:hocado/core/constants/sizes.dart';
 import 'package:hocado/data/models/models.dart';
 import 'package:hocado/presentation/views/create_deck/create_options.dart';
+import 'package:hocado/presentation/responsive/desktop_body.dart';
+import 'package:hocado/presentation/responsive/mobile_body.dart';
+import 'package:hocado/utils/nav_items.dart';
 
 class MainScaffold extends ConsumerStatefulWidget {
   final Widget child;
@@ -83,92 +86,34 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  void _onDestinationSelected(int index) {
+    final destination = _indexToRoute(index);
     final location = GoRouterState.of(context).uri.toString();
 
-    final currentIndex = _locationToIndex(location);
-
-    return Scaffold(
-      body: widget.child,
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return IconThemeData(
-                color: theme.colorScheme.onSurface,
-                size: Sizes.iconLg,
-              );
-            }
-            return IconThemeData(
-              color: theme.colorScheme.onPrimary,
-              size: Sizes.iconMd,
-            );
-          }),
-        ),
-        child: NavigationBar(
-          selectedIndex: currentIndex,
-          onDestinationSelected: (index) {
-            final destination = _indexToRoute(index);
-            if (destination != location) {
-              if (destination == AppRoutes.createDecks.name) {
-                // context.pushNamed(destination);
-                showCreateOptions(context, ref);
-              } else if (destination == AppRoutes.myProfile.name) {
-                final userId = ref.watch(currentUserProvider)?.uid;
-                if (userId == null || userId.isEmpty) return;
-                context.goNamed(destination);
-              } else {
-                context.goNamed(destination);
-              }
-            }
-          },
-
-          height: Sizes.appBarHeight,
-          elevation: Sizes.btnElevation,
-          indicatorColor: Colors.transparent,
-          indicatorShape: CircleBorder(),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          animationDuration: Durations.short3,
-          backgroundColor: theme.colorScheme.secondary,
-
-          destinations: [
-            NavigationDestination(
-              icon: currentIndex == 0
-                  ? Icon(Icons.home)
-                  : Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: currentIndex == 1
-                  ? Icon(Icons.add_circle)
-                  : Icon(Icons.add_circle_outline),
-              label: 'Add',
-            ),
-            NavigationDestination(
-              icon: currentIndex == 2
-                  ? Icon(Icons.folder_copy)
-                  : Icon(Icons.folder_copy_outlined),
-              label: 'Decks',
-            ),
-            NavigationDestination(
-              icon: currentIndex == 3
-                  ? Icon(Icons.person)
-                  : Icon(Icons.person_outline),
-              label: 'Profile',
-            ),
-          ],
-        ),
-      ),
-    );
+    if (destination != location) {
+      if (destination == AppRoutes.createDecks.name) {
+        // context.pushNamed(destination);
+        showCreateOptions(context, ref);
+      } else if (destination == AppRoutes.myProfile.name) {
+        final userId = ref.watch(currentUserProvider)?.uid;
+        if (userId == null || userId.isEmpty) return;
+        context.goNamed(destination);
+      } else {
+        context.goNamed(destination);
+      }
+    }
   }
 
-  int _locationToIndex(String location) {
-    if (location.startsWith('/create')) return 1;
-    if (location.startsWith('/decks')) return 2;
-    if (location.startsWith('/my-profile')) return 3;
-    return 0; // default: home
+  int _calculateSelectedIndex(BuildContext context, String location) {
+    // Tìm index dựa trên routeName trong appNavItems
+    // Ví dụ: location '/decks/123' sẽ match với nav item có route '/decks'
+    for (int i = 0; i < appNavItems.length; i++) {
+      if (location.startsWith('/create') && i == 1) return 1;
+      if (location.startsWith('/decks') && i == 2) return 2;
+      if (location.startsWith('/my-profile') && i == 3) return 3;
+      if ((location == '/home' || location == '/') && i == 0) return 0;
+    }
+    return 0; // Default Home
   }
 
   String _indexToRoute(int index) {
@@ -182,5 +127,50 @@ class _MainScaffoldState extends ConsumerState<MainScaffold> {
       default:
         return AppRoutes.home.name;
     }
+  }
+
+  bool _shouldHideBottomNav(String location) {
+    // Danh sách các route muốn ẩn BottomBar trên Mobile
+    // Lưu ý: Desktop vẫn hiện bình thường vì logic này chỉ truyền vào MobileShell
+    final hiddenRoutes = [
+      '/search',
+      '/settings',
+      '/notifications',
+      '/profile-settings',
+      '/system-settings',
+      '/users/',
+    ];
+
+    // Kiểm tra xem location hiện tại có bắt đầu bằng các route trên không
+    for (var route in hiddenRoutes) {
+      if (location.startsWith(route)) return true;
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    final selectedIndex = _calculateSelectedIndex(context, location);
+    final hideBottomNav = _shouldHideBottomNav(location);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < Sizes.mobileWidth) {
+          return MobileBody(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: _onDestinationSelected,
+            hideBottomNav: hideBottomNav,
+            child: widget.child,
+          );
+        } else {
+          return DesktopBody(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: _onDestinationSelected,
+            child: widget.child,
+          );
+        }
+      },
+    );
   }
 }

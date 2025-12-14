@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/core/utils/xp_helper.dart';
+import 'package:hocado/utils/xp_helper.dart';
 import 'package:hocado/data/services/services.dart';
 import 'package:hocado/data/models/models.dart' as hocado_user;
 

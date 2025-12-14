@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hocado/core/utils/xp_helper.dart';
+import 'package:hocado/utils/xp_helper.dart';
 
 class User {
   final String uid;

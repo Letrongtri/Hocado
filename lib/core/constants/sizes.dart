@@ -64,4 +64,7 @@ class Sizes {
 
   // Chart height
   static const double chartHeight = 200.0;
+
+  // device width
+  static const mobileWidth = 900;
 }
